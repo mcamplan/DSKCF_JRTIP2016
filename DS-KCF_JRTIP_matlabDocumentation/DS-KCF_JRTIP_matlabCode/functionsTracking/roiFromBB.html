@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of roiFromBB</title>
+  <meta name="keywords" content="roiFromBB">
+  <meta name="description" content="ROIFROMBB.m is a function for extracting roi from images given a bounding box">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>roiFromBB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ROIFROMBB.m is a function for extracting roi from images given a bounding box</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function imgOUT=roiFromBB(imgIN,bbIn) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ROIFROMBB.m is a function for extracting roi from images given a bounding box
+
+  ROIFROMBB is a function that extracts image roi from an image given a
+  bounding box
+
+   INPUT:
+  -imIN input image (can be grayscale, depth or color image)
+  -bbIn input bounding box in the format [topLeftY, topLeftX,
+   bottomRightY, bottomRightX] read as [rowIndexTopLeft, columnIndexTopLeft,
+   rowIndexBottomRight, columnIndexBottomRight]
+
+   OUTPUT
+  -imOUT selected ROI
+
+ See also INITDISTRIBUTIONFAST, CHECKOCCLUSIONSDSKCF_NOISEMODEL,
+ CHECKOCCLUSIONSDSKCF_SECONDPLANE, OCCLUDINGOBJECTSEGDSKCF,
+ <a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">SINGLEFRAMEDSKCF</a>,
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/initDistributionFast.html" class="code" title="function [targetDepth,targetStd,LabelReg,regionIndex,Centers,LUT] = initDistributionFast(bbIn, depth16Bit,noData)">initDistributionFast</a>	INITDISTRIBUTIONFAST.m initializes the depth distribution of the DS-KCF tracker</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>	CHECKOCCLUSIONSDSKCF_NOISEMODEL function for detecting occlusions</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>	CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/occludingObjectSegDSKCF.html" class="code" title="function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct)">occludingObjectSegDSKCF</a>	OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/regionModificationCheck.html" class="code" title="function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct)">regionModificationCheck</a>	REGIONMODIFICATIONCHECK.m function to identify change of shape as</li><li><a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% ROIFROMBB.m is a function for extracting roi from images given a bounding box</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%  ROIFROMBB is a function that extracts image roi from an image given a</span>
+0004 <span class="comment">%  bounding box</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT:</span>
+0007 <span class="comment">%  -imIN input image (can be grayscale, depth or color image)</span>
+0008 <span class="comment">%  -bbIn input bounding box in the format [topLeftY, topLeftX,</span>
+0009 <span class="comment">%   bottomRightY, bottomRightX] read as [rowIndexTopLeft, columnIndexTopLeft,</span>
+0010 <span class="comment">%   rowIndexBottomRight, columnIndexBottomRight]</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%  -imOUT selected ROI</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">% See also INITDISTRIBUTIONFAST, CHECKOCCLUSIONSDSKCF_NOISEMODEL,</span>
+0016 <span class="comment">% CHECKOCCLUSIONSDSKCF_SECONDPLANE, OCCLUDINGOBJECTSEGDSKCF,</span>
+0017 <span class="comment">% SINGLEFRAMEDSKCF,</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%  University of Bristol</span>
+0020 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0023 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0024 
+0025 <a name="_sub0" href="#_subfunctions" class="code">function imgOUT=roiFromBB(imgIN,bbIn)</a>
+0026 
+0027 imgOUT=imgIN(bbIn(2):bbIn(4),bbIn(1):bbIn(3),:);
+0028 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

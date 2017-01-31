@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fastDepthSegmentationDSKCF_noiseModel</title>
+  <meta name="keywords" content="fastDepthSegmentationDSKCF_noiseModel">
+  <meta name="description" content="FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsDepthSeg -->
+<h1>fastDepthSegmentationDSKCF_noiseModel
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data
+ 
+   FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL function applies the fast depth
+   segmentation algorithm described in [1]. The segmentation is composed
+   by two different stage a fast version of the Kmeans applied to the
+   depth data, plus a connected component analysis to refine clusters in
+   the image plane. This function was implemented by starting from the
+   &quot;Fast segmentation of N-dimensional grayscale images&quot; presented by
+   Anton Semechko and shared in the Matlab Central at this link under BSD
+   licence
+   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images
+
+   INPUT: 
+   - im   depth image coded in 16bits, each pixel contains mm data. 
+   - c    positive interger greater than 1 specifying the number of
+           clusters. c=2 is the default setting. Alternatively, c
+           initialized by considering peaks in the depth distribution.
+   -nanMatrix  binary mask containing flags for missing depth pixels 
+   -minimumError convergence criteria for the Kmeans algorithm
+   -histStep histogram bin used to compose depth histogram
+   -Cinit initial Kmeans seeds. Set this values to -1 to not initialize
+   externally the starting seeds
+   -findPeak boolean flag to initialize the Kmeans seed with the peaks in
+   the depth distribution 
+   -targetDepth,targetSTD  depth mean value and standard deviation of the
+   object in the previous frame. THey are used to calculate the noise
+   component
+
+   OUTPUT
+   - L    label image of the same size as the input image. For example,
+           L==i represents the region associated with prototype C(i),
+           where i=[1,k] (k = number of clusters).
+   - Cnew    1-by-k array of cluster centroids.
+   - LUT  L-by-1 array that specifies the intensity-class relations,
+           where L is the dynamic intensity range of the input image. 
+           Specifically, LUT(1) corresponds to class assigned to 
+           min(im(:)) and LUT(L) corresponds to the class assigned to
+           max(im(:)). 
+   -H histogram's bin height
+   -I histogram's bin centers
+   -LUTCC the same as LUT but considering also the connected component
+   anaylsis
+
+  See also <a href="LUT2labelNanSupport.html" class="code" title="function L=LUT2labelNanSupport(im,LUT,nanMatrix,histStep)">LUT2LABELNANSUPPORT</a>, <a href="LUT2labelNanSupportCC.html" class="code" title="function [L,Cnew,LUTCC]=LUT2labelNanSupportCC(im,LUT,nanMatrix,histStep,C)">LUT2LABELNANSUPPORTCC</a>, <a href="calculateNoiseVar.html" class="code" title="function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)">CALCULATENOISEVAR</a>,
+  CHECKOCCLUSIONSDSKCF_NOISEMODEL, SINGLEFRAMEDSKCF,
+  CHECKOCCLUSIONSDSKCF_SECONDPLANE
+
+ [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+ Burghardt, A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D
+ data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="LUT2labelNanSupportCC.html" class="code" title="function [L,Cnew,LUTCC]=LUT2labelNanSupportCC(im,LUT,nanMatrix,histStep,C)">LUT2labelNanSupportCC</a>	LUT2LABELNANSUPPORTCC.m is a function for assign clustering label to the segmented depth image</li><li><a href="calculateNoiseVar.html" class="code" title="function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)">calculateNoiseVar</a>	CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>	CHECKOCCLUSIONSDSKCF_NOISEMODEL function for detecting occlusions</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>	CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)</a>
+0002 <span class="comment">% FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL function applies the fast depth</span>
+0005 <span class="comment">%   segmentation algorithm described in [1]. The segmentation is composed</span>
+0006 <span class="comment">%   by two different stage a fast version of the Kmeans applied to the</span>
+0007 <span class="comment">%   depth data, plus a connected component analysis to refine clusters in</span>
+0008 <span class="comment">%   the image plane. This function was implemented by starting from the</span>
+0009 <span class="comment">%   &quot;Fast segmentation of N-dimensional grayscale images&quot; presented by</span>
+0010 <span class="comment">%   Anton Semechko and shared in the Matlab Central at this link under BSD</span>
+0011 <span class="comment">%   licence</span>
+0012 <span class="comment">%   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   INPUT:</span>
+0015 <span class="comment">%   - im   depth image coded in 16bits, each pixel contains mm data.</span>
+0016 <span class="comment">%   - c    positive interger greater than 1 specifying the number of</span>
+0017 <span class="comment">%           clusters. c=2 is the default setting. Alternatively, c</span>
+0018 <span class="comment">%           initialized by considering peaks in the depth distribution.</span>
+0019 <span class="comment">%   -nanMatrix  binary mask containing flags for missing depth pixels</span>
+0020 <span class="comment">%   -minimumError convergence criteria for the Kmeans algorithm</span>
+0021 <span class="comment">%   -histStep histogram bin used to compose depth histogram</span>
+0022 <span class="comment">%   -Cinit initial Kmeans seeds. Set this values to -1 to not initialize</span>
+0023 <span class="comment">%   externally the starting seeds</span>
+0024 <span class="comment">%   -findPeak boolean flag to initialize the Kmeans seed with the peaks in</span>
+0025 <span class="comment">%   the depth distribution</span>
+0026 <span class="comment">%   -targetDepth,targetSTD  depth mean value and standard deviation of the</span>
+0027 <span class="comment">%   object in the previous frame. THey are used to calculate the noise</span>
+0028 <span class="comment">%   component</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%   OUTPUT</span>
+0031 <span class="comment">%   - L    label image of the same size as the input image. For example,</span>
+0032 <span class="comment">%           L==i represents the region associated with prototype C(i),</span>
+0033 <span class="comment">%           where i=[1,k] (k = number of clusters).</span>
+0034 <span class="comment">%   - Cnew    1-by-k array of cluster centroids.</span>
+0035 <span class="comment">%   - LUT  L-by-1 array that specifies the intensity-class relations,</span>
+0036 <span class="comment">%           where L is the dynamic intensity range of the input image.</span>
+0037 <span class="comment">%           Specifically, LUT(1) corresponds to class assigned to</span>
+0038 <span class="comment">%           min(im(:)) and LUT(L) corresponds to the class assigned to</span>
+0039 <span class="comment">%           max(im(:)).</span>
+0040 <span class="comment">%   -H histogram's bin height</span>
+0041 <span class="comment">%   -I histogram's bin centers</span>
+0042 <span class="comment">%   -LUTCC the same as LUT but considering also the connected component</span>
+0043 <span class="comment">%   anaylsis</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%  See also LUT2LABELNANSUPPORT, LUT2LABELNANSUPPORTCC, CALCULATENOISEVAR,</span>
+0046 <span class="comment">%  CHECKOCCLUSIONSDSKCF_NOISEMODEL, SINGLEFRAMEDSKCF,</span>
+0047 <span class="comment">%  CHECKOCCLUSIONSDSKCF_SECONDPLANE</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">% [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0050 <span class="comment">% Burghardt, A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D</span>
+0051 <span class="comment">% data, Journal of Real-Time Image Processing</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%  University of Bristol</span>
+0055 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0056 <span class="comment">%</span>
+0057 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0058 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0059 
+0060 <span class="comment">% Default input arguments</span>
+0061 <span class="keyword">if</span> nargin&lt;2 || isempty(c), c=2; <span class="keyword">end</span>
+0062 
+0063 <span class="comment">% Basic error checking</span>
+0064 <span class="keyword">if</span> nargin&lt;1 || isempty(im)
+0065     error(<span class="string">'Insufficient number of input arguments'</span>)
+0066 <span class="keyword">end</span>
+0067 msg=<span class="string">'Revise variable used to specify class centroids. See function documentaion for more info.'</span>;
+0068 <span class="keyword">if</span> ~isnumeric(c) || ~isvector(c)
+0069     error(msg)
+0070 <span class="keyword">end</span>
+0071 <span class="keyword">if</span> numel(c)==1 &amp;&amp; (~isnumeric(c) || round(c)~=c || c&lt;2)
+0072     error(msg)
+0073 <span class="keyword">end</span>
+0074 
+0075 <span class="comment">% Check image format</span>
+0076 <span class="keyword">if</span> isempty(strfind(class(im),<span class="string">'int'</span>))
+0077     error(<span class="string">'Input image must be specified in integer format (e.g. uint8, int16)'</span>)
+0078 <span class="keyword">end</span>
+0079 <span class="keyword">if</span> sum(isnan(im(:)))~=0 || sum(isinf(im(:)))~=0
+0080     error(<span class="string">'Input image contains NaNs or Inf values. Remove them and try again.'</span>)
+0081 <span class="keyword">end</span>
+0082 
+0083 
+0084 histStep=max(2.5*<a href="calculateNoiseVar.html" class="code" title="function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)">calculateNoiseVar</a>(targetDepth,noiseModelVector(1),noiseModelVector(2),noiseModelVector(3)),targetSTD);
+0085 
+0086 newPointSet=im(~nanMatrix);
+0087 Imin=double(min(newPointSet));
+0088 Imax=double(max(newPointSet));
+0089 I=(Imin:histStep:Imax)';
+0090 <span class="keyword">if</span>(isempty(I))
+0091     L=[];
+0092     Cnew=[];
+0093     LUT=[];
+0094     H=[];
+0095     I=[];
+0096     LUTCC=[];
+0097     <span class="keyword">return</span>
+0098 <span class="keyword">end</span>
+0099 
+0100 <span class="keyword">if</span>(I(end)~=Imax || length(I)==1)
+0101     I(end+1)=Imax+histStep;
+0102 <span class="keyword">end</span>
+0103 I=I(:);
+0104 <span class="comment">% Compute intensity histogram</span>
+0105 H=hist(double(newPointSet),I);
+0106 H=H(:);
+0107 maxValue=max(H);
+0108 
+0109 minPeakDistParam=3;
+0110 <span class="keyword">if</span>(length(I)&lt;50)
+0111    minPeakDistParam=2;
+0112 <span class="keyword">end</span>
+0113 
+0114 [peakDepth,posPeak]=findpeaks([0; H ;0],<span class="string">'MINPEAKDISTANCE'</span>,minPeakDistParam,<span class="string">'MINPEAKHEIGHT'</span>,0.005*maxValue);
+0115 
+0116 <span class="comment">% Initialize cluster centroids</span>
+0117 <span class="keyword">if</span> numel(c)&gt;1
+0118     C=c;
+0119     c=numel(c);
+0120 <span class="keyword">else</span>
+0121     dI=(Imax-Imin)/c;
+0122     <span class="keyword">if</span>(isempty(Cinit))
+0123         C=Imin+dI/2:dI:Imax;
+0124     <span class="keyword">else</span>
+0125         C=Cinit;
+0126     <span class="keyword">end</span>
+0127 <span class="keyword">end</span>
+0128 
+0129 <span class="keyword">if</span>(findPeak)
+0130     <span class="keyword">if</span>(length(C)==length(posPeak) &amp;&amp; C(1)==-1);
+0131         C=I(posPeak-1);
+0132     <span class="keyword">elseif</span> (length(C)~=length(posPeak))
+0133         c=length(posPeak);
+0134         C=I(posPeak-1);
+0135     <span class="keyword">end</span>
+0136     C=C';
+0137 <span class="keyword">end</span>
+0138 
+0139 
+0140 
+0141 <span class="comment">% Update cluster centroids</span>
+0142 IH=I.*H; dC=Inf;
+0143 
+0144 C0=C;
+0145 Citer=C;
+0146 <span class="keyword">while</span> dC&gt;minimumError
+0147     
+0148     Citer=C;
+0149     
+0150     <span class="comment">% Distance to the centroids</span>
+0151     D=abs(bsxfun(@minus,I,C));
+0152     
+0153     <span class="comment">% Classify by proximity</span>
+0154     [Dmin,LUT]=min(D,[],2); <span class="comment">%#ok&lt;*ASGLU&gt;</span>
+0155     <span class="keyword">for</span> j=1:c
+0156         C(j)=sum(IH(LUT==j))/sum(H(LUT==j));
+0157         <span class="keyword">if</span>(isnan(C(j)))
+0158             C(j)=Citer(j);
+0159         <span class="keyword">end</span>
+0160     <span class="keyword">end</span>
+0161       
+0162     <span class="comment">% Change in centroids</span>
+0163     dC=max(abs(C-Citer));
+0164     
+0165 <span class="keyword">end</span>
+0166 
+0167 <span class="comment">%%correct singleton peaks</span>
+0168 <span class="keyword">if</span>(length(C)==1)
+0169     C=I(posPeak-1);
+0170 <span class="keyword">end</span>
+0171 
+0172 [L,Cnew,LUTCC]=<a href="LUT2labelNanSupportCC.html" class="code" title="function [L,Cnew,LUTCC]=LUT2labelNanSupportCC(im,LUT,nanMatrix,histStep,C)">LUT2labelNanSupportCC</a>(im,LUT,nanMatrix,histStep,C);
+0173</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

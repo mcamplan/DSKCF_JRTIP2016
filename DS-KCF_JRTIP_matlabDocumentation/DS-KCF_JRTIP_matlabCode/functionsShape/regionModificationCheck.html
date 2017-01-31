@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of regionModificationCheck</title>
+  <meta name="keywords" content="regionModificationCheck">
+  <meta name="description" content="REGIONMODIFICATIONCHECK.m function to identify change of shape as">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsShape -->
+<h1>regionModificationCheck
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>REGIONMODIFICATIONCHECK.m function to identify change of shape as</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> REGIONMODIFICATIONCHECK.m function to identify change of shape as
+ presented in [1]
+
+
+   REGIONMODIFICATIONCHECK is used to estimate significant change of shape
+   of the segmented target silhouette, if detected the new shape is used
+   as output of the DS-KCF tracker as presented in [1]
+
+   INPUT:
+   - sizeOfSegmenter   size of the segmented object
+   - sizeOfTarget  size of the tracked target
+   - accumulatedSEGBool binary flag to mark if the vector containing the
+   segmented masks (see [1]) is full, so the segmentation is considered
+   reliable
+   -noDataPercent binary flag to identify if the percentage of missing
+   depth data is greater than a threshold (set in SINGLEFRAMEDSKCF). In
+   case that the flag has value 1 segmentation is not considered reliable
+   -minSizeOK binary flag to identify if the size of the object is greater
+   than a threshold (set in SINGLEFRAMEDSKCF). In case that the flag has
+   value 1 segmentation is not considered reliable
+   -estimatedShapeBB boundinbox of the segmented object obtained with the
+   accumulation strategy presented in [1]
+   -shapeDSKCF_struct data structure containing shape information (see
+   INITDSKCFSHAPE)
+   - imSize image size
+   - trackerDSKCF_struct  DS-KCF tracker data structure (see WRAPPERDSKCF,
+   INITDSKCFTRACKER)
+
+   OUTPUT -estimatedShapeBB modified BB of the segmented target
+   -shapeDSKCF_struct modified data structure containing shape information
+   (see INITDSKCFSHAPE) -changeOfShapeFlag,newOutput flags to mark a
+   detected change of shape according to the method presented in [1]
+
+  See also <a href="initDSKCFshape.html" class="code" title="function [ dskcfShapeStruct ] = initDSKCFshape( slidingWinSize, scaleFactor,dskcfShapeStructOLD )">INITDSKCFSHAPE</a>, <a href="extractSegmentedPatchV3.html" class="code" title="function [ reshapedSegmentedMask, insidePatchIndexes, finalSegmentedMask] =extractSegmentedPatchV3( segmentedMask,outOfBoundSize,centralPoint, shapeDSKCF_struct,maxSize )">EXTRACTSEGMENTEDPATCHV3</a>
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>	ENLARGEBB.m enlarges the size of a bounding box</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>	FROMBBTOCENTRALPOINT.m is a function for calculating target centroid and size</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>	FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>	ROIFROMBB.m is a function for extracting roi from images given a bounding box</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=</a><span class="keyword">...</span>
+0002     regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool<span class="keyword">...</span>
+0003     ,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize<span class="keyword">...</span>
+0004     ,trackerDSKCF_struct)
+0005 <span class="comment">% REGIONMODIFICATIONCHECK.m function to identify change of shape as</span>
+0006 <span class="comment">% presented in [1]</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   REGIONMODIFICATIONCHECK is used to estimate significant change of shape</span>
+0010 <span class="comment">%   of the segmented target silhouette, if detected the new shape is used</span>
+0011 <span class="comment">%   as output of the DS-KCF tracker as presented in [1]</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   INPUT:</span>
+0014 <span class="comment">%   - sizeOfSegmenter   size of the segmented object</span>
+0015 <span class="comment">%   - sizeOfTarget  size of the tracked target</span>
+0016 <span class="comment">%   - accumulatedSEGBool binary flag to mark if the vector containing the</span>
+0017 <span class="comment">%   segmented masks (see [1]) is full, so the segmentation is considered</span>
+0018 <span class="comment">%   reliable</span>
+0019 <span class="comment">%   -noDataPercent binary flag to identify if the percentage of missing</span>
+0020 <span class="comment">%   depth data is greater than a threshold (set in SINGLEFRAMEDSKCF). In</span>
+0021 <span class="comment">%   case that the flag has value 1 segmentation is not considered reliable</span>
+0022 <span class="comment">%   -minSizeOK binary flag to identify if the size of the object is greater</span>
+0023 <span class="comment">%   than a threshold (set in SINGLEFRAMEDSKCF). In case that the flag has</span>
+0024 <span class="comment">%   value 1 segmentation is not considered reliable</span>
+0025 <span class="comment">%   -estimatedShapeBB boundinbox of the segmented object obtained with the</span>
+0026 <span class="comment">%   accumulation strategy presented in [1]</span>
+0027 <span class="comment">%   -shapeDSKCF_struct data structure containing shape information (see</span>
+0028 <span class="comment">%   INITDSKCFSHAPE)</span>
+0029 <span class="comment">%   - imSize image size</span>
+0030 <span class="comment">%   - trackerDSKCF_struct  DS-KCF tracker data structure (see WRAPPERDSKCF,</span>
+0031 <span class="comment">%   INITDSKCFTRACKER)</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%   OUTPUT -estimatedShapeBB modified BB of the segmented target</span>
+0034 <span class="comment">%   -shapeDSKCF_struct modified data structure containing shape information</span>
+0035 <span class="comment">%   (see INITDSKCFSHAPE) -changeOfShapeFlag,newOutput flags to mark a</span>
+0036 <span class="comment">%   detected change of shape according to the method presented in [1]</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  See also INITDSKCFSHAPE, EXTRACTSEGMENTEDPATCHV3</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0042 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0043 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  University of Bristol</span>
+0047 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0050 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0051 
+0052 <span class="comment">%simple case, the segmentar has not grown yet, check for  smaller object or</span>
+0053 <span class="comment">%a bigger one</span>
+0054 newOutput=false;
+0055 changeOfShapeFlag=false;
+0056 <span class="keyword">if</span>(accumulatedSEGBool &amp;&amp; noDataPercent)
+0057     <span class="keyword">if</span>(shapeDSKCF_struct.growingStatus==false)
+0058         
+0059         <span class="keyword">if</span>(sizeOfSegmenter&lt;sizeOfTarget*0.9  &amp;&amp; minSizeOK )
+0060             estimatedShapeBB=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(estimatedShapeBB ,-0.05,imageSize);
+0061             shapeDSKCF_struct.growingStatus=false;
+0062             newOutput=true;
+0063         <span class="keyword">end</span>
+0064         
+0065         <span class="keyword">if</span>(sizeOfSegmenter&gt;sizeOfTarget*1.09 )
+0066             <span class="comment">%trackerDSKCF_struct.currentTarget.segmentedBB=tmpBBforSegCumulative(:)';</span>
+0067             changeOfShapeFlag=true;
+0068             newOutput=true;
+0069         <span class="keyword">end</span>
+0070     <span class="keyword">else</span>
+0071         
+0072         [centerX,centerY,width,height]=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>(estimatedShapeBB);
+0073         estimatedShapeSize=[height,width];
+0074         
+0075         currentSizeSegmenter=[shapeDSKCF_struct.segmentH,shapeDSKCF_struct.segmentW];
+0076         currentSizeMASK=[size(shapeDSKCF_struct.maskArray(:,:,1),1),size(shapeDSKCF_struct.maskArray(:,:,1),2)];
+0077         
+0078         diffSize=estimatedShapeSize-currentSizeSegmenter;
+0079         
+0080         growingFlag=(diffSize(1)&gt;0 || diffSize(2)&gt;0);
+0081         shrinkingFlag=(diffSize(1)&lt;=0 &amp;&amp; diffSize(2)&lt;=0);
+0082         <span class="comment">%if continues to grow or decrease the size ....then reshape....</span>
+0083         
+0084         <span class="keyword">if</span>(growingFlag)
+0085             segmentHIncrement=0;
+0086             segmentWIncrement=0;
+0087             newOutput=true;
+0088             <span class="keyword">if</span>(diffSize(1)&gt;0.07*currentSizeSegmenter(1))
+0089                 segmentHIncrement=round(0.05*currentSizeMASK(1));
+0090                 shapeDSKCF_struct.growingStatus=true;
+0091                 <span class="comment">%newOutput=true;</span>
+0092             <span class="keyword">end</span>
+0093             
+0094             <span class="keyword">if</span>(diffSize(2)&gt;0.05*currentSizeSegmenter(2))
+0095                 segmentWIncrement=round(0.05*currentSizeMASK(2));
+0096                 shapeDSKCF_struct.growingStatus=true;
+0097                 <span class="comment">%newOutput=true;</span>
+0098             <span class="keyword">end</span>
+0099             
+0100             shapeDSKCF_struct.growingStatus=true;
+0101             <span class="keyword">if</span>(segmentHIncrement&gt;0 || segmentWIncrement&gt;0)
+0102                 shapeDSKCF_struct.cumulativeMask=padarray(shapeDSKCF_struct.cumulativeMask,[segmentHIncrement segmentWIncrement]);
+0103                 <span class="keyword">for</span> i=1:size(shapeDSKCF_struct.maskArray,3)
+0104                     tmpMaskArray(:,:,i)=<span class="keyword">...</span>
+0105                         padarray(shapeDSKCF_struct.maskArray(:,:,i),[segmentHIncrement segmentWIncrement]);
+0106                 <span class="keyword">end</span>
+0107                 shapeDSKCF_struct.maskArray=tmpMaskArray;
+0108                 
+0109                 shapeDSKCF_struct.segmentW=max([estimatedShapeSize(2),trackerDSKCF_struct.currentTarget.w]);
+0110                 shapeDSKCF_struct.segmentH=max([estimatedShapeSize(1),trackerDSKCF_struct.currentTarget.h]);
+0111             <span class="keyword">end</span>
+0112             
+0113         <span class="keyword">end</span>
+0114         <span class="comment">%else if shrink a lot....back to the normal status</span>
+0115         <span class="keyword">if</span>(shrinkingFlag)
+0116             
+0117             <span class="comment">%find the cropping area...</span>
+0118             <span class="comment">%is inside the target BB?</span>
+0119             <span class="keyword">if</span>(estimatedShapeSize(1)&lt;trackerDSKCF_struct.currentTarget.h <span class="keyword">...</span>
+0120                     &amp;&amp; estimatedShapeSize(2)&lt;trackerDSKCF_struct.currentTarget.w)
+0121                 
+0122                 bbIn=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>(round(currentSizeMASK(2)/2),round(currentSizeMASK(1)/2),<span class="keyword">...</span>
+0123                     estimatedShapeSize(2),estimatedShapeSize(1),<span class="keyword">...</span>
+0124                     currentSizeMASK(2),currentSizeMASK(1));
+0125                 
+0126                 
+0127                 newOutput=false;<span class="comment">%decide later what you want to show</span>
+0128                 shapeDSKCF_struct.growingStatus=false;
+0129                 
+0130                 shapeDSKCF_struct.segmentW=trackerDSKCF_struct.currentTarget.w;
+0131                 shapeDSKCF_struct.segmentH=trackerDSKCF_struct.currentTarget.h;
+0132                 
+0133                 
+0134                 <span class="comment">%reduce the search region</span>
+0135                 <span class="comment">%grow the mask properly...</span>
+0136                 
+0137                 tmpCumulativeMask=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(shapeDSKCF_struct.cumulativeMask,bbIn);
+0138                 segmentHIncrement=round(((1.1*trackerDSKCF_struct.currentTarget.h)-size(tmpCumulativeMask,1))/2);
+0139                 
+0140                 segmentWIncrement=round(((1.1*trackerDSKCF_struct.currentTarget.w)-size(tmpCumulativeMask,2))/2);
+0141                 <span class="comment">%be sure &gt;0</span>
+0142                 segmentHIncrement=segmentHIncrement*(segmentHIncrement&gt;0);
+0143                 segmentWIncrement=segmentWIncrement*(segmentWIncrement&gt;0);
+0144                 
+0145                 shapeDSKCF_struct.cumulativeMask=padarray(tmpCumulativeMask,[segmentHIncrement segmentWIncrement]);
+0146                 <span class="keyword">for</span> i=1:size(shapeDSKCF_struct.maskArray,3)
+0147                     tmpMaskArray(:,:,i)=<span class="keyword">...</span>
+0148                         <a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(shapeDSKCF_struct.maskArray(:,:,i),bbIn);
+0149                 <span class="keyword">end</span>
+0150                 shapeDSKCF_struct.maskArray=padarray(tmpMaskArray,[segmentHIncrement segmentWIncrement]);
+0151                 
+0152                 
+0153                 
+0154             <span class="keyword">else</span>
+0155                 
+0156                 bbIn=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>(round(currentSizeMASK(2)/2),round(currentSizeMASK(1)/2),<span class="keyword">...</span>
+0157                     estimatedShapeSize(2),estimatedShapeSize(1),<span class="keyword">...</span>
+0158                     currentSizeMASK(2),currentSizeMASK(1));
+0159                 
+0160                 newOutput=true;<span class="comment">%show this one!!!!!</span>
+0161                 shapeDSKCF_struct.growingStatus=true;
+0162                 
+0163                 shapeDSKCF_struct.segmentW=max([estimatedShapeSize(2),trackerDSKCF_struct.currentTarget.w]);
+0164                 shapeDSKCF_struct.segmentH=max([estimatedShapeSize(1),trackerDSKCF_struct.currentTarget.h]);
+0165                 
+0166                 
+0167                 <span class="comment">%reduce the search region</span>
+0168                 <span class="comment">%shrink the masks, but eventually you need to repad the</span>
+0169                 <span class="comment">%area as the minimun target area</span>
+0170                 tmpCumulativeMask=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(shapeDSKCF_struct.cumulativeMask,bbIn);
+0171                 segmentHIncrement=round(((trackerDSKCF_struct.currentTarget.h)-estimatedShapeSize(1))/2);
+0172                 <span class="comment">%segmentWIncrement=round(0.05*trackerDSKCF_struct.currentTarget.w);</span>
+0173                 segmentWIncrement=round(((trackerDSKCF_struct.currentTarget.w)-estimatedShapeSize(2))/2);
+0174                 <span class="comment">%be sure &gt;0</span>
+0175                 segmentHIncrement=segmentHIncrement*(segmentHIncrement&gt;0);
+0176                 segmentWIncrement=segmentWIncrement*(segmentWIncrement&gt;0);
+0177                 
+0178                 shapeDSKCF_struct.cumulativeMask=padarray(tmpCumulativeMask,[segmentHIncrement segmentWIncrement]);
+0179                 <span class="keyword">for</span> i=1:size(shapeDSKCF_struct.maskArray,3)
+0180                     
+0181                     tmpMaskArray(:,:,i)=<span class="keyword">...</span>
+0182                         <a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(shapeDSKCF_struct.maskArray(:,:,i),bbIn);
+0183                 <span class="keyword">end</span>
+0184                 shapeDSKCF_struct.maskArray=padarray(tmpMaskArray,[segmentHIncrement segmentWIncrement]);
+0185                 
+0186                 
+0187             <span class="keyword">end</span>
+0188             
+0189             <span class="keyword">if</span>(sizeOfSegmenter&lt;sizeOfTarget*0.9  &amp;&amp; minSizeOK )
+0190                 estimatedShapeBB=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(estimatedShapeBB ,-0.05,imageSize);
+0191                 shapeDSKCF_struct.growingStatus=false;
+0192                 newOutput=true;
+0193             <span class="keyword">end</span>
+0194             
+0195             
+0196         <span class="keyword">end</span>
+0197         
+0198         
+0199     <span class="keyword">end</span>
+0200 <span class="keyword">end</span>
+0201 
+0202 <span class="keyword">end</span>
+0203</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

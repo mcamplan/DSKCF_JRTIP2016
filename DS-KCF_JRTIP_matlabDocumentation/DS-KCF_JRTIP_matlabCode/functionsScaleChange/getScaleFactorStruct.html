@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getScaleFactorStruct</title>
+  <meta name="keywords" content="getScaleFactorStruct">
+  <meta name="description" content="GETSCALEFACTORSTRUCT.m select the target's scale">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsScaleChange -->
+<h1>getScaleFactorStruct
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GETSCALEFACTORSTRUCT.m select the target's scale</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function scaleDSKCF_struct=getScaleFactorStruct(estimatedDepthMode,scaleDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> GETSCALEFACTORSTRUCT.m select the target's scale
+ 
+   GETSCALEFACTORSTRUCT this functions allows to select the new scales for
+   the DS-KCF tracker's model, according to the actual depth distribution
+   of the target. For more information about scale selection please see
+   [1]
+
+   INPUT:
+  -estimatedDepthMode depth of the target 
+  -scaleDSKCF_struct scale data structure (see INITDSKCFPARAM)
+  
+  OUTPUT
+  -scaleDSKCF_struct updated scale data structure
+
+
+  See also <a href="initDSKCFparam.html" class="code" title="function scaleDSKCF_struct=initDSKCFparam(DSKCFparameters,target_sz,pos)">INITDSKCFPARAM</a>
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function scaleDSKCF_struct=getScaleFactorStruct(estimatedDepthMode,scaleDSKCF_struct) </a>
+0002 <span class="comment">% GETSCALEFACTORSTRUCT.m select the target's scale</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   GETSCALEFACTORSTRUCT this functions allows to select the new scales for</span>
+0005 <span class="comment">%   the DS-KCF tracker's model, according to the actual depth distribution</span>
+0006 <span class="comment">%   of the target. For more information about scale selection please see</span>
+0007 <span class="comment">%   [1]</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT:</span>
+0010 <span class="comment">%  -estimatedDepthMode depth of the target</span>
+0011 <span class="comment">%  -scaleDSKCF_struct scale data structure (see INITDSKCFPARAM)</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  OUTPUT</span>
+0014 <span class="comment">%  -scaleDSKCF_struct updated scale data structure</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%  See also INITDSKCFPARAM</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%  University of Bristol</span>
+0020 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0023 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0024 
+0025 scaleDSKCF_struct.updated = 0;
+0026 
+0027 mode1 = estimatedDepthMode;
+0028 scaleDSKCF_struct.currDepth = mode1;
+0029 
+0030 sf = scaleDSKCF_struct.InitialDepth / mode1;
+0031 
+0032 <span class="comment">% Check for significant scale difference to current scale</span>
+0033 scaleOffset =  sf - scaleDSKCF_struct.scales(scaleDSKCF_struct.i);
+0034 <span class="keyword">if</span> abs(scaleOffset) &gt; scaleDSKCF_struct.minStep <span class="comment">%% Need to change scale if possible</span>
+0035     <span class="keyword">if</span> scaleOffset &lt; 0 &amp;&amp; scaleDSKCF_struct.i &gt; 1<span class="comment">% Getting smaller + check not smallest already</span>
+0036         diffs = scaleDSKCF_struct.scales(1:scaleDSKCF_struct.i) - sf;
+0037         [a ind] = min(abs(diffs));
+0038         <span class="keyword">if</span> ind ~= scaleDSKCF_struct.i
+0039             scaleDSKCF_struct.iPrev = scaleDSKCF_struct.i;
+0040             scaleDSKCF_struct.i = ind;
+0041             scaleDSKCF_struct.updated = 1;
+0042         <span class="keyword">end</span>
+0043     <span class="keyword">elseif</span>  scaleOffset &gt; 0 &amp;&amp; scaleDSKCF_struct.i &lt; length(scaleDSKCF_struct.scales) <span class="comment">% Getting bigger+ check not at biggest already</span>
+0044         diffs = scaleDSKCF_struct.scales(scaleDSKCF_struct.i:end) - sf;
+0045         [a ind] = min(abs(diffs));
+0046         ind = ind + scaleDSKCF_struct.i - 1;
+0047         <span class="keyword">if</span> ind ~= scaleDSKCF_struct.i
+0048             scaleDSKCF_struct.iPrev = scaleDSKCF_struct.i;
+0049             scaleDSKCF_struct.i = ind;
+0050             scaleDSKCF_struct.updated = 1;
+0051         <span class="keyword">end</span>
+0052     <span class="keyword">end</span>  
+0053 <span class="keyword">end</span>
+0054 
+0055</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

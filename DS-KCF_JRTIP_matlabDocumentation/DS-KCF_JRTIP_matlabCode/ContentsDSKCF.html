@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of ContentsDSKCF</title>
+  <meta name="keywords" content="ContentsDSKCF">
+  <meta name="description" content="DS-KCF RGBD tracker code Info and Contents">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- menu.html DS-KCF_JRTIP_matlabCode -->
+<h1>ContentsDSKCF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>DS-KCF RGBD tracker code Info and Contents</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="box"><strong>This is a script file. </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> DS-KCF RGBD tracker code Info and Contents
+
+ 
+ S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T. Burghardt, A.
+ Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D data, Journal of
+ Real-Time Image Processing
+
+ DS-KCF main functions.
+   wrapperDSKCF   - DS-KCF tracker wrapper function.
+   singleFrameDSKCF - DS-KCF tracker core function 
+   modelUpdateDSKCF - DS-KCF tracker model update
+   occludingObjectSegDSKCF - occluding object segmentation
+
+ DS-KCF test script
+   testDS-KCFScripts\runDSKCF.m    
+
+ External toolboxes used.
+   KCF [1] matlab library presented by Joao F.Henriques, in
+   http://www.isr.uc.pt/~henriques/
+
+   Piotr's Toolbox
+   http://vision.ucsd.edu/~pdollar/toolbox/doc/index.html
+
+   RGBD tracker [2] and Benchmark
+   http://tracking.cs.princeton.edu/code.html
+
+  [1] J. F. Henriques, R. Caseiro, P. Martins, and J. Batista. High-speed
+  tracking with kernelized correlation filters. Pattern Analysis and
+  Machine Intelligence, IEEE Transactions on, 2015.
+
+  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.
+
+ License: This MATLAB code implements the DS-KCF tracker. 
+ This code is licensed under the BSD license
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+  
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk
+  Copyright (c) 2016, Massimo Camplani, Sion Hannuna
+  All rights reserved.
+  
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are
+   met: 
+   1. Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+  
+   THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+   PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS
+   BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+   BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% DS-KCF RGBD tracker code Info and Contents</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T. Burghardt, A.</span>
+0005 <span class="comment">% Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D data, Journal of</span>
+0006 <span class="comment">% Real-Time Image Processing</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">% DS-KCF main functions.</span>
+0009 <span class="comment">%   wrapperDSKCF   - DS-KCF tracker wrapper function.</span>
+0010 <span class="comment">%   singleFrameDSKCF - DS-KCF tracker core function</span>
+0011 <span class="comment">%   modelUpdateDSKCF - DS-KCF tracker model update</span>
+0012 <span class="comment">%   occludingObjectSegDSKCF - occluding object segmentation</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">% DS-KCF test script</span>
+0015 <span class="comment">%   testDS-KCFScripts\runDSKCF.m</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">% External toolboxes used.</span>
+0018 <span class="comment">%   KCF [1] matlab library presented by Joao F.Henriques, in</span>
+0019 <span class="comment">%   http://www.isr.uc.pt/~henriques/</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   Piotr's Toolbox</span>
+0022 <span class="comment">%   http://vision.ucsd.edu/~pdollar/toolbox/doc/index.html</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%   RGBD tracker [2] and Benchmark</span>
+0025 <span class="comment">%   http://tracking.cs.princeton.edu/code.html</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%  [1] J. F. Henriques, R. Caseiro, P. Martins, and J. Batista. High-speed</span>
+0028 <span class="comment">%  tracking with kernelized correlation filters. Pattern Analysis and</span>
+0029 <span class="comment">%  Machine Intelligence, IEEE Transactions on, 2015.</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD</span>
+0032 <span class="comment">%  Camera: Baseline and Benchmark. 2013.</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">% License: This MATLAB code implements the DS-KCF tracker.</span>
+0035 <span class="comment">% This code is licensed under the BSD license</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%  University of Bristol</span>
+0038 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0041 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0042 <span class="comment">%  Copyright (c) 2016, Massimo Camplani, Sion Hannuna</span>
+0043 <span class="comment">%  All rights reserved.</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%   Redistribution and use in source and binary forms, with or without</span>
+0046 <span class="comment">%   modification, are permitted provided that the following conditions are</span>
+0047 <span class="comment">%   met:</span>
+0048 <span class="comment">%   1. Redistributions of source code must retain the above copyright</span>
+0049 <span class="comment">%      notice, this list of conditions and the following disclaimer.</span>
+0050 <span class="comment">%   2. Redistributions in binary form must reproduce the above copyright</span>
+0051 <span class="comment">%      notice, this list of conditions and the following disclaimer in the</span>
+0052 <span class="comment">%      documentation and/or other materials provided with the distribution.</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%   THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND</span>
+0055 <span class="comment">%   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+0056 <span class="comment">%   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR</span>
+0057 <span class="comment">%   PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS</span>
+0058 <span class="comment">%   BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+0059 <span class="comment">%   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+0060 <span class="comment">%   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR</span>
+0061 <span class="comment">%   BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,</span>
+0062 <span class="comment">%   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR</span>
+0063 <span class="comment">%   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF</span>
+0064 <span class="comment">%   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

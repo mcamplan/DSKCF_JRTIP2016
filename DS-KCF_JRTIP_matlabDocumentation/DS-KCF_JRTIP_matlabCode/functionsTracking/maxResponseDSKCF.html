@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of maxResponseDSKCF</title>
+  <meta name="keywords" content="maxResponseDSKCF">
+  <meta name="description" content="MAXRESPONSEDSKCF function for calculating the DSKCF response">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>maxResponseDSKCF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MAXRESPONSEDSKCF function for calculating the DSKCF response</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">MAXRESPONSEDSKCF function for calculating the DSKCF response 
+
+MAXRESPONSEDSKCF.m is a function used for calculating the DSKCF response
+For more information about the DSKCF response see [1].
+Please note that  this function was partially built extending the KCF
+tracker code presented by Joao F. Henriques, in http://www.isr.uc.pt/~henriques/.
+
+
+  INPUT:
+  -patch image patch of the color data
+  -patch_depth image patch of the depth data
+  - depth16Bit   depth image
+  -features struct containing feature info.
+  -cell_size HOG parameter
+  -cos_window cosine window to smooth data in the Fourier domain
+  -kernel struct containing kernel information
+  - model_alphaf, model_alphaDf, model_xf, model_xDf are the models to be
+  updated (for depth and color if the two features are used indipendently)
+  -prevPos is the position of the tracked target in the previous frame [y
+  x] format (read as ([row column]))
+   -nRows,nCols input image size
+
+
+  OUTPUT
+  - response response of DSKCF
+   -maxResponse maximum value of the DSKCF response
+   -maxPositionImagePlane vector containing the position in the image
+   plane of the target's centroid. It is in the format [y, x] (read also as
+   [rowIndex, columIndex])
+
+ See also <a href="gaussian_correlation.html" class="code" title="function kf = gaussian_correlation(xf, yf, sigma)">GAUSSIAN_CORRELATION</a>, <a href="get_features_depth.html" class="code" title="function [x separateDepth] = get_features_depth(im, depth, features, cell_size, cos_window)">GET_FEATURES_DEPTH</a>,
+ <a href="polynomial_correlation.html" class="code" title="function kf = polynomial_correlation(xf, yf, a, b)">POLYNOMIAL_CORRELATION</a>, <a href="linear_correlation.html" class="code" title="function kf = linear_correlation(xf, yf)">LINEAR_CORRELATION</a>, TARGETSEARCHDSKCF,
+ <a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">SINGLEFRAMEDSKCF_OCCLUDER</a>
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+  [2] J. F. Henriques, R. Caseiro, P. Martins, and J. Batista. High-speed
+  tracking with kernelized correlation filters. Pattern Analysis and
+  Machine Intelligence, IEEE Transactions on, 2015.
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="gaussian_correlation.html" class="code" title="function kf = gaussian_correlation(xf, yf, sigma)">gaussian_correlation</a>	GAUSSIAN_CORRELATION Gaussian Kernel at all shifts, i.e. kernel correlation.</li><li><a href="get_features_depth.html" class="code" title="function [x separateDepth] = get_features_depth(im, depth, features, cell_size, cos_window)">get_features_depth</a>	GET_FEATURES_DEPTH Extracts dense features from image</li><li><a href="linear_correlation.html" class="code" title="function kf = linear_correlation(xf, yf)">linear_correlation</a>	LINEAR_CORRELATION Linear Kernel at all shifts, i.e. correlation.</li><li><a href="polynomial_correlation.html" class="code" title="function kf = polynomial_correlation(xf, yf, a, b)">polynomial_correlation</a>	POLYNOMIAL_CORRELATION Polynomial Kernel at all shifts, i.e. kernel correlation.</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">targetSearchDSKCF</a>	TARGETSEARCHDSKCF function for segmenting the occluding object</li><li><a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>	SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 
+0002 <a name="_sub0" href="#_subfunctions" class="code">function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF</a><span class="keyword">...</span>
+0003 ( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,<span class="keyword">...</span>
+0004 model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)
+0005 <span class="comment">%MAXRESPONSEDSKCF function for calculating the DSKCF response</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%MAXRESPONSEDSKCF.m is a function used for calculating the DSKCF response</span>
+0008 <span class="comment">%For more information about the DSKCF response see [1].</span>
+0009 <span class="comment">%Please note that  this function was partially built extending the KCF</span>
+0010 <span class="comment">%tracker code presented by Joao F. Henriques, in http://www.isr.uc.pt/~henriques/.</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%  INPUT:</span>
+0014 <span class="comment">%  -patch image patch of the color data</span>
+0015 <span class="comment">%  -patch_depth image patch of the depth data</span>
+0016 <span class="comment">%  - depth16Bit   depth image</span>
+0017 <span class="comment">%  -features struct containing feature info.</span>
+0018 <span class="comment">%  -cell_size HOG parameter</span>
+0019 <span class="comment">%  -cos_window cosine window to smooth data in the Fourier domain</span>
+0020 <span class="comment">%  -kernel struct containing kernel information</span>
+0021 <span class="comment">%  - model_alphaf, model_alphaDf, model_xf, model_xDf are the models to be</span>
+0022 <span class="comment">%  updated (for depth and color if the two features are used indipendently)</span>
+0023 <span class="comment">%  -prevPos is the position of the tracked target in the previous frame [y</span>
+0024 <span class="comment">%  x] format (read as ([row column]))</span>
+0025 <span class="comment">%   -nRows,nCols input image size</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  OUTPUT</span>
+0029 <span class="comment">%  - response response of DSKCF</span>
+0030 <span class="comment">%   -maxResponse maximum value of the DSKCF response</span>
+0031 <span class="comment">%   -maxPositionImagePlane vector containing the position in the image</span>
+0032 <span class="comment">%   plane of the target's centroid. It is in the format [y, x] (read also as</span>
+0033 <span class="comment">%   [rowIndex, columIndex])</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">% See also GAUSSIAN_CORRELATION, GET_FEATURES_DEPTH,</span>
+0036 <span class="comment">% POLYNOMIAL_CORRELATION, LINEAR_CORRELATION, TARGETSEARCHDSKCF,</span>
+0037 <span class="comment">% SINGLEFRAMEDSKCF_OCCLUDER</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0041 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0042 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0043 <span class="comment">%</span>
+0044 <span class="comment">%  [2] J. F. Henriques, R. Caseiro, P. Martins, and J. Batista. High-speed</span>
+0045 <span class="comment">%  tracking with kernelized correlation filters. Pattern Analysis and</span>
+0046 <span class="comment">%  Machine Intelligence, IEEE Transactions on, 2015.</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%  University of Bristol</span>
+0049 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0052 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0053 
+0054 <span class="keyword">if</span>(features.hog_linear)
+0055     
+0056     [zf zDf]=<a href="get_features_depth.html" class="code" title="function [x separateDepth] = get_features_depth(im, depth, features, cell_size, cos_window)">get_features_depth</a>(patch,patch_depth, features, cell_size, cos_window);
+0057     zf=fft2(zf);
+0058     zDf=fft2(zDf);
+0059     <span class="comment">%calculate response of the classifier at all shifts</span>
+0060     <span class="keyword">switch</span> kernel.type
+0061         <span class="keyword">case</span> <span class="string">'gaussian'</span>,        
+0062             kzf = <a href="gaussian_correlation.html" class="code" title="function kf = gaussian_correlation(xf, yf, sigma)">gaussian_correlation</a>(zf, model_xf, kernel.sigma);
+0063             kzDf = <a href="gaussian_correlation.html" class="code" title="function kf = gaussian_correlation(xf, yf, sigma)">gaussian_correlation</a>(zDf, model_xDf, kernel.sigma);
+0064           
+0065         <span class="keyword">case</span> <span class="string">'polynomial'</span>,
+0066             kzf = <a href="polynomial_correlation.html" class="code" title="function kf = polynomial_correlation(xf, yf, a, b)">polynomial_correlation</a>(zf, model_xf, kernel.poly_a, kernel.poly_b);
+0067             kzDf = <a href="polynomial_correlation.html" class="code" title="function kf = polynomial_correlation(xf, yf, a, b)">polynomial_correlation</a>(zDf, model_xDf, kernel.poly_a, kernel.poly_b);
+0068         <span class="keyword">case</span> <span class="string">'linear'</span>,
+0069             kzf = <a href="linear_correlation.html" class="code" title="function kf = linear_correlation(xf, yf)">linear_correlation</a>(zf, model_xf);
+0070             kzDf = <a href="linear_correlation.html" class="code" title="function kf = linear_correlation(xf, yf)">linear_correlation</a>(zDf, model_xDf);
+0071     <span class="keyword">end</span>
+0072     response = real(ifft2(model_alphaf .* kzf));  <span class="comment">%equation for fast detection</span>
+0073     responseD = real(ifft2(model_alphaDf .* kzDf));
+0074     
+0075     <span class="comment">%COMBINATION OF RESPONSES LINEAR...</span>
+0076     response=response+responseD;
+0077     response=response./2;
+0078     
+0079     <span class="comment">%Combination of Response....select maximmun</span>
+0080     <span class="comment">%maxResponseRGB=max(response(:));</span>
+0081     <span class="comment">%[maxResponseD,index]=max(responseD(:));</span>
+0082     <span class="comment">%if(maxResponseD&gt;maxResponseRGB)</span>
+0083     <span class="comment">%    response(index)=maxResponseD;</span>
+0084     <span class="comment">%end</span>
+0085 <span class="keyword">else</span>
+0086             
+0087     [zf dummyValue]=<a href="get_features_depth.html" class="code" title="function [x separateDepth] = get_features_depth(im, depth, features, cell_size, cos_window)">get_features_depth</a>(patch,patch_depth, features, cell_size, cos_window);
+0088     zf=fft2(zf);
+0089     
+0090     <span class="comment">%calculate response of the classifier at all shifts</span>
+0091     <span class="keyword">switch</span> kernel.type
+0092         <span class="keyword">case</span> <span class="string">'gaussian'</span>,
+0093             kzf = <a href="gaussian_correlation.html" class="code" title="function kf = gaussian_correlation(xf, yf, sigma)">gaussian_correlation</a>(zf, model_xf, kernel.sigma);
+0094         <span class="keyword">case</span> <span class="string">'polynomial'</span>,
+0095             kzf = <a href="polynomial_correlation.html" class="code" title="function kf = polynomial_correlation(xf, yf, a, b)">polynomial_correlation</a>(zf, model_xf, kernel.poly_a, kernel.poly_b);
+0096         <span class="keyword">case</span> <span class="string">'linear'</span>,
+0097             kzf = <a href="linear_correlation.html" class="code" title="function kf = linear_correlation(xf, yf)">linear_correlation</a>(zf, model_xf);
+0098     <span class="keyword">end</span>
+0099     response = real(ifft2(model_alphaf .* kzf));  <span class="comment">%equation for fast detection</span>
+0100 
+0101 <span class="keyword">end</span>
+0102 
+0103 maxResponse=max(response(:));
+0104 [vert_delta, horiz_delta] = find(response == maxResponse, 1);
+0105 <span class="keyword">if</span> vert_delta &gt; size(response,1) / 2,  <span class="comment">%wrap around to negative half-space of vertical axis</span>
+0106     vert_delta = vert_delta - size(response,1);
+0107 <span class="keyword">end</span>
+0108 <span class="keyword">if</span> horiz_delta &gt; size(response,2) / 2,  <span class="comment">%same for horizontal axis</span>
+0109     horiz_delta = horiz_delta - size(response,2);
+0110 <span class="keyword">end</span>
+0111 maxPositionImagePlane = prevPos + cell_size * [vert_delta - 1, horiz_delta - 1];
+0112 
+0113 maxPositionImagePlane(maxPositionImagePlane&lt;1)=1;
+0114 <span class="keyword">if</span>(maxPositionImagePlane(1)&gt;nRows)
+0115     maxPositionImagePlane(1)=nRows;
+0116 <span class="keyword">end</span>
+0117 <span class="keyword">if</span>(maxPositionImagePlane(2)&gt;nCols)
+0118     maxPositionImagePlane(2)=nCols;
+0119 <span class="keyword">end</span>
+0120 
+0121 
+0122 
+0123</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

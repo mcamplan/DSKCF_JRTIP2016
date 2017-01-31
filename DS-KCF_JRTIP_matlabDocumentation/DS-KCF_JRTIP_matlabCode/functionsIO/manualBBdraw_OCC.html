@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of manualBBdraw_OCC</title>
+  <meta name="keywords" content="manualBBdraw_OCC">
+  <meta name="description" content="MANUALBBDRAW_OCC.m produces graphical output for DSKCF tracker">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsIO -->
+<h1>manualBBdraw_OCC
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>MANUALBBDRAW_OCC.m produces graphical output for DSKCF tracker</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function modifiedImage=manualBBdraw_OCC(img,bb,bbOCC,myColor,myColorOCC,lWidth) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> MANUALBBDRAW_OCC.m produces graphical output for DSKCF tracker
+
+  MANUALBBDRAW_OCC overlays on top of the current frame the tracker
+  bounding box and the one corresponding to the occluding object (if they
+  exist) with different color and linewidth
+
+   INPUT:
+  -img source image
+  -bb target bounding box bounding box in the format [topLeftX, topLeftY,
+   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,
+   columnIndexBottomRight, rowIndexBottomRight]
+
+  -bbOCC occluding object bounding box bounding box in the format
+  [topLeftX, topLeftY,bottomRightX, bottomRightY] read as
+  [columnIndexTopLeft,rowIndexTopLeft, columnIndexBottomRight,
+  rowIndexBottomRight]
+
+  -myColor and myColorCC, selected color for the bounding boxes
+  -lWidth selected line width for the two bounding boxes
+
+   OUTPUT
+  -modifiedImage captured from matlab fig, ready to be saved
+
+ See also <a href="manualBBdraw_OCC_WithLabels.html" class="code" title="function modifiedImage=manualBBdraw_OCC_WithLabels(img,bb,bbOCC,myColor,myColorOCC,lWidth,myText1,myText2)">MANUALBBDRAW_OCC_WITHLABELS</a>,
+ <a href="manualBBdraw_OCC_WithLabelsVisualize.html" class="code" title="function modifiedImage=manualBBdraw_OCC_WithLabelsVisualize(img,bb,bbOCC,myColor,myColorOCC,lWidth,myText1,myText2,myFigNumber)">MANUALBBDRAW_OCC_WITHLABELSVISUALIZE</a>, <a href="zbuffer_cdata.html" class="code" title="function cdata = zbuffer_cdata(hfig)">ZBUFFER_CDATA</a>
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="zbuffer_cdata.html" class="code" title="function cdata = zbuffer_cdata(hfig)">zbuffer_cdata</a>	ZBUFFER_DATA.m CDATA from hardcopy using zbuffer</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function modifiedImage=manualBBdraw_OCC(img,bb,bbOCC,myColor,myColorOCC,lWidth)</a>
+0002 
+0003 <span class="comment">% MANUALBBDRAW_OCC.m produces graphical output for DSKCF tracker</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%  MANUALBBDRAW_OCC overlays on top of the current frame the tracker</span>
+0006 <span class="comment">%  bounding box and the one corresponding to the occluding object (if they</span>
+0007 <span class="comment">%  exist) with different color and linewidth</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT:</span>
+0010 <span class="comment">%  -img source image</span>
+0011 <span class="comment">%  -bb target bounding box bounding box in the format [topLeftX, topLeftY,</span>
+0012 <span class="comment">%   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,</span>
+0013 <span class="comment">%   columnIndexBottomRight, rowIndexBottomRight]</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%  -bbOCC occluding object bounding box bounding box in the format</span>
+0016 <span class="comment">%  [topLeftX, topLeftY,bottomRightX, bottomRightY] read as</span>
+0017 <span class="comment">%  [columnIndexTopLeft,rowIndexTopLeft, columnIndexBottomRight,</span>
+0018 <span class="comment">%  rowIndexBottomRight]</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  -myColor and myColorCC, selected color for the bounding boxes</span>
+0021 <span class="comment">%  -lWidth selected line width for the two bounding boxes</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   OUTPUT</span>
+0024 <span class="comment">%  -modifiedImage captured from matlab fig, ready to be saved</span>
+0025 <span class="comment">%</span>
+0026 <span class="comment">% See also MANUALBBDRAW_OCC_WITHLABELS,</span>
+0027 <span class="comment">% MANUALBBDRAW_OCC_WITHLABELSVISUALIZE, ZBUFFER_CDATA</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%  University of Bristol</span>
+0030 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0033 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0034 
+0035 imageSize=[size(img,2),size(img,1)];
+0036 
+0037 
+0038 myFig=figure(<span class="string">'visible'</span>,<span class="string">'off'</span>);
+0039 set(myFig,<span class="string">'resize'</span>,<span class="string">'off'</span>);
+0040 hold on;
+0041 imshow(img);
+0042 
+0043 
+0044 <span class="keyword">if</span>(isempty(bb)==false &amp; isnan(bb)==false)
+0045     <span class="keyword">if</span>(bb(1)&gt;imageSize(1) | bb(2)&gt;imageSize(2))
+0046         bb=[];
+0047     <span class="keyword">else</span>
+0048         bb(bb(1:2)&lt;0)=1;
+0049         <span class="keyword">if</span>(bb(1)+bb(3)&gt;imageSize(1))
+0050             bb(3)=imageSize(1)-bb(1);
+0051         <span class="keyword">end</span>
+0052         
+0053         <span class="keyword">if</span>( bb(2)+bb(4)&gt;imageSize(2))
+0054             bb(4)=imageSize(2)-bb(2);
+0055         <span class="keyword">end</span>
+0056         
+0057         rectangle(<span class="string">'Position'</span>, bb,<span class="string">'LineWidth'</span>,lWidth,<span class="string">'edgecolor'</span>,myColor);
+0058     <span class="keyword">end</span>
+0059 <span class="keyword">end</span>
+0060 
+0061 
+0062 
+0063 <span class="keyword">if</span>(isempty(bbOCC)==false &amp; isnan(bbOCC)==false)
+0064     
+0065     <span class="keyword">if</span>(bbOCC(1)&gt;imageSize(1) | bbOCC(2)&gt;imageSize(2))
+0066         bbOCC=[];
+0067     <span class="keyword">else</span>
+0068         bb(bbOCC(1:2)&lt;0)=1;
+0069         <span class="keyword">if</span>(bbOCC(1)+bbOCC(3)&gt;imageSize(1))
+0070             bbOCC(3)=imageSize(1)-bbOCC(1)+1;
+0071         <span class="keyword">end</span>
+0072         
+0073         <span class="keyword">if</span>( bbOCC(2)+bbOCC(4)&gt;imageSize(2))
+0074             bbOCC(4)=imageSize(2)-bbOCC(2)+1;
+0075         <span class="keyword">end</span>
+0076         rectangle(<span class="string">'Position'</span>, bbOCC,<span class="string">'LineWidth'</span>,lWidth,<span class="string">'edgecolor'</span>,myColorOCC);
+0077     <span class="keyword">end</span>
+0078 <span class="keyword">end</span>
+0079 
+0080 F = im2frame(<a href="zbuffer_cdata.html" class="code" title="function cdata = zbuffer_cdata(hfig)">zbuffer_cdata</a>(gcf));
+0081 
+0082 modifiedImage=imresize(F.cdata,[size(img,1),size(img,2)]);
+0083 
+0084 close (myFig)</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

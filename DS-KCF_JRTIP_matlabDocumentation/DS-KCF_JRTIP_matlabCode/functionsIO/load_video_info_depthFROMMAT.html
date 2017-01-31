@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of load_video_info_depthFROMMAT</title>
+  <meta name="keywords" content="load_video_info_depthFROMMAT">
+  <meta name="description" content="LOAD_VIDEO_INFO_DEPTHFROMMAT.m is a automatically generates the relevant information for the video in the given path">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsIO -->
+<h1>load_video_info_depthFROMMAT
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LOAD_VIDEO_INFO_DEPTHFROMMAT.m is a automatically generates the relevant information for the video in the given path</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [img_files, depth_files, pos, target_sz, ground_truth, video_path, depth_path] = load_video_info_depthFROMMAT(base_path, video,newOrder) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LOAD_VIDEO_INFO_DEPTHFROMMAT.m is a automatically generates the relevant information for the video in the given path
+
+   LOAD_VIDEO_INFO_DEPTHFROMMAT loads all the relevant information for the
+   sequence depth and video data in the given path for the Princeton RGB-D
+   dataset [1]. This function have been created starting grom
+   load_video_info of the KCF matlab library presented by Joao F.
+   Henriques, in http://www.isr.uc.pt/~henriques/. A similar function need
+   to be implemented if another dataset that uses another naming
+   convention is processed. See for example LOAD_VIDEO_INFO_BOBOTRESULTS
+   for the BOBOT-D dataset [2]
+
+   INPUT:
+  -base_path name of the top folder where sequences are stored
+  -video name of the sequence that will be processed
+  -newOrder boolean type to select the realigned frame order (see [3]) or
+  the one proposed in [1]
+
+   OUTPUT
+  -img_files the list of Color data files (images in the folder are
+  supposed to be *.png) 
+  -depth_files the list of Depth data files (images in the folder are
+  supposed to be  16 bit *.png)
+  -pos initial DS-KCF tracker position pos=[y x] where x is the column
+  index and y is the row index of the image
+  -target_sz initial target size target_sz=[height,width]
+  -ground_truth ground truth information
+  -video_path  absolute path of color data
+  -depth_path  absolute path of depth data
+
+  See also <a href="load_video_info_BobotResults.html" class="code" title="function [img_files, depth_files, pos, target_sz, ground_truth, video_path, depth_path] = load_video_info_BobotResults(base_path, video)">LOAD_VIDEO_INFO_BOBOTRESULTS</a>
+
+ [1] S. Song and J. Xiao. Tracking revisited using RGBD camera: Unified
+ benchmark and baselines. In Computer Vision (ICCV), 2013 IEEE
+ International Conference on, pages 233–240, 2013.
+
+  [2]Germán Martín García, Dominik A. Klein, Jörg Stückler, Simone
+  Frintrop, and Armin B. Cremers DAGM/OAGM Conference, August 28-31, 2012,
+  Graz, Austria
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/testDS-KCFScripts/runDSKCF.html" class="code" title="">runDSKCF</a>	runDSKCF.m is a script to test the DS-KCF RGBD tracker described in</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [img_files, depth_files, pos, target_sz, ground_truth, video_path, depth_path] = load_video_info_depthFROMMAT(base_path, video,newOrder)</a>
+0002 <span class="comment">% LOAD_VIDEO_INFO_DEPTHFROMMAT.m is a automatically generates the relevant information for the video in the given path</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   LOAD_VIDEO_INFO_DEPTHFROMMAT loads all the relevant information for the</span>
+0005 <span class="comment">%   sequence depth and video data in the given path for the Princeton RGB-D</span>
+0006 <span class="comment">%   dataset [1]. This function have been created starting grom</span>
+0007 <span class="comment">%   load_video_info of the KCF matlab library presented by Joao F.</span>
+0008 <span class="comment">%   Henriques, in http://www.isr.uc.pt/~henriques/. A similar function need</span>
+0009 <span class="comment">%   to be implemented if another dataset that uses another naming</span>
+0010 <span class="comment">%   convention is processed. See for example LOAD_VIDEO_INFO_BOBOTRESULTS</span>
+0011 <span class="comment">%   for the BOBOT-D dataset [2]</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   INPUT:</span>
+0014 <span class="comment">%  -base_path name of the top folder where sequences are stored</span>
+0015 <span class="comment">%  -video name of the sequence that will be processed</span>
+0016 <span class="comment">%  -newOrder boolean type to select the realigned frame order (see [3]) or</span>
+0017 <span class="comment">%  the one proposed in [1]</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%   OUTPUT</span>
+0020 <span class="comment">%  -img_files the list of Color data files (images in the folder are</span>
+0021 <span class="comment">%  supposed to be *.png)</span>
+0022 <span class="comment">%  -depth_files the list of Depth data files (images in the folder are</span>
+0023 <span class="comment">%  supposed to be  16 bit *.png)</span>
+0024 <span class="comment">%  -pos initial DS-KCF tracker position pos=[y x] where x is the column</span>
+0025 <span class="comment">%  index and y is the row index of the image</span>
+0026 <span class="comment">%  -target_sz initial target size target_sz=[height,width]</span>
+0027 <span class="comment">%  -ground_truth ground truth information</span>
+0028 <span class="comment">%  -video_path  absolute path of color data</span>
+0029 <span class="comment">%  -depth_path  absolute path of depth data</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  See also LOAD_VIDEO_INFO_BOBOTRESULTS</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">% [1] S. Song and J. Xiao. Tracking revisited using RGBD camera: Unified</span>
+0034 <span class="comment">% benchmark and baselines. In Computer Vision (ICCV), 2013 IEEE</span>
+0035 <span class="comment">% International Conference on, pages 233–240, 2013.</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%  [2]Germán Martín García, Dominik A. Klein, Jörg Stückler, Simone</span>
+0038 <span class="comment">%  Frintrop, and Armin B. Cremers DAGM/OAGM Conference, August 28-31, 2012,</span>
+0039 <span class="comment">%  Graz, Austria</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%  University of Bristol</span>
+0043 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0046 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0047 
+0048 
+0049 <span class="comment">%full path to the video's files</span>
+0050 <span class="keyword">if</span> base_path(end) ~= <span class="string">'/'</span> &amp;&amp; base_path(end) ~= <span class="string">'\'</span>,
+0051     base_path(end+1) = <span class="string">'/'</span>;
+0052 <span class="keyword">end</span>
+0053 video_path = [base_path video <span class="string">'/'</span>];
+0054 
+0055 filename = [video_path <span class="string">'init.txt'</span>];
+0056 f = fopen(filename);
+0057 assert(f ~= -1, [<span class="string">'No initial position or ground truth to load (&quot;'</span> filename <span class="string">'&quot;).'</span>])
+0058 
+0059 <span class="comment">%the format is [x, y, width, height]</span>
+0060 <span class="keyword">try</span>
+0061     ground_truth = textscan(f, <span class="string">'%f,%f,%f,%f'</span>, <span class="string">'ReturnOnError'</span>,false);
+0062 <span class="keyword">catch</span>  <span class="comment">%#ok, try different format (no commas)</span>
+0063     frewind(f);
+0064     ground_truth = textscan(f, <span class="string">'%f %f %f %f'</span>);
+0065 <span class="keyword">end</span>
+0066 ground_truth = cat(2, ground_truth{:});
+0067 fclose(f);
+0068 
+0069 
+0070 
+0071 <span class="comment">%set initial position and size</span>
+0072 target_sz = [ground_truth(1,4), ground_truth(1,3)];
+0073 pos = [ground_truth(1,2), ground_truth(1,1)] + floor(target_sz/2);
+0074 
+0075 <span class="keyword">if</span> size(ground_truth,1) == 1,
+0076     <span class="comment">%we have ground truth for the first frame only (initial position)</span>
+0077     ground_truth = [];
+0078 <span class="keyword">else</span>
+0079     <span class="comment">%store positions instead of boxes</span>
+0080     ground_truth = ground_truth(:,[2,1]) + ground_truth(:,[4,3]) / 2;
+0081 <span class="keyword">end</span>
+0082 
+0083 <span class="keyword">if</span>(newOrder==false)
+0084     load([video_path <span class="string">'frames'</span>])
+0085 <span class="keyword">else</span>
+0086     load([video_path <span class="string">'framesNEW'</span>])
+0087     frames=framesNEW;
+0088 <span class="keyword">end</span>
+0089 numOfFrames = frames.length;
+0090 
+0091 <span class="comment">%from now on, work in the subfolder where all the images are</span>
+0092 
+0093 
+0094 depth_path = [video_path <span class="string">'depth/'</span>];
+0095 video_path = [video_path <span class="string">'rgb/'</span>];
+0096 
+0097 <span class="comment">%general case, just list all images</span>
+0098 img_files_ = dir([video_path <span class="string">'*.png'</span>]);
+0099 assert(~isempty(img_files_), <span class="string">'No image files to load.'</span>)
+0100 
+0101 depth_files_ = dir([depth_path <span class="string">'*.png'</span>]);
+0102 assert(~isempty(depth_files_), <span class="string">'No depth files to load.'</span>)
+0103 
+0104 
+0105 
+0106 
+0107 
+0108 <span class="keyword">for</span> i = 1:numOfFrames
+0109     img_files{i} = sprintf(<span class="string">'r-%d-%d.png'</span>,frames.imageTimestamp(i), frames.imageFrameID(i));
+0110     depth_files{i} = sprintf(<span class="string">'d-%d-%d.png'</span>,frames.depthTimestamp(i), frames.depthFrameID(i));
+0111     
+0112 <span class="keyword">end</span>
+0113 
+0114 
+0115 <span class="keyword">end</span>
+0116</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

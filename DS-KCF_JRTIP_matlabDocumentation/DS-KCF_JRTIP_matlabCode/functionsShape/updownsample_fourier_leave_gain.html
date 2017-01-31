@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of updownsample_fourier_leave_gain</title>
+  <meta name="keywords" content="updownsample_fourier_leave_gain">
+  <meta name="description" content="UPDOWNSAMPLE_FOURIER.m upsamples DS-KCF models in the Fourier Domain">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsShape -->
+<h1>updownsample_fourier_leave_gain
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>UPDOWNSAMPLE_FOURIER.m upsamples DS-KCF models in the Fourier Domain</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function out_m = updownsample_fourier_leave_gain( in_m,out_x_sz,out_y_sz, padded_out_m ) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> UPDOWNSAMPLE_FOURIER.m upsamples DS-KCF models in the Fourier Domain
+
+   UPDOWNSAMPLE_FOURIER is a function for upsampling DS-KCF model in the
+   Fourier Domain. This operation is fundamental for the DS-KCF tracker as
+   described in [1]. This function was implemented by using the function
+   &quot;updownsample&quot; presented by Ohad Gal and shared in the Matlab Central
+   at this link under BSD licence
+   http://uk.mathworks.com/matlabcentral/fileexchange/4658-updownsample
+
+ input:    in_m                - input matrix for up/down sampling. can be in
+                                 space domain OR in fourier domain, in such
+                                 case, needs to be in matlab format !!!
+                                 (matlab-format = the save as given from fft/fft2)
+           out_x_sz,out_y_sz   - desired number of pixels in the output image
+           is_fourier_flag     - 1: the input is given in the fourier domain
+                                 0: the input is given in the space domain
+                                    (we need to use fft2 to convert to fourier domain)
+           is_real_flag        - 0: the input is a complex matrix -&gt; don't use
+                                    abs() at the output, perform complex
+                                    up/down sampling
+                                 1: the input is real BUT has negative values -&gt;
+                                    use real() at the output
+                                 2: the input is real and positive -&gt; using
+                                    abs() at the output
+
+ output:   out_m               - up/down sampled image
+
+ See also MODELUPDATEDSKCF
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">modelUpdateDSKCF</a>	MODELUPDATEDSKCF function for updating the DSKCF model %</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out_m = updownsample_fourier_leave_gain( in_m,out_x_sz,out_y_sz, padded_out_m )</a>
+0002 <span class="comment">% UPDOWNSAMPLE_FOURIER.m upsamples DS-KCF models in the Fourier Domain</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   UPDOWNSAMPLE_FOURIER is a function for upsampling DS-KCF model in the</span>
+0005 <span class="comment">%   Fourier Domain. This operation is fundamental for the DS-KCF tracker as</span>
+0006 <span class="comment">%   described in [1]. This function was implemented by using the function</span>
+0007 <span class="comment">%   &quot;updownsample&quot; presented by Ohad Gal and shared in the Matlab Central</span>
+0008 <span class="comment">%   at this link under BSD licence</span>
+0009 <span class="comment">%   http://uk.mathworks.com/matlabcentral/fileexchange/4658-updownsample</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">% input:    in_m                - input matrix for up/down sampling. can be in</span>
+0012 <span class="comment">%                                 space domain OR in fourier domain, in such</span>
+0013 <span class="comment">%                                 case, needs to be in matlab format !!!</span>
+0014 <span class="comment">%                                 (matlab-format = the save as given from fft/fft2)</span>
+0015 <span class="comment">%           out_x_sz,out_y_sz   - desired number of pixels in the output image</span>
+0016 <span class="comment">%           is_fourier_flag     - 1: the input is given in the fourier domain</span>
+0017 <span class="comment">%                                 0: the input is given in the space domain</span>
+0018 <span class="comment">%                                    (we need to use fft2 to convert to fourier domain)</span>
+0019 <span class="comment">%           is_real_flag        - 0: the input is a complex matrix -&gt; don't use</span>
+0020 <span class="comment">%                                    abs() at the output, perform complex</span>
+0021 <span class="comment">%                                    up/down sampling</span>
+0022 <span class="comment">%                                 1: the input is real BUT has negative values -&gt;</span>
+0023 <span class="comment">%                                    use real() at the output</span>
+0024 <span class="comment">%                                 2: the input is real and positive -&gt; using</span>
+0025 <span class="comment">%                                    abs() at the output</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">% output:   out_m               - up/down sampled image</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% See also MODELUPDATEDSKCF</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0032 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0033 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%  University of Bristol</span>
+0036 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0039 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0040 
+0041 <span class="comment">% ==============================================</span>
+0042 <span class="comment">% get input image size, and calculate the gain</span>
+0043 <span class="comment">% ==============================================</span>
+0044 [in_y_sz,in_x_sz] = size( in_m );
+0045 
+0046 
+0047 <span class="comment">% build grid vectors for the up/down sampling</span>
+0048 <span class="comment">% ============================================</span>
+0049 <span class="comment">% if the input is even &amp; output is odd-&gt; use floor for all</span>
+0050 <span class="comment">% if the output is even &amp; input is odd -&gt; use ceil for all</span>
+0051 <span class="comment">% other cases - don't care</span>
+0052 <span class="comment">% for downsampling -&gt; the opposite</span>
+0053 <span class="keyword">if</span> (~mod( in_x_sz,2 ) &amp; (out_x_sz&gt;in_x_sz)) | (mod( in_x_sz,2 ) &amp; (out_x_sz&lt;in_x_sz))
+0054     x_output_space  = max(floor((out_x_sz-in_x_sz)/2),0) + [1:min(in_x_sz,out_x_sz)];
+0055     x_input_space   = max(floor((in_x_sz-out_x_sz)/2),0) + [1:min(in_x_sz,out_x_sz)];
+0056 <span class="keyword">else</span>
+0057     x_output_space  = max(ceil((out_x_sz-in_x_sz)/2),0) + [1:min(in_x_sz,out_x_sz)];
+0058     x_input_space   = max(ceil((in_x_sz-out_x_sz)/2),0) + [1:min(in_x_sz,out_x_sz)];
+0059 <span class="keyword">end</span>
+0060 <span class="keyword">if</span> (~mod( in_y_sz,2 ) &amp; (out_y_sz&gt;in_y_sz)) | (mod( in_y_sz,2 ) &amp; (out_y_sz&lt;in_y_sz))
+0061     y_output_space  = max(floor((out_y_sz-in_y_sz)/2),0) + [1:min(in_y_sz,out_y_sz)];
+0062     y_input_space   = max(floor((in_y_sz-out_y_sz)/2),0) + [1:min(in_y_sz,out_y_sz)];
+0063 <span class="keyword">else</span>
+0064     y_output_space  = max(ceil((out_y_sz-in_y_sz)/2),0) + [1:min(in_y_sz,out_y_sz)];
+0065     y_input_space   = max(ceil((in_y_sz-out_y_sz)/2),0) + [1:min(in_y_sz,out_y_sz)];
+0066 <span class="keyword">end</span>
+0067 
+0068 <span class="comment">% perform the up/down sampling</span>
+0069 in_m            = fftshift(in_m);
+0070 padded_out_m( y_output_space,x_output_space ) = in_m(y_input_space,x_input_space);
+0071 <span class="comment">%out_m           = (gain_x*gain_y)*ifft2(ifftshift(padded_out_m));</span>
+0072 out_m           = ifftshift(padded_out_m);
+0073 
+0074 
+0075</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

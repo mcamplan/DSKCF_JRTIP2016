@@ -1,0 +1,24 @@
+DS-KCF matlab code contains other SW packages, the use of these packages has
+been highlighted in each file individually when used.
+
+ External toolboxes used.
+   KCF [1] matlab library presented by Joao F.Henriques, in
+   http://www.isr.uc.pt/~henriques/
+
+   Piotr's Toolbox
+   http://vision.ucsd.edu/~pdollar/toolbox/doc/index.html
+
+   RGBD tracker [2] and Benchmark
+   http://tracking.cs.princeton.edu/code.html
+
+   "Fast segmentation of N-dimensional grayscale images" presented by
+   Anton Semechko and shared in the Matlab Central at this link under BSD
+   licence http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images
+
+
+  [1] J. F. Henriques, R. Caseiro, P. Martins, and J. Batista. High-speed
+  tracking with kernelized correlation filters. Pattern Analysis and
+  Machine Intelligence, IEEE Transactions on, 2015.
+
+  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.

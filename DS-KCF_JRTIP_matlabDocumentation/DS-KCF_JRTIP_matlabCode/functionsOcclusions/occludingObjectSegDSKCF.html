@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of occludingObjectSegDSKCF</title>
+  <meta name="keywords" content="occludingObjectSegDSKCF">
+  <meta name="description" content="OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsOcclusions -->
+<h1>occludingObjectSegDSKCF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object
+
+OCCLUDINGOBJECTSEGDSKCF.m is the function that segments the occluding
+object. For more information about how DSKCF handles occlusions see [1].
+Please note that  this function was partially built extending the RGBD
+tracker code presented in [2] and available under under Open Source MIT
+License at
+ http://tracking.cs.princeton.edu/code.html
+
+
+  INPUT:
+  - depthIm   current depth image (16BIT)
+  - trackerDSKCF_struct  DS-KCF tracker data structure
+
+
+  OUTPUT
+  - occBB Bounding box of the occluding object in the format [topLeftX,
+  topLeftY, bottomRightX, bottomRightY] read as [columnIndexTopLeft,
+   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]
+
+ See also <a href="bb_overlap.html" class="code" title="function overlap = bb_overlap(bb1,bb2)">BB_OVERLAP</a>, <a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">ENLARGEBB</a>, ROIFROMBB
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="bb_overlap.html" class="code" title="function overlap = bb_overlap(bb1,bb2)">bb_overlap</a>	BB_OVERLAP.m calculates Bounding box overlap</li><li><a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>	ENLARGEBB.m enlarges the size of a bounding box</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>	ROIFROMBB.m is a function for extracting roi from images given a bounding box</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct)</a>
+0002 <span class="comment">%OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%OCCLUDINGOBJECTSEGDSKCF.m is the function that segments the occluding</span>
+0005 <span class="comment">%object. For more information about how DSKCF handles occlusions see [1].</span>
+0006 <span class="comment">%Please note that  this function was partially built extending the RGBD</span>
+0007 <span class="comment">%tracker code presented in [2] and available under under Open Source MIT</span>
+0008 <span class="comment">%License at</span>
+0009 <span class="comment">% http://tracking.cs.princeton.edu/code.html</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%  INPUT:</span>
+0013 <span class="comment">%  - depthIm   current depth image (16BIT)</span>
+0014 <span class="comment">%  - trackerDSKCF_struct  DS-KCF tracker data structure</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%  OUTPUT</span>
+0018 <span class="comment">%  - occBB Bounding box of the occluding object in the format [topLeftX,</span>
+0019 <span class="comment">%  topLeftY, bottomRightX, bottomRightY] read as [columnIndexTopLeft,</span>
+0020 <span class="comment">%   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">% See also BB_OVERLAP, ENLARGEBB, ROIFROMBB</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0026 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0027 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD</span>
+0030 <span class="comment">%  Camera: Baseline and Benchmark. 2013.</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  University of Bristol</span>
+0033 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0036 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0037 
+0038 bb=<a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(trackerDSKCF_struct.currentTarget.bb ,0.05,size(depthIm));
+0039 <span class="comment">%bb=enlargeBB(bb ,0.05,size(depthMapCurr));</span>
+0040 selectedPix=trackerDSKCF_struct.currentTarget.LabelRegions==trackerDSKCF_struct.currentTarget.regionIndex;
+0041 front_depth=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(depthIm,bb);
+0042 tmpMean=trackerDSKCF_struct.currentTarget.Centers(trackerDSKCF_struct.currentTarget.regionIndex);<span class="comment">%mean(depthIm(selectedPix));</span>
+0043 depthVector=double(front_depth(selectedPix));
+0044 tmpStd=std(depthVector);
+0045 <span class="keyword">if</span>(tmpStd&lt;5)
+0046     tmpStd=trackerDSKCF_struct.currentTarget.stdDepthObj;
+0047 <span class="keyword">end</span>
+0048 
+0049 occmask=abs(double(depthIm)-tmpMean)&lt;tmpStd;
+0050 occmask= occmask &amp; depthIm&gt;0;
+0051 <span class="comment">%find the main connected component</span>
+0052 tarBBProp=regionprops(occmask,<span class="string">'BoundingBox'</span>,<span class="string">'Area'</span>);
+0053 <span class="keyword">if</span>(isempty(tarBBProp))
+0054     occBB=[];
+0055 <span class="keyword">else</span> <span class="keyword">if</span>(length(tarBBProp)==1)
+0056         occBB=tarBBProp.BoundingBox;
+0057         bbVector=cat(1, tarBBProp.BoundingBox)';
+0058         overlap = <a href="bb_overlap.html" class="code" title="function overlap = bb_overlap(bb1,bb2)">bb_overlap</a>(bb,bbVector);
+0059         <span class="comment">%use extrema points.....</span>
+0060         <span class="keyword">if</span>(overlap&gt;0.15)
+0061             occBB=ceil([occBB(1), occBB(2),occBB(1)+occBB(3),occBB(2)+occBB(4)]);
+0062         <span class="keyword">else</span>
+0063             occBB=[];
+0064         <span class="keyword">end</span>
+0065         
+0066     <span class="keyword">else</span>
+0067         areas= cat(1, tarBBProp.Area);
+0068         bbVector=cat(1, tarBBProp.BoundingBox)';
+0069         <span class="comment">%clean small areas....</span>
+0070         minArea=trackerDSKCF_struct.currentTarget.w*trackerDSKCF_struct.currentTarget.h*0.05;
+0071         areaSmallIndex=areas&lt;minArea;
+0072         <span class="comment">%exclude the small area index!!!!!!!!</span>
+0073         bbVector(:,areaSmallIndex) = [];
+0074         bbVector(3:4,:)=bbVector(1:2,:)+bbVector(3:4,:);
+0075         areas(areaSmallIndex)= [];
+0076         overlap = <a href="bb_overlap.html" class="code" title="function overlap = bb_overlap(bb1,bb2)">bb_overlap</a>(bb,bbVector);
+0077         [maxV,maxIndex]=max(overlap);
+0078         <span class="keyword">if</span>(maxV&gt;-100)<span class="comment">%(maxV&gt;0)</span>
+0079             occBB=bbVector(:,maxIndex)';
+0080         <span class="keyword">else</span>
+0081             occBB=[];
+0082         <span class="keyword">end</span>
+0083         
+0084     <span class="keyword">end</span>
+0085     
+0086     occBB=occBB';
+0087     
+0088     
+0089 <span class="keyword">end</span>
+0090</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

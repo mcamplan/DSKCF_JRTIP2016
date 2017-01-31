@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of initDSKCFtracker</title>
+  <meta name="keywords" content="initDSKCFtracker">
+  <meta name="description" content="INITDSKCFTRACKER.m initializes the data structure for DS-KCF tracker [1]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>initDSKCFtracker
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INITDSKCFTRACKER.m initializes the data structure for DS-KCF tracker [1]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function trackerDSKCF_struct=initDSKCFtracker() </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INITDSKCFTRACKER.m initializes the data structure for DS-KCF tracker [1]
+ 
+   INITDSKCFTRACKER function initializes the data structure of the
+   DS-KCF tracker. In particular
+
+   INPUT: none
+
+   OUTPUT
+   -trackerDSKCF_struct data structure that contains DS-KCF tracker data
+  structure
+   
+   + currentTarget.posX column in the image plane
+   + currentTarget.posY row in the image plane
+   + currentTarget.h height of the target
+   + currentTarget.w width of the target
+   + currentTarget.bb bounding box of the target in the format 
+                     [topLeftX, topLeftY, bottomRightX, bottomRightY]
+   + currentTarget.meanDepthObj mean depth of the tracker object
+   + currentTarget.stdDepthObj depth's standard deviation of the tracker object
+   + currentTarget.LabelRegions cluster labels of the segmented target region
+   + currentTarget.regionIndex= label of the object cluster
+   + currentTarget.Centers depth centers of the clusters
+   + currentTarget.LUT=[] LUT
+   + currentTarget.occBB=[0 0 0 0]; occluding bounding box in the format
+   [topLeftX, topLeftY, bottomRightX, bottomRightY]
+   + currentTarget.totalOcc=0;  total occlusion flag
+   + currentTarget.underOcclusion=0;  under occlusion flag
+   +currentTarget.conf maximum response of the DSKCF for the current frame
+
+   models in the frequency domain for the KCFbased tracking by using color
+   and depth features (see [1] for mor details)
+   +model_alphaf = []; 
+   +model_alphaDf = [];
+   +model_xf = [];
+   +model_xDf = [];
+
+   +previousTarget contains same information of currentTarget, but they
+   it is relative to the target tracked in the previous frame.
+
+  See also WRAPPERDSKCF, <a href="initDSKCFtracker_occluder.html" class="code" title="function trackerDSKCF_struct=initDSKCFtracker_occluder()">INITDSKCFTRACKER_occluder</a>
+
+ [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+ Burghardt, A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D
+ data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/wrapperDSKCF.html" class="code" title="function [dsKCFoutputSr,dsKCFoutputSq,dsKCFsegmentationOut, avTime,totalTime,timeMatrix] =wrapperDSKCF(video_path, depth_path, img_files, depth_files, pos, target_sz,DSKCFparameters, show_visualization,save_Images,dest_path,noBitShift)">wrapperDSKCF</a>	WRAPPERDSKCF.m is the wrapper function for the DS-KCF tracker [1]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function trackerDSKCF_struct=initDSKCFtracker()</a>
+0002 <span class="comment">% INITDSKCFTRACKER.m initializes the data structure for DS-KCF tracker [1]</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INITDSKCFTRACKER function initializes the data structure of the</span>
+0005 <span class="comment">%   DS-KCF tracker. In particular</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT: none</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   OUTPUT</span>
+0010 <span class="comment">%   -trackerDSKCF_struct data structure that contains DS-KCF tracker data</span>
+0011 <span class="comment">%  structure</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   + currentTarget.posX column in the image plane</span>
+0014 <span class="comment">%   + currentTarget.posY row in the image plane</span>
+0015 <span class="comment">%   + currentTarget.h height of the target</span>
+0016 <span class="comment">%   + currentTarget.w width of the target</span>
+0017 <span class="comment">%   + currentTarget.bb bounding box of the target in the format</span>
+0018 <span class="comment">%                     [topLeftX, topLeftY, bottomRightX, bottomRightY]</span>
+0019 <span class="comment">%   + currentTarget.meanDepthObj mean depth of the tracker object</span>
+0020 <span class="comment">%   + currentTarget.stdDepthObj depth's standard deviation of the tracker object</span>
+0021 <span class="comment">%   + currentTarget.LabelRegions cluster labels of the segmented target region</span>
+0022 <span class="comment">%   + currentTarget.regionIndex= label of the object cluster</span>
+0023 <span class="comment">%   + currentTarget.Centers depth centers of the clusters</span>
+0024 <span class="comment">%   + currentTarget.LUT=[] LUT</span>
+0025 <span class="comment">%   + currentTarget.occBB=[0 0 0 0]; occluding bounding box in the format</span>
+0026 <span class="comment">%   [topLeftX, topLeftY, bottomRightX, bottomRightY]</span>
+0027 <span class="comment">%   + currentTarget.totalOcc=0;  total occlusion flag</span>
+0028 <span class="comment">%   + currentTarget.underOcclusion=0;  under occlusion flag</span>
+0029 <span class="comment">%   +currentTarget.conf maximum response of the DSKCF for the current frame</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%   models in the frequency domain for the KCFbased tracking by using color</span>
+0032 <span class="comment">%   and depth features (see [1] for mor details)</span>
+0033 <span class="comment">%   +model_alphaf = [];</span>
+0034 <span class="comment">%   +model_alphaDf = [];</span>
+0035 <span class="comment">%   +model_xf = [];</span>
+0036 <span class="comment">%   +model_xDf = [];</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%   +previousTarget contains same information of currentTarget, but they</span>
+0039 <span class="comment">%   it is relative to the target tracked in the previous frame.</span>
+0040 <span class="comment">%</span>
+0041 <span class="comment">%  See also WRAPPERDSKCF, INITDSKCFTRACKER_occluder</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">% [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0044 <span class="comment">% Burghardt, A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D</span>
+0045 <span class="comment">% data, Journal of Real-Time Image Processing</span>
+0046 <span class="comment">%</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%  University of Bristol</span>
+0049 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0050 <span class="comment">%</span>
+0051 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0052 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0053 
+0054 trackerDSKCF_struct=[];
+0055 
+0056 <span class="comment">% current target position and bounding box</span>
+0057 trackerDSKCF_struct.currentTarget.posX=0;<span class="comment">%column in the image plane</span>
+0058 trackerDSKCF_struct.currentTarget.posY=0;<span class="comment">%row in the image plane</span>
+0059 trackerDSKCF_struct.currentTarget.h=0;<span class="comment">%height of the target</span>
+0060 trackerDSKCF_struct.currentTarget.w=0;<span class="comment">%width in the image planeof the target</span>
+0061 trackerDSKCF_struct.currentTarget.bb=[0 0 0 0]; <span class="comment">% in the format [topLeftX, topLeftY, bottomRightX, bottomRightY]</span>
+0062 trackerDSKCF_struct.currentTarget.conf=0;
+0063 <span class="comment">%current target depth distribution info</span>
+0064 trackerDSKCF_struct.currentTarget.meanDepthObj=0;<span class="comment">% mean depth of the tracker object</span>
+0065 trackerDSKCF_struct.currentTarget.stdDepthObj=0;<span class="comment">% depth's standard deviation of the tracker object</span>
+0066 trackerDSKCF_struct.currentTarget.LabelRegions=[];<span class="comment">%cluster labels of the segmented target region</span>
+0067 trackerDSKCF_struct.currentTarget.regionIndex=0;<span class="comment">%label of the object cluster</span>
+0068 trackerDSKCF_struct.currentTarget.Centers=[];<span class="comment">%depth centers of the clusters</span>
+0069 trackerDSKCF_struct.currentTarget.LUT=[];<span class="comment">%LUT</span>
+0070 trackerDSKCF_struct.currentTarget.segmentedBB=[];<span class="comment">%bounding box of the corresponding sgmented region</span>
+0071 <span class="comment">%current target depth occluding info</span>
+0072 trackerDSKCF_struct.currentTarget.occBB=[0 0 0 0]; <span class="comment">% in the format [topLeftX, topLeftY, bottomRightX, bottomRightY]</span>
+0073 trackerDSKCF_struct.currentTarget.totalOcc=0; <span class="comment">% total occlusion flag</span>
+0074 trackerDSKCF_struct.currentTarget.underOcclusion=0; <span class="comment">% under occlusion flag</span>
+0075 <span class="comment">%target model alpha and X, see [1] for more details</span>
+0076 trackerDSKCF_struct.model_alphaf = []; 
+0077 trackerDSKCF_struct.model_alphaDf = [];
+0078 trackerDSKCF_struct.model_xf = [];
+0079 trackerDSKCF_struct.model_xDf = [];
+0080 
+0081 
+0082 <span class="comment">%previous target entries</span>
+0083 trackerDSKCF_struct.previousTarget=trackerDSKCF_struct.currentTarget;
+0084 
+0085</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

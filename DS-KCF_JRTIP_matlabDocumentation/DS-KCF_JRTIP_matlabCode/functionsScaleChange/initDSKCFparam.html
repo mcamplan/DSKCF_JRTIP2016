@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of initDSKCFparam</title>
+  <meta name="keywords" content="initDSKCFparam">
+  <meta name="description" content="INITDSKCFPARAM.m initializes the scale data structure for DS-KCF tracker [1]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsScaleChange -->
+<h1>initDSKCFparam
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INITDSKCFPARAM.m initializes the scale data structure for DS-KCF tracker [1]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function scaleDSKCF_struct=initDSKCFparam(DSKCFparameters,target_sz,pos) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INITDSKCFPARAM.m initializes the scale data structure for DS-KCF tracker [1]
+ 
+   INITDSKCFPARAM function initializes the scale data structure of the
+   DS-KCF tracker. In particular, some matrices are precomputed at the
+   different scales and other flags are intialized
+
+   INPUT:
+  -DSKCFparameters DS-KCF algorithm parameters 
+  -target_sz initial target size of the tracked object
+  -pos initial target position of the tracked object
+   OUTPUT
+  -scaleDSKCF_struct data structure that contains scales parameters and
+  precomputed matrices. In particular the field of the struct are 
+
+  + i current scale among Sq in [1]
+  + iPrev previous scale among Sq in [1]
+  + minStep minimum interval between the scales in Sq in [1]
+  + scales is the Sq vector in [1]
+  + step minimum interval between the scales in Sq (the same as minStep)
+  + updated flag set to 1 (or 0) when a change of scale is (or not)
+  required
+  + currDepth is the ratio between the initial depth target and the
+  current one. Is Sr in [1]
+  + InitialDepth initial ratio
+  + InitialTargetSize size of the target in the initial frame
+  + windows_sizes vector containing precomputed windows size (according
+  the padding parameter) for each scale
+  + target_sz vector containing the expected target size at the different
+  scales
+  + pos vector where is stored per each scale the target centroid position
+  + output_sigmas vector where sigma parameter is stored for each scale
+  + yfs regression targets for all the scales
+  + cos_windows precomputed cosine windows for each scale
+  + len contains the area of the target at each scale
+  + ind 
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A.Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol 
+  Massimo Camplani and Sion Hannuna
+  
+  massimo.camplani@bristol.ac.uk 
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/gaussian_shaped_labels.html" class="code" title="function labels = gaussian_shaped_labels(sigma, sz)">gaussian_shaped_labels</a>	GAUSSIAN_SHAPED_LABELS</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/wrapperDSKCF.html" class="code" title="function [dsKCFoutputSr,dsKCFoutputSq,dsKCFsegmentationOut, avTime,totalTime,timeMatrix] =wrapperDSKCF(video_path, depth_path, img_files, depth_files, pos, target_sz,DSKCFparameters, show_visualization,save_Images,dest_path,noBitShift)">wrapperDSKCF</a>	WRAPPERDSKCF.m is the wrapper function for the DS-KCF tracker [1]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function scaleDSKCF_struct=initDSKCFparam(DSKCFparameters,target_sz,pos)</a>
+0002 <span class="comment">% INITDSKCFPARAM.m initializes the scale data structure for DS-KCF tracker [1]</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INITDSKCFPARAM function initializes the scale data structure of the</span>
+0005 <span class="comment">%   DS-KCF tracker. In particular, some matrices are precomputed at the</span>
+0006 <span class="comment">%   different scales and other flags are intialized</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT:</span>
+0009 <span class="comment">%  -DSKCFparameters DS-KCF algorithm parameters</span>
+0010 <span class="comment">%  -target_sz initial target size of the tracked object</span>
+0011 <span class="comment">%  -pos initial target position of the tracked object</span>
+0012 <span class="comment">%   OUTPUT</span>
+0013 <span class="comment">%  -scaleDSKCF_struct data structure that contains scales parameters and</span>
+0014 <span class="comment">%  precomputed matrices. In particular the field of the struct are</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%  + i current scale among Sq in [1]</span>
+0017 <span class="comment">%  + iPrev previous scale among Sq in [1]</span>
+0018 <span class="comment">%  + minStep minimum interval between the scales in Sq in [1]</span>
+0019 <span class="comment">%  + scales is the Sq vector in [1]</span>
+0020 <span class="comment">%  + step minimum interval between the scales in Sq (the same as minStep)</span>
+0021 <span class="comment">%  + updated flag set to 1 (or 0) when a change of scale is (or not)</span>
+0022 <span class="comment">%  required</span>
+0023 <span class="comment">%  + currDepth is the ratio between the initial depth target and the</span>
+0024 <span class="comment">%  current one. Is Sr in [1]</span>
+0025 <span class="comment">%  + InitialDepth initial ratio</span>
+0026 <span class="comment">%  + InitialTargetSize size of the target in the initial frame</span>
+0027 <span class="comment">%  + windows_sizes vector containing precomputed windows size (according</span>
+0028 <span class="comment">%  the padding parameter) for each scale</span>
+0029 <span class="comment">%  + target_sz vector containing the expected target size at the different</span>
+0030 <span class="comment">%  scales</span>
+0031 <span class="comment">%  + pos vector where is stored per each scale the target centroid position</span>
+0032 <span class="comment">%  + output_sigmas vector where sigma parameter is stored for each scale</span>
+0033 <span class="comment">%  + yfs regression targets for all the scales</span>
+0034 <span class="comment">%  + cos_windows precomputed cosine windows for each scale</span>
+0035 <span class="comment">%  + len contains the area of the target at each scale</span>
+0036 <span class="comment">%  + ind</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0039 <span class="comment">%  Burghardt, A.Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0040 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%</span>
+0043 <span class="comment">%  University of Bristol</span>
+0044 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0045 <span class="comment">%</span>
+0046 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0047 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0048 
+0049 scaleDSKCF_struct=[];
+0050 
+0051 <span class="comment">% Find initial scale</span>
+0052 scaleDSKCF_struct.i = find(DSKCFparameters.scales == 1);
+0053 scaleDSKCF_struct.iPrev = scaleDSKCF_struct.i; <span class="comment">% for inerpolating model</span>
+0054 scaleDSKCF_struct.minStep = min(abs(diff(DSKCFparameters.scales)));
+0055 scaleDSKCF_struct.scales = DSKCFparameters.scales;
+0056 scaleDSKCF_struct.step = min(diff(DSKCFparameters.scales)); <span class="comment">% use smallest step to decide whether to look at other scales</span>
+0057 scaleDSKCF_struct.updated = 0;
+0058 scaleDSKCF_struct.currDepth = 1;
+0059 scaleDSKCF_struct.InitialDepth = 1;
+0060 scaleDSKCF_struct.InitialTargetSize = target_sz;
+0061 
+0062 <span class="keyword">for</span> i=1:length(DSKCFparameters.scales)
+0063     scaleDSKCF_struct.windows_sizes(i).window_sz = round(DSKCFparameters.window_sz * DSKCFparameters.scales(i));
+0064     scaleDSKCF_struct.target_sz(i).target_sz = round(target_sz * DSKCFparameters.scales(i));
+0065     scaleDSKCF_struct.pos(i).pos = pos;
+0066     
+0067     <span class="comment">%create regression labels, gaussian shaped, with a bandwidth</span>
+0068     <span class="comment">%proportional to target size</span>
+0069     scaleDSKCF_struct.output_sigmas(i).output_sigma = sqrt(prod(scaleDSKCF_struct.target_sz(i).target_sz)) * DSKCFparameters.output_sigma_factor / DSKCFparameters.cell_size;
+0070     scaleDSKCF_struct.yfs(i).yf = fft2(<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/gaussian_shaped_labels.html" class="code" title="function labels = gaussian_shaped_labels(sigma, sz)">gaussian_shaped_labels</a>( scaleDSKCF_struct.output_sigmas(i).output_sigma, floor( scaleDSKCF_struct.windows_sizes(i).window_sz / DSKCFparameters.cell_size)));
+0071     
+0072     <span class="comment">%store pre-computed cosine window</span>
+0073     scaleDSKCF_struct.cos_windows(i).cos_window = hann(size(scaleDSKCF_struct.yfs(i).yf,1)) * hann(size(scaleDSKCF_struct.yfs(i).yf,2))';
+0074     scaleDSKCF_struct.lens(i).len = scaleDSKCF_struct.target_sz(i).target_sz(1) * scaleDSKCF_struct.target_sz(i).target_sz(2);
+0075     scaleDSKCF_struct.inds(i).ind = floor(linspace(1,scaleDSKCF_struct.lens(i).len, round(0.25 * scaleDSKCF_struct.lens(i).len)));
+0076 <span class="keyword">end</span>
+0077 
+0078 scaleDSKCF_struct.prevpos=pos;</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

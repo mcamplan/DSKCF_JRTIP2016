@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of getShapeFactorStructDirectionsV2</title>
+  <meta name="keywords" content="getShapeFactorStructDirectionsV2">
+  <meta name="description" content="GETSHAPEFACTORSTRUCTDIRECTIONSV2.m updates the shape struct according to">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsShape -->
+<h1>getShapeFactorStructDirectionsV2
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GETSHAPEFACTORSTRUCTDIRECTIONSV2.m updates the shape struct according to</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [scaleDSKCF_struct, newPosShape, newInterpolationFactor,shapeDSKCF_struct]=getShapeFactorStructDirectionsV2(estimatedShapeBB,pos,estimatedDepth,scaleDSKCF_struct,shapeDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">  GETSHAPEFACTORSTRUCTDIRECTIONSV2.m updates the shape struct according to
+  the detected changes
+
+   GETSHAPEFACTORSTRUCTDIRECTIONSV2 this function updates the shape struct
+   according to the detected changes
+
+   INPUT:
+  -estimatedShapeBB bounding box of the segmented object
+  -pos tracker predicted position
+  -estimatedDepth UNUSED argument, it is the mean depth value of the
+  object
+  -scaleDSKCF_struct,shapeDSKCF_struct data structure of shape and scale
+  information
+
+  OUTPUT: 
+  - updated scaleDSKCF_struct,shapeDSKCF_struct data structure of
+  shape and scale information
+  -newPosShape target centrouid position according to the segmented area
+  -newInterpolationFactor UNUSED VALUE, it is set to 0
+
+  See also INITDSKCFPARAM
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>	FROMBBTOCENTRALPOINT.m is a function for calculating target centroid and size</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [scaleDSKCF_struct, newPosShape, newInterpolationFactor,shapeDSKCF_struct]=</a><span class="keyword">...</span>
+0002     getShapeFactorStructDirectionsV2(estimatedShapeBB,pos,estimatedDepth,scaleDSKCF_struct,shapeDSKCF_struct)
+0003 <span class="comment">%  GETSHAPEFACTORSTRUCTDIRECTIONSV2.m updates the shape struct according to</span>
+0004 <span class="comment">%  the detected changes</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   GETSHAPEFACTORSTRUCTDIRECTIONSV2 this function updates the shape struct</span>
+0007 <span class="comment">%   according to the detected changes</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT:</span>
+0010 <span class="comment">%  -estimatedShapeBB bounding box of the segmented object</span>
+0011 <span class="comment">%  -pos tracker predicted position</span>
+0012 <span class="comment">%  -estimatedDepth UNUSED argument, it is the mean depth value of the</span>
+0013 <span class="comment">%  object</span>
+0014 <span class="comment">%  -scaleDSKCF_struct,shapeDSKCF_struct data structure of shape and scale</span>
+0015 <span class="comment">%  information</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%  OUTPUT:</span>
+0018 <span class="comment">%  - updated scaleDSKCF_struct,shapeDSKCF_struct data structure of</span>
+0019 <span class="comment">%  shape and scale information</span>
+0020 <span class="comment">%  -newPosShape target centrouid position according to the segmented area</span>
+0021 <span class="comment">%  -newInterpolationFactor UNUSED VALUE, it is set to 0</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%  See also INITDSKCFPARAM</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  University of Bristol</span>
+0026 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0029 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0030 
+0031 <span class="comment">%scaleDSKCF_struct.updated = 0;</span>
+0032 
+0033 <span class="comment">%mode1 = estimatedDepthMode;</span>
+0034 <span class="comment">%scaleDSKCF_struct.currDepth = mode1;</span>
+0035 
+0036 <span class="comment">%sf = scaleDSKCF_struct.InitialDepth / mode1;</span>
+0037 <span class="comment">%currentW=scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(1);</span>
+0038 <span class="comment">%currentH=scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(2);</span>
+0039 
+0040 newInterpolationFactor=0;
+0041 
+0042 newPosShape=pos;
+0043 [centerX,centerY,width,height]=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>(estimatedShapeBB);
+0044 estimatedShapeSize=[height,width];
+0045 <span class="comment">%newSize=sqrt(height*width);</span>
+0046 newSize=height*width;
+0047 
+0048 <span class="comment">% Check for significant scale difference to current shape</span>
+0049 <span class="comment">%currentSize=sqrt(scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(1)*scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(2));</span>
+0050 <span class="comment">%initialSQsize=sqrt(scaleDSKCF_struct.InitialTargetSize(1)*scaleDSKCF_struct.InitialTargetSize(2));</span>
+0051 currentSize=(scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(1)*scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(2));
+0052 initialSQsize=(scaleDSKCF_struct.InitialTargetSize(1)*scaleDSKCF_struct.InitialTargetSize(2));
+0053 
+0054 shapeSF =  newSize/(initialSQsize);
+0055 shapeOffset =  shapeSF - scaleDSKCF_struct.scales(scaleDSKCF_struct.i);
+0056 
+0057 <span class="comment">%%NOW IF THE CHANGE IS NOT on the small side of the bounding box, check the</span>
+0058 <span class="comment">%%change on the large one... without really changing the square target area</span>
+0059 <span class="keyword">if</span>(shapeDSKCF_struct.growingStatus==false)
+0060     
+0061     
+0062     <span class="keyword">if</span> abs(shapeOffset) &gt; scaleDSKCF_struct.minStep*0.93 <span class="comment">%% Need to change scale if possible</span>
+0063         
+0064         newPosShape=round([mean([centerY,pos(1)]),mean([centerX,pos(2)])]);
+0065         <span class="comment">%%update here segment Struct...</span>
+0066         shapeDSKCF_struct.growingStatus=true;
+0067         
+0068         shapeDSKCF_struct.segmentW=size(shapeDSKCF_struct.cumulativeMask,2);
+0069         shapeDSKCF_struct.segmentH=size(shapeDSKCF_struct.cumulativeMask,1);
+0070         
+0071         <span class="comment">%zero pad previous segmentations</span>
+0072         segmentWIncrement=round(0.05*shapeDSKCF_struct.segmentW);
+0073         segmentHIncrement=round(0.05*shapeDSKCF_struct.segmentH);
+0074         
+0075         shapeDSKCF_struct.cumulativeMask=padarray(shapeDSKCF_struct.cumulativeMask,[segmentHIncrement segmentWIncrement]);
+0076         <span class="comment">%you need only from the second one...</span>
+0077         
+0078         <span class="keyword">for</span> i=1:size(shapeDSKCF_struct.maskArray,3)
+0079             tmpMaskArray(:,:,i)=<span class="keyword">...</span>
+0080                 padarray(shapeDSKCF_struct.maskArray(:,:,i),[segmentHIncrement segmentWIncrement]);
+0081         <span class="keyword">end</span>
+0082         shapeDSKCF_struct.maskArray=tmpMaskArray;
+0083         
+0084     <span class="keyword">end</span>
+0085 <span class="keyword">end</span>
+0086 
+0087 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of singleFrameDSKCF</title>
+  <meta name="keywords" content="singleFrameDSKCF">
+  <meta name="description" content="SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>singleFrameDSKCF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker
+
+
+   SINGLEFRAMEDSKCF is the core function of DS-KCF tracker (for more
+   details see [1]). It applies the DS-KCF tracker to a single frame of
+   the sequence. This function is based on several data structures where
+   input and output data is stored.Please note that data structures are
+   supposed to be initialized as in wrapperDSKCF and runDSKCF.m test
+   script.
+
+   INPUT:
+   - firstFrame   boolean flag that marks the first frame of the
+   sequence
+   - frameCurr    first frame data structure (see WRAPPERDSKCF)
+   - trackerDSKCF_struct  DS-KCF tracker data structure (see WRAPPERDSKCF,
+   INITDSKCFTRACKER)
+   - DSKCFparameters, DSKCFparameters_Occluder    parameters structures
+   (see WRAPPERDSKCF)
+   - scaleDSKCF_struct    scale data structure (see
+   wrapperDSKCF,INITDSKCFPARAM)
+   -trackerDSKCF_structOccluder DS-KCF tracker data structure for the
+   occluder
+   -pos previous position of the DS-KCF tracker pos=[y x] where x is the
+   column and y is the row index
+   -shapeDSKCF_struct data structure containing shape information and
+   segmentation masks
+
+   OUTPUT
+   -pos updated position of the DS-KCF tracker pos=[y x] where x is the
+   column and y is the row index
+   -trackerDSKCF_struct,trackerDSKCF_structOccluder updated data
+   structures for the trackers
+   -scaleDSKCF_struct updated scale data structure
+   -DSKCFparameters_Occluder updated parameter structure for the occluder
+   -timeMatrixRow Vecotr containing the processing rate for all the main
+   modules of the ds-kcf (see [1] for more details)
+
+  See also wrapperDSKCF, CHECKOCCLUSIONSDSKCF_NOISEMODEL,
+  CHECKOCCLUSIONSDSKCF_SECONDPLANE, ENLARGEBB, OCCLUDINGOBJECTSEGDSKCF,
+  TARGETSEARCHDSKCF, GETSCALEFACTORSTRUCT, <a href="fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">FROMBBTOCENTRALPOINT</a>,
+  <a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">FROMCENTRALPOINTTOBB</a>, <a href="gaussian_shaped_labels.html" class="code" title="function labels = gaussian_shaped_labels(sigma, sz)">GAUSSIAN_SHAPED_LABELS</a>, <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">GET_SUBWINDOW</a>,
+  <a href="maxResponseDepthWeightDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDepthWeightDSKCF( patch,patch_depth,depth16Bit, features,kernel,pos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,meanDepthObj,stdDepthObj)">MAXRESPONSEDEPTHWEIGHTDSKCF</a>, <a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">MODELUPDATEDSKCF</a>, <a href="resetDSKCFtrackerInfo.html" class="code" title="function trackerDSKCF_struct=resetDSKCFtrackerInfo(trackerDSKCF_struct)">RESETDSKCFTRACKERINFO</a>,
+  <a href="roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">ROIFROMBB</a>,<a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">SINGLEFRAMEDSKCF_OCCLUDER</a>,INITDSKCFSHAPE,EXTRACTSEGMENTEDPATCHV3,
+  REGIONMODIFICATIONCHECK,GETSHAPEFACTORSTRUCTDIRECTIONSV2
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a>	FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>	CHECKOCCLUSIONSDSKCF_NOISEMODEL function for detecting occlusions</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>	CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>	ENLARGEBB.m enlarges the size of a bounding box</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/occludingObjectSegDSKCF.html" class="code" title="function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct)">occludingObjectSegDSKCF</a>	OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">targetSearchDSKCF</a>	TARGETSEARCHDSKCF function for segmenting the occluding object</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsScaleChange/getScaleFactorStruct.html" class="code" title="function scaleDSKCF_struct=getScaleFactorStruct(estimatedDepthMode,scaleDSKCF_struct)">getScaleFactorStruct</a>	GETSCALEFACTORSTRUCT.m select the target's scale</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/addSegmentationResults.html" class="code" title="function [ dskcfShapeStruct ] = addSegmentationResults( dskcfShapeStruct,lastMask,tmpBB,trackOffset,imSize)">addSegmentationResults</a>	ADDSEGMENTATIONRESULTS.m function manage the alignment of segmented</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/extractSegmentedPatchV3.html" class="code" title="function [ reshapedSegmentedMask, insidePatchIndexes, finalSegmentedMask] =extractSegmentedPatchV3( segmentedMask,outOfBoundSize,centralPoint, shapeDSKCF_struct,maxSize )">extractSegmentedPatchV3</a>	EXTRACTSEGMENTEDPATCHV3.m function manage the alignment of segmented</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/getShapeFactorStructDirectionsV2.html" class="code" title="function [scaleDSKCF_struct, newPosShape, newInterpolationFactor,shapeDSKCF_struct]=getShapeFactorStructDirectionsV2(estimatedShapeBB,pos,estimatedDepth,scaleDSKCF_struct,shapeDSKCF_struct)">getShapeFactorStructDirectionsV2</a>	GETSHAPEFACTORSTRUCTDIRECTIONSV2.m updates the shape struct according to</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/initDSKCFshape.html" class="code" title="function [ dskcfShapeStruct ] = initDSKCFshape( slidingWinSize, scaleFactor,dskcfShapeStructOLD )">initDSKCFshape</a>	INITDSKCFSHAPE.m initializes the shape data structure for DS-KCF tracker</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/regionModificationCheck.html" class="code" title="function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct)">regionModificationCheck</a>	REGIONMODIFICATIONCHECK.m function to identify change of shape as</li><li><a href="fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>	FROMBBTOCENTRALPOINT.m is a function for calculating target centroid and size</li><li><a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>	FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box</li><li><a href="gaussian_shaped_labels.html" class="code" title="function labels = gaussian_shaped_labels(sigma, sz)">gaussian_shaped_labels</a>	GAUSSIAN_SHAPED_LABELS</li><li><a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>	GET_SUBWINDOW</li><li><a href="maxResponseDepthWeightDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDepthWeightDSKCF( patch,patch_depth,depth16Bit, features,kernel,pos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,meanDepthObj,stdDepthObj)">maxResponseDepthWeightDSKCF</a>	MAXRESPONSEDEPTHWEIGHTDSKCF function for calculating the DSKCF response %</li><li><a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">modelUpdateDSKCF</a>	MODELUPDATEDSKCF function for updating the DSKCF model %</li><li><a href="resetDSKCFtrackerInfo.html" class="code" title="function trackerDSKCF_struct=resetDSKCFtrackerInfo(trackerDSKCF_struct)">resetDSKCFtrackerInfo</a>	RESETDSKCFTRACKERINFO.m re-initializes the data structure for DS-KCF tracker before processing a new frame[1]</li><li><a href="roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>	ROIFROMBB.m is a function for extracting roi from images given a bounding box</li><li><a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>	SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/wrapperDSKCF.html" class="code" title="function [dsKCFoutputSr,dsKCFoutputSq,dsKCFsegmentationOut, avTime,totalTime,timeMatrix] =wrapperDSKCF(video_path, depth_path, img_files, depth_files, pos, target_sz,DSKCFparameters, show_visualization,save_Images,dest_path,noBitShift)">wrapperDSKCF</a>	WRAPPERDSKCF.m is the wrapper function for the DS-KCF tracker [1]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,</a><span class="keyword">...</span>
+0002     DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,<span class="keyword">...</span>
+0003     trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,<span class="keyword">...</span>
+0004     trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)
+0005 <span class="comment">% SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   SINGLEFRAMEDSKCF is the core function of DS-KCF tracker (for more</span>
+0009 <span class="comment">%   details see [1]). It applies the DS-KCF tracker to a single frame of</span>
+0010 <span class="comment">%   the sequence. This function is based on several data structures where</span>
+0011 <span class="comment">%   input and output data is stored.Please note that data structures are</span>
+0012 <span class="comment">%   supposed to be initialized as in wrapperDSKCF and runDSKCF.m test</span>
+0013 <span class="comment">%   script.</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   INPUT:</span>
+0016 <span class="comment">%   - firstFrame   boolean flag that marks the first frame of the</span>
+0017 <span class="comment">%   sequence</span>
+0018 <span class="comment">%   - frameCurr    first frame data structure (see WRAPPERDSKCF)</span>
+0019 <span class="comment">%   - trackerDSKCF_struct  DS-KCF tracker data structure (see WRAPPERDSKCF,</span>
+0020 <span class="comment">%   INITDSKCFTRACKER)</span>
+0021 <span class="comment">%   - DSKCFparameters, DSKCFparameters_Occluder    parameters structures</span>
+0022 <span class="comment">%   (see WRAPPERDSKCF)</span>
+0023 <span class="comment">%   - scaleDSKCF_struct    scale data structure (see</span>
+0024 <span class="comment">%   wrapperDSKCF,INITDSKCFPARAM)</span>
+0025 <span class="comment">%   -trackerDSKCF_structOccluder DS-KCF tracker data structure for the</span>
+0026 <span class="comment">%   occluder</span>
+0027 <span class="comment">%   -pos previous position of the DS-KCF tracker pos=[y x] where x is the</span>
+0028 <span class="comment">%   column and y is the row index</span>
+0029 <span class="comment">%   -shapeDSKCF_struct data structure containing shape information and</span>
+0030 <span class="comment">%   segmentation masks</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%   OUTPUT</span>
+0033 <span class="comment">%   -pos updated position of the DS-KCF tracker pos=[y x] where x is the</span>
+0034 <span class="comment">%   column and y is the row index</span>
+0035 <span class="comment">%   -trackerDSKCF_struct,trackerDSKCF_structOccluder updated data</span>
+0036 <span class="comment">%   structures for the trackers</span>
+0037 <span class="comment">%   -scaleDSKCF_struct updated scale data structure</span>
+0038 <span class="comment">%   -DSKCFparameters_Occluder updated parameter structure for the occluder</span>
+0039 <span class="comment">%   -timeMatrixRow Vecotr containing the processing rate for all the main</span>
+0040 <span class="comment">%   modules of the ds-kcf (see [1] for more details)</span>
+0041 <span class="comment">%</span>
+0042 <span class="comment">%  See also wrapperDSKCF, CHECKOCCLUSIONSDSKCF_NOISEMODEL,</span>
+0043 <span class="comment">%  CHECKOCCLUSIONSDSKCF_SECONDPLANE, ENLARGEBB, OCCLUDINGOBJECTSEGDSKCF,</span>
+0044 <span class="comment">%  TARGETSEARCHDSKCF, GETSCALEFACTORSTRUCT, FROMBBTOCENTRALPOINT,</span>
+0045 <span class="comment">%  FROMCENTRALPOINTTOBB, GAUSSIAN_SHAPED_LABELS, GET_SUBWINDOW,</span>
+0046 <span class="comment">%  MAXRESPONSEDEPTHWEIGHTDSKCF, MODELUPDATEDSKCF, RESETDSKCFTRACKERINFO,</span>
+0047 <span class="comment">%  ROIFROMBB,SINGLEFRAMEDSKCF_OCCLUDER,INITDSKCFSHAPE,EXTRACTSEGMENTEDPATCHV3,</span>
+0048 <span class="comment">%  REGIONMODIFICATIONCHECK,GETSHAPEFACTORSTRUCTDIRECTIONSV2</span>
+0049 <span class="comment">%</span>
+0050 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0051 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0052 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0053 <span class="comment">%</span>
+0054 <span class="comment">%</span>
+0055 <span class="comment">%  University of Bristol</span>
+0056 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0057 <span class="comment">%</span>
+0058 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0059 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0060 
+0061 im=frameCurr.gray;
+0062 imRGB=frameCurr.rgb;
+0063 depth=frameCurr.depth;
+0064 noData=frameCurr.depthNoData;
+0065 depth16Bit=frameCurr.depth16Bit;
+0066 
+0067 <span class="comment">%hard coded threshold for DS-KCF algorithm see [1] for more details</span>
+0068 confInterval1=0.4;
+0069 confInterval2=0.15;
+0070 confValue3=0.14;
+0071 
+0072 currentScale=scaleDSKCF_struct.i;
+0073 
+0074 <span class="comment">%clean target struct.....</span>
+0075 trackerDSKCF_struct=<a href="resetDSKCFtrackerInfo.html" class="code" title="function trackerDSKCF_struct=resetDSKCFtrackerInfo(trackerDSKCF_struct)">resetDSKCFtrackerInfo</a>(trackerDSKCF_struct);
+0076 changeOfShapeFlag=false;
+0077 segmentedMASK=repmat(0,size(depth));
+0078 numberTimeIntervals=7;
+0079 timeMatrixRow=repmat(-1,1,numberTimeIntervals);
+0080 
+0081 <span class="comment">%This is not the first frame we can start tracking!!!!!!!!!!</span>
+0082 <span class="keyword">if</span>(firstFrame==false)
+0083     
+0084     <span class="comment">%no occlusion case</span>
+0085     <span class="keyword">if</span> ~trackerDSKCF_struct.previousTarget.underOcclusion,
+0086         
+0087         timeMaxResponse=tic();
+0088         ticINDEX=1;
+0089         
+0090         <span class="comment">%track the object and then check for occlusions</span>
+0091         patch = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(im, pos, scaleDSKCF_struct.windows_sizes(currentScale).window_sz);
+0092         patch_depth = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(depth, pos, scaleDSKCF_struct.windows_sizes(currentScale).window_sz);
+0093         
+0094         <span class="comment">%calculate response of the DS-KCF tracker</span>
+0095         [response, maxResponse,pos]=<a href="maxResponseDepthWeightDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDepthWeightDSKCF( patch,patch_depth,depth16Bit, features,kernel,pos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,meanDepthObj,stdDepthObj)">maxResponseDepthWeightDSKCF</a>(<span class="keyword">...</span>
+0096             patch,patch_depth,depth16Bit, DSKCFparameters.features,DSKCFparameters.kernel,<span class="keyword">...</span>
+0097             pos,DSKCFparameters.cell_size, scaleDSKCF_struct.cos_windows(currentScale).cos_window,<span class="keyword">...</span>
+0098             trackerDSKCF_struct.model_xf,trackerDSKCF_struct.model_alphaf,<span class="keyword">...</span>
+0099             trackerDSKCF_struct.model_xDf,trackerDSKCF_struct.model_alphaDf,<span class="keyword">...</span>
+0100             trackerDSKCF_struct.previousTarget.meanDepthObj,<span class="keyword">...</span>
+0101             trackerDSKCF_struct.previousTarget.stdDepthObj);
+0102         
+0103         <span class="comment">%update tracker struct, new position etc</span>
+0104         trackerDSKCF_struct.currentTarget.posX=pos(2);
+0105         trackerDSKCF_struct.currentTarget.posY=pos(1);
+0106         
+0107         trackerDSKCF_struct.currentTarget.bb=<a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a><span class="keyword">...</span>
+0108             (trackerDSKCF_struct.currentTarget.posX,trackerDSKCF_struct.currentTarget.posY,<span class="keyword">...</span>
+0109             trackerDSKCF_struct.currentTarget.w,trackerDSKCF_struct.currentTarget.h,<span class="keyword">...</span>
+0110             size(im,2),size(im,1));
+0111         
+0112         trackerDSKCF_struct.currentTarget.conf=max(response(:));<span class="comment">%use this one, discard the weight...</span>
+0113         timeMatrixRow(ticINDEX)=toc(timeMaxResponse);
+0114         
+0115         timeSegmentAndCheck=tic();
+0116         ticINDEX=2;
+0117         
+0118         <span class="comment">%segment the depth data inside the tracked region</span>
+0119         [p, trackerDSKCF_struct.currentTarget.meanDepthObj,<span class="keyword">...</span>
+0120             trackerDSKCF_struct.currentTarget.stdDepthObj,estimatedDepth,<span class="keyword">...</span>
+0121             estimatedSTD,minIndexReduced,trackerDSKCF_struct.currentTarget.LabelRegions,<span class="keyword">...</span>
+0122             trackerDSKCF_struct.currentTarget.Centers,trackerDSKCF_struct.currentTarget.regionIndex,<span class="keyword">...</span>
+0123             trackerDSKCF_struct.currentTarget.LUT,regionIndexOBJ] = <a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>(<span class="keyword">...</span>
+0124             depth16Bit,noData,trackerDSKCF_struct, trackerDSKCF_struct.currentTarget.bb);
+0125         
+0126         <span class="comment">%if the segmented target is in the front plane use current bounding</span>
+0127         <span class="comment">%box....or use the one provided by the depth based segmentation as</span>
+0128         <span class="comment">%in [1]</span>
+0129         <span class="keyword">if</span>(regionIndexOBJ==0 )
+0130             trackerDSKCF_struct.currentTarget.segmentedBB=<span class="keyword">...</span>
+0131                 trackerDSKCF_struct.currentTarget.bb';
+0132         <span class="keyword">else</span>
+0133             tmpProp=regionprops(trackerDSKCF_struct.currentTarget.LabelRegions<span class="keyword">...</span>
+0134                 ==regionIndexOBJ,<span class="string">'BoundingBox'</span>);
+0135             tmpBB=tmpProp.BoundingBox;
+0136             <span class="comment">%tmpCentroid=tmpProp.Centroid;</span>
+0137             trackerDSKCF_struct.currentTarget.segmentedBB=ceil([tmpBB(1), <span class="keyword">...</span><span class="comment">.</span>
+0138                 tmpBB(2),tmpBB(1)+tmpBB(3),tmpBB(2)+tmpBB(4)]);
+0139             tmpOffset=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(trackerDSKCF_struct.currentTarget.bb ,0.05,size(depth16Bit));
+0140             trackerDSKCF_struct.currentTarget.segmentedBB([1,3])=<span class="keyword">...</span>
+0141                 +trackerDSKCF_struct.currentTarget.segmentedBB([1,3])<span class="keyword">...</span>
+0142                 +tmpOffset(1);
+0143             trackerDSKCF_struct.currentTarget.segmentedBB([2,4])=<span class="keyword">...</span>
+0144                 +trackerDSKCF_struct.currentTarget.segmentedBB([2,4])<span class="keyword">...</span>
+0145                 +tmpOffset(2);
+0146             tmpBBforSeg=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(trackerDSKCF_struct.currentTarget.bb ,0.05,size(depth16Bit));
+0147             <span class="comment">%generate a out of bound rect is necessary</span>
+0148             outOfBoundBB=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(trackerDSKCF_struct.currentTarget.bb ,0.05,5*size(depth16Bit));
+0149             outOfBoundSize=[outOfBoundBB(4)-outOfBoundBB(2)+1,outOfBoundBB(3)-outOfBoundBB(1)+1];
+0150             
+0151             [tmpMask,insidePatchIndexes,finalMask]=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/extractSegmentedPatchV3.html" class="code" title="function [ reshapedSegmentedMask, insidePatchIndexes, finalSegmentedMask] =extractSegmentedPatchV3( segmentedMask,outOfBoundSize,centralPoint, shapeDSKCF_struct,maxSize )">extractSegmentedPatchV3</a>(trackerDSKCF_struct.currentTarget.LabelRegions==regionIndexOBJ,<span class="keyword">...</span>
+0152                 outOfBoundSize,[trackerDSKCF_struct.currentTarget.posX,trackerDSKCF_struct.currentTarget.posY],<span class="keyword">...</span>
+0153                 shapeDSKCF_struct,[size(depth16Bit,2),size(depth16Bit,1)]);
+0154             
+0155             <span class="keyword">if</span>(shapeDSKCF_struct.growingStatus==false)
+0156                 shapeDSKCF_struct=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/addSegmentationResults.html" class="code" title="function [ dskcfShapeStruct ] = addSegmentationResults( dskcfShapeStruct,lastMask,tmpBB,trackOffset,imSize)">addSegmentationResults</a>(shapeDSKCF_struct,tmpMask,tmpBBforSeg,tmpOffset,size(depth16Bit));
+0157             <span class="keyword">else</span>
+0158                 <span class="comment">%in case region is growing....then resegment....</span>
+0159                 <span class="comment">%segment the depth data inside the tracked region</span>
+0160                 <span class="comment">%take the new bb</span>
+0161                 newSegmentBB=<a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>(trackerDSKCF_struct.currentTarget.posX,<span class="keyword">...</span>
+0162                     trackerDSKCF_struct.currentTarget.posY,shapeDSKCF_struct.segmentW,<span class="keyword">...</span>
+0163                     shapeDSKCF_struct.segmentH,size(im,2),size(im,1));
+0164                 
+0165                 [pNEW, newMean,newSTD,newEstimatedDepth,newEstimatedSTD,newMinIndexReduced,<span class="keyword">...</span>
+0166                     newLabelRegions,newCenters,newRegionIndex,newLUT,newRegionIndexOBJ] = <span class="keyword">...</span>
+0167                     <a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>(<span class="keyword">...</span>
+0168                     depth16Bit,noData,trackerDSKCF_struct, newSegmentBB);
+0169                 
+0170                 [depthDistance,depthIndex]=min(abs(newCenters-trackerDSKCF_struct.currentTarget.meanDepthObj));
+0171                 
+0172                 newLabelData=newLabelRegions==depthIndex;
+0173                 
+0174                 tmpProp=regionprops(newLabelData,<span class="string">'BoundingBox'</span>);
+0175                 <span class="keyword">if</span>(isempty(tmpProp)==true)
+0176                     tmpBB=trackerDSKCF_struct.currentTarget.segmentedBB;
+0177                     newLabelData=zeros(size(shapeDSKCF_struct.cumulativeMask));
+0178                 <span class="keyword">else</span>
+0179                     tmpBB=tmpProp.BoundingBox;
+0180                     <span class="comment">%end</span>
+0181                     
+0182                     <span class="comment">%tmpCentroid=tmpProp.Centroid;</span>
+0183                     trackerDSKCF_struct.currentTarget.segmentedBB=ceil([tmpBB(1), <span class="keyword">...</span><span class="comment">.</span>
+0184                         tmpBB(2),tmpBB(1)+tmpBB(3),tmpBB(2)+tmpBB(4)]);
+0185                     
+0186                     tmpOffset=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(newSegmentBB ,0.05,size(depth16Bit));
+0187                     
+0188                     trackerDSKCF_struct.currentTarget.segmentedBB([1,3])=<span class="keyword">...</span>
+0189                         +trackerDSKCF_struct.currentTarget.segmentedBB([1,3])<span class="keyword">...</span>
+0190                         +tmpOffset(1);
+0191                     
+0192                     trackerDSKCF_struct.currentTarget.segmentedBB([2,4])=<span class="keyword">...</span>
+0193                         +trackerDSKCF_struct.currentTarget.segmentedBB([2,4])<span class="keyword">...</span>
+0194                         +tmpOffset(2);
+0195                 <span class="keyword">end</span>
+0196                 
+0197                 tmpBBforSeg=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(newSegmentBB ,0.05,size(depth16Bit));
+0198                 outOfBoundBB=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(newSegmentBB,0.05,5*size(depth16Bit));<span class="comment">%generate a out of bound rect is necessary</span>
+0199                 outOfBoundSize=[outOfBoundBB(4)-outOfBoundBB(2)+1,outOfBoundBB(3)-outOfBoundBB(1)+1];
+0200                 
+0201                 [tmpMask,insidePatchIndexes,finalMask]=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/extractSegmentedPatchV3.html" class="code" title="function [ reshapedSegmentedMask, insidePatchIndexes, finalSegmentedMask] =extractSegmentedPatchV3( segmentedMask,outOfBoundSize,centralPoint, shapeDSKCF_struct,maxSize )">extractSegmentedPatchV3</a>(newLabelData,<span class="keyword">...</span>
+0202                     outOfBoundSize,[trackerDSKCF_struct.currentTarget.posX,trackerDSKCF_struct.currentTarget.posY],<span class="keyword">...</span>
+0203                     shapeDSKCF_struct,[size(depth16Bit,2),size(depth16Bit,1)]);
+0204                 
+0205                
+0206                 shapeDSKCF_struct=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/addSegmentationResults.html" class="code" title="function [ dskcfShapeStruct ] = addSegmentationResults( dskcfShapeStruct,lastMask,tmpBB,trackOffset,imSize)">addSegmentationResults</a>(shapeDSKCF_struct,tmpMask,tmpBBforSeg,tmpOffset,size(depth16Bit));
+0207             <span class="keyword">end</span>
+0208             
+0209             <span class="comment">%CUMULATIVE SEGMENTATION...</span>
+0210             tmpBBforSegCumulative=shapeDSKCF_struct.cumulativeBB;
+0211             
+0212             sizeOfSegmenter=(tmpBBforSegCumulative(3)-tmpBBforSegCumulative(1))<span class="keyword">...</span>
+0213                 *(tmpBBforSegCumulative(4)-tmpBBforSegCumulative(2));
+0214             
+0215             sizeOfTarget=(trackerDSKCF_struct.currentTarget.bb(3)-<span class="keyword">...</span>
+0216                 trackerDSKCF_struct.currentTarget.bb(1))*(trackerDSKCF_struct.currentTarget.bb(4)<span class="keyword">...</span>
+0217                 -trackerDSKCF_struct.currentTarget.bb(2));
+0218             <span class="comment">%%sizeOfSegmenter=</span>
+0219             accumulatedSEGBool=size(shapeDSKCF_struct.maskArray,3)==(shapeDSKCF_struct.slidingWindowSize);
+0220             sr = scaleDSKCF_struct.InitialDepth / scaleDSKCF_struct.currDepth;
+0221             targ_sz = round(scaleDSKCF_struct.InitialTargetSize * sr);
+0222             <span class="comment">%invert the coordinate as you need to combine this with positions</span>
+0223             srSize= targ_sz([2,1]);
+0224             currentScaleBB=[pos(:,[2,1]) - srSize/2, pos(:,[2,1]) + srSize/2];
+0225             
+0226             trackerDSKCF_struct.currentTarget.segmentedBB=currentScaleBB;
+0227             
+0228             <span class="comment">%No data percentage</span>
+0229             depthNoData=<a href="roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(noData,trackerDSKCF_struct.currentTarget.bb);
+0230             noDataPercent=sum(sum(depthNoData))&lt;0.4*sizeOfTarget;
+0231             
+0232             <span class="comment">%minimunSize check</span>
+0233             minSizeOK=(sizeOfSegmenter&gt;39*39);
+0234             <span class="keyword">if</span>(minSizeOK==0)
+0235                 
+0236                 minSizeOK= (tmpBBforSegCumulative(3)-tmpBBforSegCumulative(1)&gt;39)<span class="keyword">...</span>
+0237                     ||(tmpBBforSegCumulative(4)-tmpBBforSegCumulative(2)&gt;39);
+0238             <span class="keyword">end</span>
+0239             [tmpBBforSegCumulative,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=<span class="keyword">...</span>
+0240                 <a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/regionModificationCheck.html" class="code" title="function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct)">regionModificationCheck</a>(sizeOfSegmenter,sizeOfTarget,<span class="keyword">...</span>
+0241                 accumulatedSEGBool,noDataPercent,minSizeOK,tmpBBforSegCumulative,<span class="keyword">...</span>
+0242                 shapeDSKCF_struct,size(depth16Bit),trackerDSKCF_struct);
+0243             <span class="comment">%if it is not changed the target bb is used</span>
+0244             <span class="keyword">if</span>(newOutput)
+0245                 trackerDSKCF_struct.currentTarget.segmentedBB=tmpBBforSegCumulative(:)';
+0246             <span class="keyword">end</span>
+0247             
+0248         <span class="keyword">end</span>
+0249         <span class="comment">%occlusion condition</span>
+0250         trackerDSKCF_struct.currentTarget.underOcclusion = abs(p)&gt;0.35 &amp;&amp; trackerDSKCF_struct.currentTarget.conf&lt;confInterval1;
+0251         
+0252         <span class="keyword">if</span> ~trackerDSKCF_struct.currentTarget.underOcclusion
+0253             <span class="comment">%eventually correct the frameCurr.targetDepthFast</span>
+0254             <span class="keyword">if</span>(trackerDSKCF_struct.currentTarget.meanDepthObj~=estimatedDepth &amp;&amp; minIndexReduced==1)
+0255                 trackerDSKCF_struct.currentTarget.meanDepthObj=estimatedDepth;
+0256                 trackerDSKCF_struct.currentTarget.stdDepthObj=estimatedSTD;
+0257             <span class="keyword">end</span>
+0258         <span class="keyword">end</span>
+0259         
+0260         timeMatrixRow(ticINDEX)=toc(timeSegmentAndCheck);
+0261         
+0262         timeStartNewTracker=tic();
+0263         ticINDEX=3;
+0264         
+0265         <span class="comment">%IF UNDER OCCLUSION START TO SEGMENT OCCLUDER AND OCCLUDED</span>
+0266         <span class="comment">%OBJECTS</span>
+0267         <span class="keyword">if</span> trackerDSKCF_struct.currentTarget.underOcclusion,
+0268             <span class="comment">% initialize occlusion</span>
+0269             [tmpOccBB] = <a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/occludingObjectSegDSKCF.html" class="code" title="function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct)">occludingObjectSegDSKCF</a>(depth16Bit,trackerDSKCF_struct);
+0270             
+0271             <span class="keyword">if</span> (isempty(tmpOccBB) | isnan(tmpOccBB) )
+0272                 trackerDSKCF_struct.currentTarget.underOcclusion = 0;
+0273             <span class="keyword">else</span>
+0274                 <span class="keyword">if</span> trackerDSKCF_struct.currentTarget.conf &lt;0.15,
+0275                     trackerDSKCF_struct.currentTarget.bb = [];
+0276                 <span class="keyword">end</span>
+0277                 trackerDSKCF_struct.currentTarget.occBB = tmpOccBB;
+0278             <span class="keyword">end</span>
+0279             
+0280             <span class="comment">%occlusion detected......is time to fill the struct</span>
+0281             <span class="comment">%for the occluder we not use any change of scale or other</span>
+0282             <span class="comment">%occlusion detector!!!! so now you have to re-init it,</span>
+0283             <span class="comment">%according to the new patch size etc etc</span>
+0284             
+0285             <span class="keyword">if</span> (isempty(tmpOccBB)==false)
+0286                 
+0287                 <span class="comment">%delete cumulative Mask</span>
+0288                 shapeDSKCF_struct=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/initDSKCFshape.html" class="code" title="function [ dskcfShapeStruct ] = initDSKCFshape( slidingWinSize, scaleFactor,dskcfShapeStructOLD )">initDSKCFshape</a>(5,0);
+0289                 <span class="comment">%assign the occluding bb to the occluder data struct</span>
+0290                 trackerDSKCF_structOccluder.previousTarget.bb=<span class="keyword">...</span>
+0291                     tmpOccBB;
+0292                 
+0293                 [trackerDSKCF_structOccluder.previousTarget.posX,<span class="keyword">...</span>
+0294                     trackerDSKCF_structOccluder.previousTarget.posY<span class="keyword">...</span>
+0295                     trackerDSKCF_structOccluder.previousTarget.w,<span class="keyword">...</span>
+0296                     trackerDSKCF_structOccluder.previousTarget.h]<span class="keyword">...</span>
+0297                     =<a href="fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>(tmpOccBB);
+0298                 
+0299                 trackerDSKCF_structOccluder.target_sz=<span class="keyword">...</span>
+0300                     [trackerDSKCF_structOccluder.previousTarget.h, <span class="keyword">...</span>
+0301                     trackerDSKCF_structOccluder.previousTarget.w];
+0302                 
+0303                 trackerDSKCF_structOccluder.window_sz = floor(<span class="keyword">...</span>
+0304                     trackerDSKCF_structOccluder.target_sz *<span class="keyword">...</span>
+0305                     (1 + DSKCFparameters_Occluder.padding));
+0306                 
+0307                 trackerDSKCF_structOccluder.output_sigma = sqrt(prod(<span class="keyword">...</span>
+0308                     trackerDSKCF_structOccluder.target_sz)) * <span class="keyword">...</span>
+0309                     DSKCFparameters_Occluder.output_sigma_factor / <span class="keyword">...</span>
+0310                     DSKCFparameters_Occluder.cell_size;
+0311                 
+0312                 trackerDSKCF_structOccluder.yf = fft2(<a href="gaussian_shaped_labels.html" class="code" title="function labels = gaussian_shaped_labels(sigma, sz)">gaussian_shaped_labels</a>(<span class="keyword">...</span>
+0313                     trackerDSKCF_structOccluder.output_sigma, floor(<span class="keyword">...</span>
+0314                     trackerDSKCF_structOccluder.window_sz / DSKCFparameters_Occluder.cell_size)));
+0315                 
+0316                 <span class="comment">%store pre-computed cosine window</span>
+0317                 trackerDSKCF_structOccluder.cos_window = hann(size(<span class="keyword">...</span>
+0318                     trackerDSKCF_structOccluder.yf,1)) * hann(size(<span class="keyword">...</span>
+0319                     trackerDSKCF_structOccluder.yf,2))';
+0320                 
+0321                 [trackerDSKCF_structOccluder]=<a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>(1,im,<span class="keyword">...</span>
+0322                     depth,trackerDSKCF_structOccluder,DSKCFparameters_Occluder);
+0323                 
+0324                 <span class="comment">%update target size in the current object tracker</span>
+0325                 trackerDSKCF_structOccluder.currentTarget=<span class="keyword">...</span>
+0326                     trackerDSKCF_structOccluder.previousTarget;
+0327             <span class="keyword">end</span>
+0328         <span class="keyword">end</span>
+0329         
+0330         timeMatrixRow(ticINDEX)=toc(timeStartNewTracker);
+0331         
+0332     <span class="keyword">else</span>
+0333         <span class="comment">%PREVIOUS FRAME UNDER OCCLUSION....</span>
+0334         
+0335         timeTrackOccluder=tic();
+0336         ticINDEX=4;
+0337         
+0338         <span class="comment">%track the occluded object!!!</span>
+0339         [trackerDSKCF_structOccluder,occludedPos]=<a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>(0,im,<span class="keyword">...</span>
+0340             depth,trackerDSKCF_structOccluder,DSKCFparameters_Occluder);
+0341         
+0342         <span class="comment">%update occluder previous position for tracking...</span>
+0343         trackerDSKCF_structOccluder.previousTarget.posX=<span class="keyword">...</span>
+0344             trackerDSKCF_structOccluder.currentTarget.posX;
+0345         trackerDSKCF_structOccluder.previousTarget.posY=<span class="keyword">...</span>
+0346             trackerDSKCF_structOccluder.currentTarget.posY;
+0347         
+0348         
+0349         <span class="keyword">if</span> isempty(trackerDSKCF_structOccluder.currentTarget.bb),
+0350             trackerDSKCF_structOccluder.currentTarget.bb = <span class="keyword">...</span>
+0351                 trackerDSKCF_structOccluder.previousTarget.bb;
+0352         <span class="keyword">end</span>
+0353         <span class="comment">%then update the previous</span>
+0354         trackerDSKCF_structOccluder.previousTarget.bb=<span class="keyword">...</span>
+0355             trackerDSKCF_structOccluder.currentTarget.bb;
+0356         
+0357         <span class="comment">%update occluder bb in the main target</span>
+0358         trackerDSKCF_struct.currentTarget.occBB=trackerDSKCF_structOccluder.currentTarget.bb;
+0359         
+0360         timeMatrixRow(ticINDEX)=toc(timeTrackOccluder);
+0361         
+0362         timeSolveOcclusion=tic();
+0363         ticINDEX=5;
+0364         
+0365         <span class="comment">%enlarge searching reagion...</span>
+0366         <span class="keyword">if</span>(isempty(trackerDSKCF_struct.previousTarget.bb)==false)
+0367             extremaBB=[min([trackerDSKCF_struct.currentTarget.occBB(1),<span class="keyword">...</span>
+0368                 trackerDSKCF_struct.previousTarget.occBB(1),<span class="keyword">...</span>
+0369                 trackerDSKCF_struct.previousTarget.bb(1)]),<span class="keyword">...</span>
+0370                 min([trackerDSKCF_struct.currentTarget.occBB(2),<span class="keyword">...</span>
+0371                 trackerDSKCF_struct.previousTarget.occBB(2),<span class="keyword">...</span>
+0372                 trackerDSKCF_struct.previousTarget.bb(2)]),<span class="keyword">...</span>
+0373                 max([trackerDSKCF_struct.currentTarget.occBB(3),<span class="keyword">...</span>
+0374                 trackerDSKCF_struct.previousTarget.occBB(3),<span class="keyword">...</span>
+0375                 trackerDSKCF_struct.previousTarget.bb(3)]),<span class="keyword">...</span>
+0376                 max([trackerDSKCF_struct.currentTarget.occBB(4),<span class="keyword">...</span>
+0377                 trackerDSKCF_struct.previousTarget.occBB(4),<span class="keyword">...</span>
+0378                 trackerDSKCF_struct.previousTarget.bb(4)])];
+0379             
+0380             extremaBB=[max(extremaBB(1),1),max(extremaBB(2),1),<span class="keyword">...</span>
+0381                 min(extremaBB(3),size(im,2)),min(extremaBB(4),size(im,1))];
+0382         <span class="keyword">else</span>
+0383             extremaBB=[min(trackerDSKCF_struct.currentTarget.occBB(1),<span class="keyword">...</span>
+0384                 trackerDSKCF_struct.previousTarget.occBB(1)),<span class="keyword">...</span>
+0385                 min(trackerDSKCF_struct.currentTarget.occBB(2),<span class="keyword">...</span>
+0386                 trackerDSKCF_struct.previousTarget.occBB(2)),<span class="keyword">...</span>
+0387                 max(trackerDSKCF_struct.currentTarget.occBB(3),<span class="keyword">...</span>
+0388                 trackerDSKCF_struct.previousTarget.occBB(3)),<span class="keyword">...</span>
+0389                 max(trackerDSKCF_struct.currentTarget.occBB(4),<span class="keyword">...</span>
+0390                 trackerDSKCF_struct.previousTarget.occBB(4))];
+0391             extremaBB=[max(extremaBB(1),1),max(extremaBB(2),1),<span class="keyword">...</span>
+0392                 min(extremaBB(3),size(im,2)),min(extremaBB(4),size(im,1))];
+0393             
+0394         <span class="keyword">end</span>
+0395         
+0396         <span class="comment">%bbIn=framePrev.occBB;</span>
+0397         bbIn=extremaBB;
+0398         bbIn=<a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(bbIn ,0.05,size(noData));
+0399         
+0400         <span class="comment">%extract the target roi, from the depth and the nodata mask</span>
+0401         front_depth=<a href="roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(depth16Bit,bbIn);
+0402         depthNoData=<a href="roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(noData,bbIn);
+0403         
+0404         <span class="comment">%in case of bounding box with no depth data....</span>
+0405         <span class="keyword">if</span>(sum(sum(depthNoData)')==size(front_depth,1)*size(front_depth,2))
+0406             trackerDSKCF_struct.currentTarget.LabelRegions=depthNoData&gt;10000000;
+0407             trackerDSKCF_struct.currentTarget.Centers=1000000;
+0408             trackerDSKCF_struct.currentTarget.LUT=[];
+0409             <span class="comment">%eventually segment the current occluding area</span>
+0410         <span class="keyword">else</span>
+0411             <span class="comment">%note, we are saving the segmentation of the occluding region,</span>
+0412             <span class="comment">%in the target struct rather thant the other one!!!!!</span>
+0413             [trackerDSKCF_struct.currentTarget.LabelRegions,<span class="keyword">...</span>
+0414                 trackerDSKCF_struct.currentTarget.Centers,<span class="keyword">...</span>
+0415                 trackerDSKCF_struct.currentTarget.LUT,~,~,~]=<span class="keyword">...</span>
+0416                 <a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a>(front_depth,3,depthNoData,<span class="keyword">...</span>
+0417                 1,[-1 -1 -1],1,trackerDSKCF_struct.currentTarget.meanDepthObj,<span class="keyword">...</span>
+0418                 trackerDSKCF_struct.currentTarget.stdDepthObj,[2.3,0.00055,0.00000235]);
+0419             
+0420         <span class="keyword">end</span>
+0421         
+0422         <span class="comment">%filter out very small regions</span>
+0423         tmpProp=regionprops(trackerDSKCF_struct.currentTarget.LabelRegions,<span class="string">'Area'</span>);
+0424         areaList= cat(1, tmpProp.Area);
+0425         minArea=scaleDSKCF_struct.target_sz(currentScale).target_sz(2)*<span class="keyword">...</span>
+0426             scaleDSKCF_struct.target_sz(currentScale).target_sz(1)*0.05;
+0427         
+0428         areaSmallIndex=areaList&lt;minArea;
+0429         
+0430         <span class="comment">%exclude the small area index setting a super high depth!!!!!!!!</span>
+0431         <span class="comment">%it will never be used</span>
+0432         trackerDSKCF_struct.currentTarget.Centers(:,areaSmallIndex)= 1000000;
+0433         
+0434         [dummyVal,trackerDSKCF_struct.currentTarget.regionIndex]=<span class="keyword">...</span>
+0435             min(trackerDSKCF_struct.currentTarget.Centers);
+0436         
+0437         <span class="comment">%very bad segmentation, full of small regions. Set up a flag....</span>
+0438         <span class="keyword">if</span>(dummyVal==1000000)
+0439             trackerDSKCF_struct.currentTarget.regionIndex=6666666;
+0440         <span class="keyword">end</span>
+0441         
+0442         <span class="comment">%search for target's candidates in the search region.....</span>
+0443         [tarBB, segmentedOccBB, targetList, targetIndex,occmask] =  <span class="keyword">...</span>
+0444             <a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">targetSearchDSKCF</a>(bbIn, trackerDSKCF_struct, DSKCFparameters,<span class="keyword">...</span>
+0445             im,depth,depth16Bit,scaleDSKCF_struct,confValue3);
+0446         tarBBSegmented=[];
+0447         <span class="keyword">if</span>(isempty(segmentedOccBB)==false)
+0448             extremaBB=[min([trackerDSKCF_struct.currentTarget.occBB(1),<span class="keyword">...</span>
+0449                 segmentedOccBB(1)]),min([trackerDSKCF_struct.currentTarget.occBB(2),<span class="keyword">...</span>
+0450                 segmentedOccBB(2)]),max([trackerDSKCF_struct.currentTarget.occBB(3),<span class="keyword">...</span>
+0451                 segmentedOccBB(3)]),max([trackerDSKCF_struct.currentTarget.occBB(4),<span class="keyword">...</span>
+0452                 segmentedOccBB(4)])];
+0453             
+0454             trackerDSKCF_struct.currentTarget.occBB=[max(extremaBB(1),1),<span class="keyword">...</span>
+0455                 max(extremaBB(2),1),min(extremaBB(3),size(im,2)),<span class="keyword">...</span>
+0456                 min(extremaBB(4),size(im,1))]';
+0457             
+0458         <span class="keyword">end</span>
+0459         
+0460         <span class="keyword">if</span>(isempty(trackerDSKCF_struct.currentTarget.occBB))
+0461             trackerDSKCF_struct.currentTarget.occBB=trackerDSKCF_struct.previousTarget.occBB;
+0462         <span class="keyword">end</span>
+0463         
+0464         <span class="comment">%THESE CANDIDATES....CAME FROM THE SEGMENTATIONS....YOU NEED TO</span>
+0465         <span class="comment">%RESIZE THEM WITH THE REQUIRED WINDOW...</span>
+0466         centerNew=[];
+0467         <span class="keyword">if</span>(~isempty(tarBB))
+0468             tarBBSegmented=tarBB;
+0469             widthtarBB=tarBB(3)-tarBB(1);
+0470             heighttarBB=tarBB(4)-tarBB(2);
+0471             centerNew=floor([tarBB(1)+widthtarBB/2 tarBB(2)+heighttarBB/2]);
+0472             
+0473             tarBB(1:2)=centerNew - scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz([2 1])/2;
+0474             tarBB(3:4)=centerNew + scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz([2 1])/2;
+0475             
+0476         <span class="keyword">end</span>
+0477         
+0478         
+0479         <span class="comment">% calculate detection and segmentation consistency</span>
+0480         trackerDSKCF_struct.currentTarget.bb = tarBB;
+0481         trackerDSKCF_struct.currentTarget.conf = targetList.Conf_class(targetIndex);
+0482         trackerDSKCF_struct.currentTarget.segmentedBB = tarBB';
+0483         
+0484         
+0485         <span class="comment">%%Kill some strange respons on the occluding mask</span>
+0486         occmask = imfill(occmask,<span class="string">'holes'</span>);
+0487         tmpMask=repmat(0,size(depth));
+0488         tmpMask(bbIn(2):bbIn(4),bbIn(1):bbIn(3))=occmask;
+0489         
+0490         <span class="keyword">if</span>(isempty(centerNew)==false)
+0491             
+0492             <span class="comment">%re-assign new position to the target, even if the target is</span>
+0493             <span class="comment">%not valid, you need this just for visualization or checking</span>
+0494             <span class="comment">%the algorithm....</span>
+0495             [trackerDSKCF_struct.currentTarget.posX,<span class="keyword">...</span>
+0496                 trackerDSKCF_struct.currentTarget.posY<span class="keyword">...</span>
+0497                 trackerDSKCF_struct.currentTarget.w,<span class="keyword">...</span>
+0498                 trackerDSKCF_struct.currentTarget.h]<span class="keyword">...</span>
+0499                 =<a href="fromBBtoCentralPoint.html" class="code" title="function [centerX,centerY,width,height]=fromBBtoCentralPoint(bb)">fromBBtoCentralPoint</a>(trackerDSKCF_struct.currentTarget.bb);
+0500             <span class="comment">%update tracker struct, new position etc</span>
+0501             pos(2)=trackerDSKCF_struct.currentTarget.posX;
+0502             pos(1)=trackerDSKCF_struct.currentTarget.posY;
+0503             
+0504             <span class="keyword">if</span>(tmpMask(centerNew(2),centerNew(1))==1)
+0505                 trackerDSKCF_struct.currentTarget.conf=0;
+0506             <span class="keyword">end</span>
+0507         <span class="keyword">end</span>
+0508         
+0509         <span class="comment">% check recovery</span>
+0510         trackerDSKCF_struct.currentTarget.underOcclusion =1;
+0511         <span class="keyword">if</span> ~isempty(trackerDSKCF_struct.currentTarget.bb)
+0512             [p, TMPtargetDepth,TMPtargetStd,TMPLabelRegions,TMPCenters,<span class="keyword">...</span>
+0513                 TMPregionIndex,TMPLUT,secondPlaneDepth,secondPlaneDepthStd] <span class="keyword">...</span>
+0514                 = <a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>(depth16Bit,<span class="keyword">...</span>
+0515                 noData,trackerDSKCF_struct, trackerDSKCF_struct.currentTarget.bb);
+0516             
+0517             <span class="keyword">if</span> trackerDSKCF_struct.currentTarget.conf &gt; confInterval1/2 &amp;&amp; p&lt;0.35,
+0518                 trackerDSKCF_struct.currentTarget.underOcclusion =0;
+0519                 trackerDSKCF_struct.currentTarget.segmentedBB = tarBBSegmented';
+0520             <span class="keyword">end</span>
+0521             
+0522             <span class="keyword">if</span> ~trackerDSKCF_struct.currentTarget.underOcclusion,
+0523                 tmpWeight = max(0,min(1,trackerDSKCF_struct.currentTarget.conf));
+0524                 
+0525             <span class="keyword">else</span>
+0526                 tmpWeight = 0;
+0527             <span class="keyword">end</span>
+0528             
+0529             
+0530             <span class="keyword">if</span>(isempty(secondPlaneDepth)==false)
+0531                 TMPtargetDepth=secondPlaneDepth;
+0532                 TMPtargetStd=secondPlaneDepthStd;
+0533                 tmpWeight=tmpWeight*2.5;
+0534                 <span class="keyword">if</span>(tmpWeight&gt;1)
+0535                     tmpWeight=0.95;
+0536                 <span class="keyword">end</span>
+0537                 
+0538             <span class="keyword">end</span>
+0539             
+0540             trackerDSKCF_struct.currentTarget.meanDepthObj = tmpWeight * TMPtargetDepth + (1-tmpWeight) * trackerDSKCF_struct.currentTarget.meanDepthObj;
+0541             trackerDSKCF_struct.currentTarget.stdDepthObj = tmpWeight * TMPtargetStd + (1-tmpWeight) * trackerDSKCF_struct.currentTarget.stdDepthObj;
+0542             
+0543         <span class="keyword">else</span>
+0544             trackerDSKCF_struct.currentTarget.meanDepthObj = trackerDSKCF_struct.previousTarget.meanDepthObj;
+0545             trackerDSKCF_struct.currentTarget.stdDepthObj = trackerDSKCF_struct.previousTarget.stdDepthObj;
+0546         <span class="keyword">end</span>
+0547         
+0548         timeMatrixRow(ticINDEX)=toc(timeSolveOcclusion);
+0549     <span class="keyword">end</span>
+0550     
+0551     
+0552 <span class="keyword">end</span>
+0553 
+0554 <span class="comment">%IF UNDER OCCLUSION DON'T UPDATE.....</span>
+0555 <span class="keyword">if</span>(trackerDSKCF_struct.previousTarget.underOcclusion==false &amp;&amp; trackerDSKCF_struct.currentTarget.underOcclusion==false)
+0556     additionalShapeInterpolation=0;
+0557     timeEstimateChangeOfScale=tic();
+0558     ticINDEX=6;
+0559     
+0560     <span class="comment">%check for scale change</span>
+0561     <span class="keyword">if</span>(firstFrame==false)
+0562         scaleDSKCF_struct=<a href="../../DS-KCF_JRTIP_matlabCode/functionsScaleChange/getScaleFactorStruct.html" class="code" title="function scaleDSKCF_struct=getScaleFactorStruct(estimatedDepthMode,scaleDSKCF_struct)">getScaleFactorStruct</a>(trackerDSKCF_struct.currentTarget.meanDepthObj,scaleDSKCF_struct);
+0563         <span class="keyword">if</span>(changeOfShapeFlag &amp;&amp; scaleDSKCF_struct.updated==false)
+0564                [scaleDSKCF_struct,newPosShape,additionalShapeInterpolation,shapeDSKCF_struct]=<span class="keyword">...</span>
+0565                    <a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/getShapeFactorStructDirectionsV2.html" class="code" title="function [scaleDSKCF_struct, newPosShape, newInterpolationFactor,shapeDSKCF_struct]=getShapeFactorStructDirectionsV2(estimatedShapeBB,pos,estimatedDepth,scaleDSKCF_struct,shapeDSKCF_struct)">getShapeFactorStructDirectionsV2</a>(trackerDSKCF_struct.currentTarget.segmentedBB,pos,<span class="keyword">...</span>
+0566                 trackerDSKCF_struct.currentTarget.meanDepthObj,scaleDSKCF_struct,shapeDSKCF_struct);
+0567         <span class="keyword">end</span>
+0568     <span class="keyword">end</span>
+0569     
+0570     timeMatrixRow(ticINDEX)=toc(timeEstimateChangeOfScale);
+0571     
+0572     timeModelUpdate=tic();
+0573     ticINDEX=7;
+0574     
+0575     <span class="comment">%obtain a subwindow for training at newly estimated target position</span>
+0576     patch = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(im, pos, scaleDSKCF_struct.windows_sizes(scaleDSKCF_struct.i).window_sz);
+0577     patch_depth = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(depth, pos, scaleDSKCF_struct.windows_sizes(scaleDSKCF_struct.i).window_sz);
+0578     
+0579     <span class="comment">%check for detections....and generate the new weights</span>
+0580     <span class="comment">%detWf=fft2(detW);</span>
+0581     detWf=scaleDSKCF_struct.yfs(scaleDSKCF_struct.i).yf;<span class="comment">%fft2(detW);</span>
+0582     <span class="comment">%update the model</span>
+0583     [trackerDSKCF_struct.model_alphaf, trackerDSKCF_struct.model_alphaDf, <span class="keyword">...</span>
+0584         trackerDSKCF_struct.model_xf, trackerDSKCF_struct.model_xDf]=<span class="keyword">...</span>
+0585         <a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">modelUpdateDSKCF</a>(firstFrame,patch,patch_depth,DSKCFparameters.features,<span class="keyword">...</span>
+0586         DSKCFparameters.cell_size,scaleDSKCF_struct.cos_windows(scaleDSKCF_struct.i).cos_window,<span class="keyword">...</span>
+0587         DSKCFparameters.kernel,detWf,<span class="keyword">...</span>
+0588         DSKCFparameters.lambda,trackerDSKCF_struct.model_alphaf, <span class="keyword">...</span>
+0589         trackerDSKCF_struct.model_alphaDf,trackerDSKCF_struct.model_xf,<span class="keyword">...</span>
+0590         trackerDSKCF_struct.model_xDf,scaleDSKCF_struct.updated,DSKCFparameters.interp_factor+additionalShapeInterpolation);
+0591     
+0592     <span class="comment">%if scale changed you must change tracker size information</span>
+0593     <span class="keyword">if</span>(scaleDSKCF_struct.updated)
+0594         <span class="comment">%[newH,newW]= ;</span>
+0595         trackerDSKCF_struct.currentTarget.h=scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(1);
+0596         trackerDSKCF_struct.currentTarget.w=scaleDSKCF_struct.target_sz(scaleDSKCF_struct.i).target_sz(2);
+0597         
+0598         <span class="comment">%reinit tracker shape</span>
+0599         relativeShapeScaleFactor=0;
+0600         <span class="keyword">if</span>(shapeDSKCF_struct.growingStatus==true)
+0601             relativeShapeScaleFactor=1+(scaleDSKCF_struct.i-scaleDSKCF_struct.iPrev)*scaleDSKCF_struct.step;
+0602             <span class="comment">%shapeScaleFactor=scaleDSKCF_struct</span>
+0603         <span class="keyword">end</span>
+0604         shapeDSKCF_struct=<a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/initDSKCFshape.html" class="code" title="function [ dskcfShapeStruct ] = initDSKCFshape( slidingWinSize, scaleFactor,dskcfShapeStructOLD )">initDSKCFshape</a>(5,relativeShapeScaleFactor,shapeDSKCF_struct);
+0605         
+0606     <span class="keyword">end</span>
+0607     
+0608     timeMatrixRow(ticINDEX)=toc(timeModelUpdate);
+0609     
+0610 <span class="keyword">else</span>
+0611     <span class="comment">%%THERE IS AN OCCLUSION.....NOW WHAT TO DO.....? DON'T UPDATE MODEL....</span>
+0612     <span class="comment">%UPDATE ONLY POSITION!!!!!</span>
+0613     
+0614     <span class="comment">% TO BE CHECKEDD!!!!!</span>
+0615     <span class="keyword">if</span>(isempty(trackerDSKCF_struct.currentTarget.bb))
+0616         pos=[];
+0617     <span class="keyword">else</span>
+0618         pos=[trackerDSKCF_struct.currentTarget.posY,trackerDSKCF_struct.currentTarget.posX];
+0619     <span class="keyword">end</span>
+0620 <span class="keyword">end</span>
+0621 
+0622 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

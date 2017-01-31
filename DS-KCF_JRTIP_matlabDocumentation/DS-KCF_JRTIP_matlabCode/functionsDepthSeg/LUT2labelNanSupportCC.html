@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of LUT2labelNanSupportCC</title>
+  <meta name="keywords" content="LUT2labelNanSupportCC">
+  <meta name="description" content="LUT2LABELNANSUPPORTCC.m is a function for assign clustering label to the segmented depth image">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsDepthSeg -->
+<h1>LUT2labelNanSupportCC
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LUT2LABELNANSUPPORTCC.m is a function for assign clustering label to the segmented depth image</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [L,Cnew,LUTCC]=LUT2labelNanSupportCC(im,LUT,nanMatrix,histStep,C) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LUT2LABELNANSUPPORTCC.m is a function for assign clustering label to the segmented depth image 
+ 
+   LUT2LABELNANSUPPORTCC function creates the clusters'label for all the
+   pixels of the segmented depth image. A cluster refinement is performed
+   by performing a connected component anaylisis on the image plane. This
+   function extends the &quot;Fast segmentation of N-dimensional grayscale
+   images&quot; presented by Anton Semechko and shared in the Matlab Central at
+   this link under BSD licence
+   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images
+
+   INPUT: 
+   - im   depth image coded in 16bits, each pixel contains mm data. 
+   -LUT is the lookuptable containing cluster label and corresponding
+   depth value of the histogram
+   -nanMatrix  binary mask containing that marks missing depth pixels 
+   -histStep histogram bin used to compose depth histogram
+   -C centroids of the depth clusters
+
+   OUTPUT
+   - L    label image of the same size as the input image. For example,
+           L==i represents the region associated with prototype C(i),
+           where i=[1,k] (k = number of clusters).
+   -Cnew new centroids of the depth clusters obtained after the connected
+   component analysis
+
+   -LUTCC new LUT obtained after the connected component analysis
+
+ See also <a href="fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL</a>
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a>	FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [L,Cnew,LUTCC]=LUT2labelNanSupportCC(im,LUT,nanMatrix,histStep,C)</a>
+0002 <span class="comment">% LUT2LABELNANSUPPORTCC.m is a function for assign clustering label to the segmented depth image</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   LUT2LABELNANSUPPORTCC function creates the clusters'label for all the</span>
+0005 <span class="comment">%   pixels of the segmented depth image. A cluster refinement is performed</span>
+0006 <span class="comment">%   by performing a connected component anaylisis on the image plane. This</span>
+0007 <span class="comment">%   function extends the &quot;Fast segmentation of N-dimensional grayscale</span>
+0008 <span class="comment">%   images&quot; presented by Anton Semechko and shared in the Matlab Central at</span>
+0009 <span class="comment">%   this link under BSD licence</span>
+0010 <span class="comment">%   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   INPUT:</span>
+0013 <span class="comment">%   - im   depth image coded in 16bits, each pixel contains mm data.</span>
+0014 <span class="comment">%   -LUT is the lookuptable containing cluster label and corresponding</span>
+0015 <span class="comment">%   depth value of the histogram</span>
+0016 <span class="comment">%   -nanMatrix  binary mask containing that marks missing depth pixels</span>
+0017 <span class="comment">%   -histStep histogram bin used to compose depth histogram</span>
+0018 <span class="comment">%   -C centroids of the depth clusters</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%   OUTPUT</span>
+0021 <span class="comment">%   - L    label image of the same size as the input image. For example,</span>
+0022 <span class="comment">%           L==i represents the region associated with prototype C(i),</span>
+0023 <span class="comment">%           where i=[1,k] (k = number of clusters).</span>
+0024 <span class="comment">%   -Cnew new centroids of the depth clusters obtained after the connected</span>
+0025 <span class="comment">%   component analysis</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%   -LUTCC new LUT obtained after the connected component analysis</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">% See also FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  University of Bristol</span>
+0032 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0035 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0036 
+0037 Cnew=[];
+0038 <span class="comment">% Intensity range</span>
+0039 newPointSet=im(~nanMatrix);
+0040 Imin=double(min(newPointSet));
+0041 Imax=double(max(newPointSet));
+0042 I=(Imin:histStep:Imax)';
+0043 
+0044 offsetHist=histStep/2;
+0045 
+0046 LUTCC=[];
+0047 <span class="comment">%I(end)=Imax;</span>
+0048 <span class="keyword">if</span>(I(end)~=Imax|| length(I)==1)
+0049     I(end+1)=Imax+histStep;
+0050 <span class="keyword">end</span>
+0051 
+0052 
+0053 <span class="comment">% Create label image</span>
+0054 L=zeros(size(im),<span class="string">'uint8'</span>);
+0055 detectedRegion=0;
+0056 startingIndex=1;
+0057 <span class="keyword">for</span> k=1:max(LUT)
+0058    
+0059     <span class="comment">% Intensity range for k-th class</span>
+0060     i=find(LUT==k);
+0061     <span class="keyword">if</span>(isempty(i)==false)
+0062         i1=i(1);
+0063         <span class="keyword">if</span> numel(i)&gt;1
+0064             i2=i(end);
+0065         <span class="keyword">else</span>
+0066             i2=i1;
+0067         <span class="keyword">end</span>
+0068         
+0069         <span class="comment">% Map the intensities in the range [I(i1),I(i2)] to class k</span>
+0070         bw=im&gt;=I(i1)-offsetHist &amp; im&lt;I(i2)+offsetHist;
+0071         [Ltemp num]=bwlabel(bw);
+0072         Ltemp=Ltemp+detectedRegion;
+0073         detectedRegion=detectedRegion+num;
+0074         L(bw)=Ltemp(bw);
+0075         Cnew(startingIndex:(startingIndex+num-1))=C(k);
+0076         LUTCC(startingIndex:(startingIndex+num-1))=k;
+0077         startingIndex=startingIndex+num;
+0078     <span class="keyword">end</span>
+0079 <span class="keyword">end</span>
+0080</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

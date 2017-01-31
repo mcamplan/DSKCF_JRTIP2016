@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of generateFolderResults</title>
+  <meta name="keywords" content="generateFolderResults">
+  <meta name="description" content="generateFolderResults.m is a function to automatically generate the results folder where tracker's output files are stored">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsIO -->
+<h1>generateFolderResults
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>generateFolderResults.m is a function to automatically generate the results folder where tracker's output files are stored</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function tmpDestFolder=generateFolderResults(rootDestFolder,videoName,feature_type) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> generateFolderResults.m is a function to automatically generate the results folder where tracker's output files are stored
+
+  GENERATEFOLDERRESULTS creates the results folder for the DS-KCF tracker
+  inside the top folder specified in the string rootDestFolder. The
+  generated folder name is composed by using two other strings: videoName
+  that contains the sequence name that is going to be analyzed and
+  feature_type string that contains the name of the feature selected for
+  the DS-KCF tracker. In the case that a folder with the same name already
+  exists in rootDestFolder, an incremental counter is used to avoid
+  overwriting the old folder
+
+   INPUT:
+  -rootDestFolder name of the top folder where results will be saved
+  -videoName name of the sequences processed by the DS-KCF tracker
+  -feature_type name of the feauture used by the DS-KCF tracker
+
+   OUTPUT
+  -tmpDestFolder string containing absolute path of the results folder
+
+  Examples:
+    &gt;&gt; rootDestFolder='C:\myExistingResultsFolder';
+    &gt;&gt; videoName='videoToProcess';
+    &gt;&gt; feature_type='hog_depth';
+    &gt;&gt; tmpDestFolder=generateFolderResults(rootDestFolder,videoName,feature_type)
+       tmpDestFolder =
+
+       C:\myExistingResultsFolder\videoToProcess_hog_depth
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/testDS-KCFScripts/runDSKCF.html" class="code" title="">runDSKCF</a>	runDSKCF.m is a script to test the DS-KCF RGBD tracker described in</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% generateFolderResults.m is a function to automatically generate the results folder where tracker's output files are stored</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%  GENERATEFOLDERRESULTS creates the results folder for the DS-KCF tracker</span>
+0004 <span class="comment">%  inside the top folder specified in the string rootDestFolder. The</span>
+0005 <span class="comment">%  generated folder name is composed by using two other strings: videoName</span>
+0006 <span class="comment">%  that contains the sequence name that is going to be analyzed and</span>
+0007 <span class="comment">%  feature_type string that contains the name of the feature selected for</span>
+0008 <span class="comment">%  the DS-KCF tracker. In the case that a folder with the same name already</span>
+0009 <span class="comment">%  exists in rootDestFolder, an incremental counter is used to avoid</span>
+0010 <span class="comment">%  overwriting the old folder</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   INPUT:</span>
+0013 <span class="comment">%  -rootDestFolder name of the top folder where results will be saved</span>
+0014 <span class="comment">%  -videoName name of the sequences processed by the DS-KCF tracker</span>
+0015 <span class="comment">%  -feature_type name of the feauture used by the DS-KCF tracker</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%   OUTPUT</span>
+0018 <span class="comment">%  -tmpDestFolder string containing absolute path of the results folder</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  Examples:</span>
+0021 <span class="comment">%    &gt;&gt; rootDestFolder='C:\myExistingResultsFolder';</span>
+0022 <span class="comment">%    &gt;&gt; videoName='videoToProcess';</span>
+0023 <span class="comment">%    &gt;&gt; feature_type='hog_depth';</span>
+0024 <span class="comment">%    &gt;&gt; tmpDestFolder=generateFolderResults(rootDestFolder,videoName,feature_type)</span>
+0025 <span class="comment">%       tmpDestFolder =</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%       C:\myExistingResultsFolder\videoToProcess_hog_depth</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%  University of Bristol</span>
+0030 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0033 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0034 
+0035 <a name="_sub0" href="#_subfunctions" class="code">function tmpDestFolder=generateFolderResults(rootDestFolder,videoName,feature_type)</a>
+0036 
+0037 tmpDestFolderAbsolute=[rootDestFolder <span class="string">'/'</span> videoName <span class="string">'_'</span> feature_type];
+0038 tmpDestFolder=[videoName <span class="string">'/'</span> feature_type];
+0039 
+0040 existingDir=exist(tmpDestFolderAbsolute,<span class="string">'dir'</span>);
+0041 
+0042 <span class="keyword">if</span>(existingDir==false)
+0043     
+0044     tmpDestFolder=tmpDestFolderAbsolute;
+0045 <span class="keyword">else</span>
+0046     <span class="comment">%take the number of existing folder...</span>
+0047     numDir=length(dir([tmpDestFolderAbsolute <span class="string">'*'</span>]));
+0048     numDir=numDir+1;
+0049     tmpDestFolderAbsolute=[rootDestFolder <span class="string">'/'</span> videoName <span class="string">'_'</span> feature_type num2str(numDir)];
+0050     tmpDestFolder=tmpDestFolderAbsolute;
+0051 <span class="keyword">end</span>
+0052 
+0053 mkdir(tmpDestFolder);</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

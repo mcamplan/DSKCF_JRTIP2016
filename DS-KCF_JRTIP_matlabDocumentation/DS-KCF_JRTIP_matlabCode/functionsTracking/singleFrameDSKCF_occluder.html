@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of singleFrameDSKCF_occluder</title>
+  <meta name="keywords" content="singleFrameDSKCF_occluder">
+  <meta name="description" content="SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>singleFrameDSKCF_occluder
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object
+
+   SINGLEFRAMEDSKCF_OCCLUDER is the function for tracking the occluding
+   object in the DS-KCF tracker framework (for more details see [1]). This
+   function is based on several data structures where input and output
+   data is stored.Please note that data structures are supposed to be
+   initialized as in wrapperDSKCF and runDSKCF.m test script.
+
+   INPUT:
+   - firstFrame   boolean flag that marks the first frame of the
+   sequence
+   - im    color data
+   - depth    depth data (8bit image)
+   - trackerDSKCF_structOccluder  DS-KCF tracker data structure (see WRAPPERDSKCF,
+   INITDSKCFTRACKER)
+   - DSKCFparameters, parameters structures
+
+
+   OUTPUT
+   -newPos updated position of the DS-KCF tracker while tracking the
+   occluding object newPos=[y x] where x is the column and y is the row
+   index
+   -trackerDSKCF_structOccluder updated data structure for the trackers
+
+  See also <a href="maxResponseDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)">MAXRESPONSEDSKCF</a> , <a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">SINGLEFRAMEDSKCF</a>, <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">GET_SUBWINDOW</a>,
+  <a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">MODELUPDATEDSKCF</a>, <a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">FROMCENTRALPOINTTOBB</a>
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a>	FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box</li><li><a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>	GET_SUBWINDOW</li><li><a href="maxResponseDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)">maxResponseDSKCF</a>	MAXRESPONSEDSKCF function for calculating the DSKCF response</li><li><a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">modelUpdateDSKCF</a>	MODELUPDATEDSKCF function for updating the DSKCF model %</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,</a><span class="keyword">...</span>
+0002     im,depth,trackerDSKCF_structOccluder,DSKCFparameters)
+0003 <span class="comment">% SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%   SINGLEFRAMEDSKCF_OCCLUDER is the function for tracking the occluding</span>
+0006 <span class="comment">%   object in the DS-KCF tracker framework (for more details see [1]). This</span>
+0007 <span class="comment">%   function is based on several data structures where input and output</span>
+0008 <span class="comment">%   data is stored.Please note that data structures are supposed to be</span>
+0009 <span class="comment">%   initialized as in wrapperDSKCF and runDSKCF.m test script.</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   INPUT:</span>
+0012 <span class="comment">%   - firstFrame   boolean flag that marks the first frame of the</span>
+0013 <span class="comment">%   sequence</span>
+0014 <span class="comment">%   - im    color data</span>
+0015 <span class="comment">%   - depth    depth data (8bit image)</span>
+0016 <span class="comment">%   - trackerDSKCF_structOccluder  DS-KCF tracker data structure (see WRAPPERDSKCF,</span>
+0017 <span class="comment">%   INITDSKCFTRACKER)</span>
+0018 <span class="comment">%   - DSKCFparameters, parameters structures</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%   OUTPUT</span>
+0022 <span class="comment">%   -newPos updated position of the DS-KCF tracker while tracking the</span>
+0023 <span class="comment">%   occluding object newPos=[y x] where x is the column and y is the row</span>
+0024 <span class="comment">%   index</span>
+0025 <span class="comment">%   -trackerDSKCF_structOccluder updated data structure for the trackers</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%  See also MAXRESPONSEDSKCF , SINGLEFRAMEDSKCF, GET_SUBWINDOW,</span>
+0028 <span class="comment">%  MODELUPDATEDSKCF, FROMCENTRALPOINTTOBB</span>
+0029 <span class="comment">%</span>
+0030 <span class="comment">%</span>
+0031 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0032 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0033 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%  University of Bristol</span>
+0037 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0038 <span class="comment">%</span>
+0039 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0040 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0041 
+0042 
+0043 <span class="comment">%insert in pos the previous target position...</span>
+0044 pos=[trackerDSKCF_structOccluder.previousTarget.posY,trackerDSKCF_structOccluder.previousTarget.posX];
+0045 newPos=pos;
+0046 <span class="keyword">if</span>(firstFrame==false)
+0047     
+0048     <span class="comment">%obtain a subwindow for training at newly estimated target position</span>
+0049     patch = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(im, pos, trackerDSKCF_structOccluder.window_sz);
+0050     patch_depth = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(depth, pos, trackerDSKCF_structOccluder.window_sz);
+0051     nRows=size(im,1);
+0052     nCols=size(im,2);
+0053     <span class="comment">%calculate response of the DS-KCF tracker</span>
+0054     [response, maxResponse,newPos]=<a href="maxResponseDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)">maxResponseDSKCF</a>(<span class="keyword">...</span>
+0055         patch,patch_depth, DSKCFparameters.features,DSKCFparameters.kernel,<span class="keyword">...</span>
+0056         pos,DSKCFparameters.cell_size, trackerDSKCF_structOccluder.cos_window,<span class="keyword">...</span>
+0057         trackerDSKCF_structOccluder.model_xf,trackerDSKCF_structOccluder.model_alphaf,<span class="keyword">...</span>
+0058         trackerDSKCF_structOccluder.model_xDf,trackerDSKCF_structOccluder.model_alphaDf,<span class="keyword">...</span>
+0059         nRows,nCols);
+0060         
+0061     <span class="comment">%update tracker struct, new position etc</span>
+0062     trackerDSKCF_structOccluder.currentTarget.posX=newPos(2);
+0063     trackerDSKCF_structOccluder.currentTarget.posY=newPos(1);
+0064     
+0065     trackerDSKCF_structOccluder.currentTarget.bb=<a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">fromCentralPointToBB</a><span class="keyword">...</span>
+0066         (trackerDSKCF_structOccluder.currentTarget.posX,trackerDSKCF_structOccluder.currentTarget.posY,<span class="keyword">...</span>
+0067         trackerDSKCF_structOccluder.currentTarget.w,trackerDSKCF_structOccluder.currentTarget.h,<span class="keyword">...</span>
+0068         nCols,nRows);
+0069     
+0070     trackerDSKCF_structOccluder.currentTarget.conf=maxResponse;
+0071     
+0072 <span class="keyword">end</span>
+0073 
+0074 <span class="comment">%obtain a subwindow for training at newly estimated target position</span>
+0075 patch = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(im, newPos, trackerDSKCF_structOccluder.window_sz);
+0076 patch_depth = <a href="get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(depth, newPos, trackerDSKCF_structOccluder.window_sz);
+0077 
+0078 <span class="comment">%update occluder model....</span>
+0079 [trackerDSKCF_structOccluder.model_alphaf, trackerDSKCF_structOccluder.model_alphaDf, <span class="keyword">...</span>
+0080     trackerDSKCF_structOccluder.model_xf, trackerDSKCF_structOccluder.model_xDf]=<span class="keyword">...</span>
+0081     <a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">modelUpdateDSKCF</a>(firstFrame,patch,patch_depth,DSKCFparameters.features,<span class="keyword">...</span>
+0082     DSKCFparameters.cell_size,trackerDSKCF_structOccluder.cos_window,<span class="keyword">...</span>
+0083     DSKCFparameters.kernel,trackerDSKCF_structOccluder.yf,<span class="keyword">...</span>
+0084     DSKCFparameters.lambda,trackerDSKCF_structOccluder.model_alphaf, <span class="keyword">...</span>
+0085     trackerDSKCF_structOccluder.model_alphaDf,trackerDSKCF_structOccluder.model_xf,<span class="keyword">...</span>
+0086     trackerDSKCF_structOccluder.model_xDf,0,DSKCFparameters.interp_factor);
+0087</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

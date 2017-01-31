@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of resetDSKCFtrackerInfo</title>
+  <meta name="keywords" content="resetDSKCFtrackerInfo">
+  <meta name="description" content="RESETDSKCFTRACKERINFO.m re-initializes the data structure for DS-KCF tracker before processing a new frame[1]">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>resetDSKCFtrackerInfo
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>RESETDSKCFTRACKERINFO.m re-initializes the data structure for DS-KCF tracker before processing a new frame[1]</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function trackerDSKCF_struct=resetDSKCFtrackerInfo(trackerDSKCF_struct) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> RESETDSKCFTRACKERINFO.m re-initializes the data structure for DS-KCF tracker before processing a new frame[1]
+ 
+   RESETDSKCFTRACKERINFO re-initializes the data structure for DS-KCF
+   tracker before processing a new frame[1]
+
+   INPUT: 
+   -trackerDSKCF_structIN tracker data structure
+   OUTPUT
+  -trackerDSKCF_struct data structure with re-set tracking info
+   
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+ See also <a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">SINGLEFRAMEDSKCF</a>
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function trackerDSKCF_struct=resetDSKCFtrackerInfo(trackerDSKCF_struct)</a>
+0002 <span class="comment">% RESETDSKCFTRACKERINFO.m re-initializes the data structure for DS-KCF tracker before processing a new frame[1]</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   RESETDSKCFTRACKERINFO re-initializes the data structure for DS-KCF</span>
+0005 <span class="comment">%   tracker before processing a new frame[1]</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT:</span>
+0008 <span class="comment">%   -trackerDSKCF_structIN tracker data structure</span>
+0009 <span class="comment">%   OUTPUT</span>
+0010 <span class="comment">%  -trackerDSKCF_struct data structure with re-set tracking info</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0013 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0014 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0015 <span class="comment">% See also SINGLEFRAMEDSKCF</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%  University of Bristol</span>
+0018 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0021 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0022 
+0023 <span class="comment">%trackerDSKCF_struct=trackerDSKCF_structIN;</span>
+0024 trackerDSKCF_struct.currentTarget.occBB=[0 0 0 0]; <span class="comment">% in the format [topLeftX, topLeftY, bottomRightX, bottomRightY]</span>
+0025 trackerDSKCF_struct.currentTarget.totalOcc=0; <span class="comment">% total occlusion flag</span>
+0026 trackerDSKCF_struct.currentTarget.underOcclusion=0; <span class="comment">% under occlusion flag</span>
+0027 trackerDSKCF_struct.currentTarget.conf=0;
+0028</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

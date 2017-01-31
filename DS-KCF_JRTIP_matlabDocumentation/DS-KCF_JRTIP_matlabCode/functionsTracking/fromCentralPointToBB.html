@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of fromCentralPointToBB</title>
+  <meta name="keywords" content="fromCentralPointToBB">
+  <meta name="description" content="FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>fromCentralPointToBB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box
+
+  FROMCENTRALPOINTTOBB is a function that calculates the target bounding
+  box given the centroid position and the size of the target
+
+   INPUT:
+  -centerX target's centroid coordinate (column in the image plane)
+  -centerY target's centroid coordinate (row in the image plane)
+  -width target's width
+  -height target's height
+ -maxX,maxY image limits
+
+   OUTPUT
+  -bb calculated bounding box in the format [topLeftY, topLeftX,
+   bottomRightY, bottomRightX] read as [rowIndexTopLeft, columnIndexTopLeft,
+   rowIndexBottomRight, columnIndexBottomRight]
+
+  See also <a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">SINGLEFRAMEDSKCF</a>, <a href="fromCentralPointToBB.html" class="code" title="function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)">FROMCENTRALPOINTTOBB</a>
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/regionModificationCheck.html" class="code" title="function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct)">regionModificationCheck</a>	REGIONMODIFICATIONCHECK.m function to identify change of shape as</li><li><a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li><li><a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>	SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</li><li><a href="../../DS-KCF_JRTIP_matlabCode/wrapperDSKCF.html" class="code" title="function [dsKCFoutputSr,dsKCFoutputSq,dsKCFsegmentationOut, avTime,totalTime,timeMatrix] =wrapperDSKCF(video_path, depth_path, img_files, depth_files, pos, target_sz,DSKCFparameters, show_visualization,save_Images,dest_path,noBitShift)">wrapperDSKCF</a>	WRAPPERDSKCF.m is the wrapper function for the DS-KCF tracker [1]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <span class="comment">% FROMCENTRALPOINTTOBB.m is a function for calculating target bounding box</span>
+0002 <span class="comment">%</span>
+0003 <span class="comment">%  FROMCENTRALPOINTTOBB is a function that calculates the target bounding</span>
+0004 <span class="comment">%  box given the centroid position and the size of the target</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   INPUT:</span>
+0007 <span class="comment">%  -centerX target's centroid coordinate (column in the image plane)</span>
+0008 <span class="comment">%  -centerY target's centroid coordinate (row in the image plane)</span>
+0009 <span class="comment">%  -width target's width</span>
+0010 <span class="comment">%  -height target's height</span>
+0011 <span class="comment">% -maxX,maxY image limits</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%   OUTPUT</span>
+0014 <span class="comment">%  -bb calculated bounding box in the format [topLeftY, topLeftX,</span>
+0015 <span class="comment">%   bottomRightY, bottomRightX] read as [rowIndexTopLeft, columnIndexTopLeft,</span>
+0016 <span class="comment">%   rowIndexBottomRight, columnIndexBottomRight]</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%  See also SINGLEFRAMEDSKCF, FROMCENTRALPOINTTOBB</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  University of Bristol</span>
+0021 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0024 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0025 
+0026 <a name="_sub0" href="#_subfunctions" class="code">function bb=fromCentralPointToBB(centerX,centerY,width,height,maxX,maxY)</a>
+0027 
+0028 bb(1)=max(1,centerX-width/2);<span class="comment">%column indexes</span>
+0029 bb(2)=max(1,centerY-height/2);<span class="comment">%row indexes</span>
+0030 bb(3)=min(maxX,centerX+width/2);<span class="comment">%column indexes</span>
+0031 bb(4)=min(maxY,centerY+height/2);<span class="comment">%row indexes</span>
+0032 bb=floor(bb(:));
+0033 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

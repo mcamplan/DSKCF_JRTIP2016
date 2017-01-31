@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of checkOcclusionsDSKCF_secondPlane</title>
+  <meta name="keywords" content="checkOcclusionsDSKCF_secondPlane">
+  <meta name="description" content="CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsOcclusions -->
+<h1>checkOcclusionsDSKCF_secondPlane
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in
+the occluded area
+
+CHECKOCCLUSIONSDSKCF_SECONDPLANE.m is the function that estimate the
+degree of the current occlusion in  the DSKCF tracker framework. For more
+information about how DSKCF handles occlusions see [1]. Please note that
+this function was partially built extending the RGBD tracker code
+presented in [2] and available under under Open Source MIT License at
+ http://tracking.cs.princeton.edu/code.html
+
+
+  INPUT:
+  - depthMapCurr   current depth image
+  - noDataCurrent  mask marking missing depth data
+  - trackerDSKCF_struct  DS-KCF tracker data structure
+  - bb tracked region bounding box in the format [topLeftX, topLeftY,
+  bottomRightX, bottomRightY] read as [columnIndexTopLeft,
+   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]
+
+  OUTPUT
+  - p fraction of pixel belonging to the occluding object
+  - secondPlaneDepth estimated mean depth of the object in the second
+  plane
+  - secondPlaneDepthStd estimated variance depth of the object in the second
+  plane
+  - depthCurr estimated mean depth value of the target (assigned even if it is not
+  the closest object with respect to the camera)
+  -  stdNew estimated depth standard deviation of the target (assigned even if it is not
+  the closest object with respect to the camera)
+  - LabelReg    label image of the same size as the input image. For example,
+           LabelReg==i represents the region associated with prototype C(i),
+           where i=[1,k] (k = number of clusters).
+   - Centers    1-by-k array of cluster centroids.
+   - LUTCC  L-by-1 array that specifies the intensity-class relations,
+           where L is the dynamic intensity range of the input image.
+           Specifically, LUT(1) corresponds to class assigned to
+           min(im(:)) and LUT(L) corresponds to the class assigned to
+           max(im(:)).
+   -regionIndex label of the closest object's cluster
+   -minIndexReduced index of the clusters after area small filtering
+
+ See also <a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">ENLARGEBB</a>, FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL,
+ CALCULATENOISEVAR, ROIFROMBB, SINGLEFRAMEDSKCF
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.
+
+ University of Bristol
+ Massimo Camplani and Sion Hannuna
+ massimo.camplani@bristol.ac.uk
+ hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/calculateNoiseVar.html" class="code" title="function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)">calculateNoiseVar</a>	CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a>	FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</li><li><a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>	ENLARGEBB.m enlarges the size of a bounding box</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>	ROIFROMBB.m is a function for extracting roi from images given a bounding box</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCC</a><span class="keyword">...</span>
+0002     secondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane<span class="keyword">...</span>
+0003     (depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)
+0004 <span class="comment">%CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</span>
+0005 <span class="comment">%the occluded area</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%CHECKOCCLUSIONSDSKCF_SECONDPLANE.m is the function that estimate the</span>
+0008 <span class="comment">%degree of the current occlusion in  the DSKCF tracker framework. For more</span>
+0009 <span class="comment">%information about how DSKCF handles occlusions see [1]. Please note that</span>
+0010 <span class="comment">%this function was partially built extending the RGBD tracker code</span>
+0011 <span class="comment">%presented in [2] and available under under Open Source MIT License at</span>
+0012 <span class="comment">% http://tracking.cs.princeton.edu/code.html</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%  INPUT:</span>
+0016 <span class="comment">%  - depthMapCurr   current depth image</span>
+0017 <span class="comment">%  - noDataCurrent  mask marking missing depth data</span>
+0018 <span class="comment">%  - trackerDSKCF_struct  DS-KCF tracker data structure</span>
+0019 <span class="comment">%  - bb tracked region bounding box in the format [topLeftX, topLeftY,</span>
+0020 <span class="comment">%  bottomRightX, bottomRightY] read as [columnIndexTopLeft,</span>
+0021 <span class="comment">%   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%  OUTPUT</span>
+0024 <span class="comment">%  - p fraction of pixel belonging to the occluding object</span>
+0025 <span class="comment">%  - secondPlaneDepth estimated mean depth of the object in the second</span>
+0026 <span class="comment">%  plane</span>
+0027 <span class="comment">%  - secondPlaneDepthStd estimated variance depth of the object in the second</span>
+0028 <span class="comment">%  plane</span>
+0029 <span class="comment">%  - depthCurr estimated mean depth value of the target (assigned even if it is not</span>
+0030 <span class="comment">%  the closest object with respect to the camera)</span>
+0031 <span class="comment">%  -  stdNew estimated depth standard deviation of the target (assigned even if it is not</span>
+0032 <span class="comment">%  the closest object with respect to the camera)</span>
+0033 <span class="comment">%  - LabelReg    label image of the same size as the input image. For example,</span>
+0034 <span class="comment">%           LabelReg==i represents the region associated with prototype C(i),</span>
+0035 <span class="comment">%           where i=[1,k] (k = number of clusters).</span>
+0036 <span class="comment">%   - Centers    1-by-k array of cluster centroids.</span>
+0037 <span class="comment">%   - LUTCC  L-by-1 array that specifies the intensity-class relations,</span>
+0038 <span class="comment">%           where L is the dynamic intensity range of the input image.</span>
+0039 <span class="comment">%           Specifically, LUT(1) corresponds to class assigned to</span>
+0040 <span class="comment">%           min(im(:)) and LUT(L) corresponds to the class assigned to</span>
+0041 <span class="comment">%           max(im(:)).</span>
+0042 <span class="comment">%   -regionIndex label of the closest object's cluster</span>
+0043 <span class="comment">%   -minIndexReduced index of the clusters after area small filtering</span>
+0044 <span class="comment">%</span>
+0045 <span class="comment">% See also ENLARGEBB, FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL,</span>
+0046 <span class="comment">% CALCULATENOISEVAR, ROIFROMBB, SINGLEFRAMEDSKCF</span>
+0047 <span class="comment">%</span>
+0048 <span class="comment">%</span>
+0049 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0050 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0051 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0052 <span class="comment">%</span>
+0053 <span class="comment">%  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD</span>
+0054 <span class="comment">%  Camera: Baseline and Benchmark. 2013.</span>
+0055 <span class="comment">%</span>
+0056 <span class="comment">% University of Bristol</span>
+0057 <span class="comment">% Massimo Camplani and Sion Hannuna</span>
+0058 <span class="comment">% massimo.camplani@bristol.ac.uk</span>
+0059 <span class="comment">% hannuna@compsci.bristol.ac.uk</span>
+0060 <span class="comment">%</span>
+0061 
+0062 
+0063 bbPrev = trackerDSKCF_struct.previousTarget.bb;
+0064 depthPrev = trackerDSKCF_struct.previousTarget.meanDepthObj;
+0065 
+0066 p=999;
+0067 depthCurr=depthPrev;
+0068 
+0069 
+0070 secondPlaneDepth=[];
+0071 secondPlaneDepthStd=[];
+0072 
+0073 stdOLD=trackerDSKCF_struct.previousTarget.stdDepthObj;
+0074 <span class="keyword">if</span> isempty(bb),
+0075     stdNew=stdOLD;
+0076     minIndexReduced=1;
+0077     LabelReg=[];
+0078     Centers=[];
+0079     regionIndex=0;
+0080     LUT=[];
+0081     <span class="keyword">return</span>;
+0082 <span class="keyword">end</span>
+0083 
+0084 bbIn=bb;
+0085 bb=<a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(bb ,0.05,size(depthMapCurr));
+0086 
+0087 <span class="comment">%extract the target roi, from the depth and the nodata mask</span>
+0088 front_depth=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(depthMapCurr,bb);
+0089 depthNoData=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(noDataCurrent,bb);
+0090 
+0091 <span class="comment">%hard coded quadratic noise model of the Kinect according to</span>
+0092 <span class="comment">%M. Camplani, T. Mantecon, and L. Salgado. Depth-color fusion strategy for</span>
+0093 <span class="comment">%3-D scene modeling with Kinect. Cybernetics, IEEE Transactions on,</span>
+0094 <span class="comment">%43(6):1560–1571, 2013</span>
+0095 noiseModelVector=[2.3,0.00055,0.00000235];
+0096 
+0097 [LabelReg,Centers,LUT,H,I,LUTCC]=<a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a><span class="keyword">...</span>
+0098     (front_depth,3,depthNoData,1,[-1,-1,-1],1,depthPrev,stdOLD,noiseModelVector);
+0099 
+0100 <span class="comment">%wrong segmentation....you must exit</span>
+0101 <span class="keyword">if</span>(isempty(LabelReg))
+0102     p=0;
+0103     stdNew=stdOLD;
+0104     minIndexReduced=1;
+0105     LabelReg=[];
+0106     Centers=[];
+0107     regionIndex=0;
+0108     LUT=[];
+0109     <span class="keyword">return</span>
+0110 <span class="keyword">end</span>
+0111 
+0112 <span class="comment">%%clean very smallRegions....</span>
+0113 tmpProp=regionprops(LabelReg,<span class="string">'Area'</span>);
+0114 areaList= cat(1, tmpProp.Area);
+0115 widthTarget=bbIn(4)-bbIn(2);
+0116 heightTarget=bbIn(3)-bbIn(1);
+0117 minArea=widthTarget*heightTarget*0.05;
+0118 areaSmallIndex=areaList&lt;minArea;
+0119 
+0120 <span class="comment">%exclude the small area index setting a super high depth!!!!!!!!</span>
+0121 <span class="comment">%it will never be used</span>
+0122 Centers(:,areaSmallIndex)= 1000000;
+0123 
+0124 <span class="comment">%%%%</span>
+0125 
+0126 [targetDepth,regionIndex]=min(Centers);
+0127 
+0128 depthVector=double(front_depth(LabelReg==regionIndex));
+0129 targetStd=std(depthVector);
+0130 targetStd=max(2.5*<a href="../../DS-KCF_JRTIP_matlabCode/functionsDepthSeg/calculateNoiseVar.html" class="code" title="function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)">calculateNoiseVar</a>(targetDepth,noiseModelVector(1),noiseModelVector(2),noiseModelVector(3)),targetStd);
+0131 <span class="comment">%targetStd=std(depthVector);</span>
+0132 <span class="keyword">if</span>(targetStd&lt;5)
+0133     targetStd=stdOLD;
+0134 <span class="keyword">end</span>
+0135 
+0136 
+0137 selectionIndex=I&gt;-10000;
+0138 <span class="comment">%%%AGAIN THIS CONDITION SHOULD BE CHECKED.....IF IT IS REACHED SOMEHOW</span>
+0139 <span class="keyword">if</span> isnan(depthPrev),
+0140     depthCurr=targetDepth;
+0141     p=0;
+0142 <span class="keyword">else</span>
+0143     peakDistances=abs(Centers-depthPrev);
+0144     [minDist, minIndex]=min(peakDistances);
+0145     
+0146     <span class="comment">%register the plane index when you filtered out some small</span>
+0147     <span class="comment">%regions....</span>
+0148     CentersReduced=Centers(Centers&lt;1000000);
+0149     peakDistancesReduced=abs(CentersReduced-depthPrev);
+0150     [minDistReduced, minIndexReduced]=min(peakDistancesReduced);
+0151     <span class="keyword">if</span>(isempty(minDistReduced))
+0152         minDist=200000;
+0153         minIndexReduced=0;
+0154     <span class="keyword">end</span>
+0155     <span class="comment">%check firs if the main mode in previous frame is the first peak of the actual distribution</span>
+0156     <span class="keyword">if</span>(minIndexReduced==1 &amp;&amp; minDist&lt;3*stdOLD)
+0157         <span class="comment">%%everything seems ok....no occluding object, just a movement</span>
+0158         <span class="comment">%%of the object....update the depth!!!</span>
+0159         depthCurr=targetDepth;
+0160         stdNew=mean([targetStd stdOLD]);
+0161         selectionIndex=LUT~=LUTCC(minIndex);
+0162     <span class="keyword">else</span>
+0163         
+0164         <span class="keyword">if</span>(minDist&lt;2.5*stdOLD)
+0165             depthCurr=Centers(minIndex);
+0166             depthVector=double(front_depth(LabelReg==minIndex));
+0167             stdNew=mean([std(depthVector) stdOLD]);
+0168             <span class="keyword">if</span>(stdNew&lt;5)
+0169                 stdNew=stdOLD;
+0170             <span class="keyword">end</span>
+0171             selectionIndex=LUT~=LUTCC(minIndex);
+0172         <span class="keyword">else</span>
+0173             depthCurr=depthPrev;
+0174             stdNew=stdOLD;
+0175             
+0176             <span class="comment">%%output anyway the depth of the belonging region</span>
+0177             <span class="comment">%%especially if it is the second depth plane.....</span>
+0178             <span class="comment">%if(LUTCC(minIndex)==2)</span>
+0179             <span class="keyword">if</span>(minIndexReduced==2)
+0180                 secondPlaneDepth=Centers(minIndex);
+0181                 depthVector=double(front_depth(LabelReg==minIndex));
+0182                 secondPlaneDepthStd=std(depthVector);
+0183                 <span class="keyword">if</span>(secondPlaneDepthStd&lt;5)
+0184                     secondPlaneDepthStd=stdOLD;
+0185                 <span class="keyword">end</span>
+0186                 selectionIndex=LUT~=LUTCC(minIndex);
+0187             <span class="keyword">end</span>
+0188         <span class="keyword">end</span>
+0189     <span class="keyword">end</span>
+0190     normN=H/sum(H(:));
+0191     <span class="comment">%not only consider the closest points, but also remove the pixels</span>
+0192     <span class="comment">%beloning to the target region....only in this way you can really</span>
+0193     <span class="comment">%estimate p</span>
+0194     validIndex=I&lt;(depthCurr-1.5*stdNew);
+0195     <span class="comment">%validIndex=validIndex &amp; (LUT~=LUTCC(minIndex));</span>
+0196     validIndex=validIndex &amp; selectionIndex;
+0197     p=sum(normN(validIndex));
+0198 <span class="keyword">end</span>
+0199 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

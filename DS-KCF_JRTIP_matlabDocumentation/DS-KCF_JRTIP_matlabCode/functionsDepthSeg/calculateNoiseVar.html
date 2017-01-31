@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of calculateNoiseVar</title>
+  <meta name="keywords" content="calculateNoiseVar">
+  <meta name="description" content="CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsDepthSeg -->
+<h1>calculateNoiseVar
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise 
+ 
+   CALCULATENOISEVAR is a function for calculating the depth noise for a
+   given distance according to the quadratic noise model presented in [1]
+
+   INPUT: 
+  -depthValue depth measurement
+  -noiseModelP0, noiseModelP1,noiseModelP2 noise model parameters
+
+   OUTPUT
+  -noiseSTD estimated noise standard deviation 
+  
+  See also <a href="fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL</a>,
+  CHECKOCCLUSIONSDSKCF_NOISEMODEL, CHECKOCCLUSIONSDSKCF_SECONDPLANE
+
+  [1] M. Camplani, T. Mantecon, and L. Salgado. Depth-color fusion
+  strategy for 3-D scene modeling with Kinect. Cybernetics, IEEE
+  Transactions on, 43(6):1560–1571, 2013
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fastDepthSegmentationDSKCF_noiseModel.html" class="code" title="function [L,Cnew,LUT,H,I,LUTCC]=fastDepthSegmentationDSKCF_noiseModel(im,c,nanMatrix,minimumError,Cinit, findPeak,targetDepth,targetSTD,noiseModelVector)">fastDepthSegmentationDSKCF_noiseModel</a>	FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL.m segments depth data</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>	CHECKOCCLUSIONSDSKCF_NOISEMODEL function for detecting occlusions</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>	CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function noiseStd=calculateNoiseVar(depthValue,  noiseModelP0, noiseModelP1,noiseModelP2)</a>
+0002 <span class="comment">% CALCULATENOISEVAR.m Calculates the variance of the Kinect Noise</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   CALCULATENOISEVAR is a function for calculating the depth noise for a</span>
+0005 <span class="comment">%   given distance according to the quadratic noise model presented in [1]</span>
+0006 <span class="comment">%</span>
+0007 <span class="comment">%   INPUT:</span>
+0008 <span class="comment">%  -depthValue depth measurement</span>
+0009 <span class="comment">%  -noiseModelP0, noiseModelP1,noiseModelP2 noise model parameters</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   OUTPUT</span>
+0012 <span class="comment">%  -noiseSTD estimated noise standard deviation</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%  See also FASTDEPTHSEGMENTATIONDSKCF_NOISEMODEL,</span>
+0015 <span class="comment">%  CHECKOCCLUSIONSDSKCF_NOISEMODEL, CHECKOCCLUSIONSDSKCF_SECONDPLANE</span>
+0016 <span class="comment">%</span>
+0017 <span class="comment">%  [1] M. Camplani, T. Mantecon, and L. Salgado. Depth-color fusion</span>
+0018 <span class="comment">%  strategy for 3-D scene modeling with Kinect. Cybernetics, IEEE</span>
+0019 <span class="comment">%  Transactions on, 43(6):1560–1571, 2013</span>
+0020 <span class="comment">%</span>
+0021 <span class="comment">%</span>
+0022 <span class="comment">%  University of Bristol</span>
+0023 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0026 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0027 
+0028 noiseStd=noiseModelP0+ noiseModelP1*depthValue+ noiseModelP2*depthValue*depthValue;</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

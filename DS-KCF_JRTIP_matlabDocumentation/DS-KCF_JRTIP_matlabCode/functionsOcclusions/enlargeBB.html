@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of enlargeBB</title>
+  <meta name="keywords" content="enlargeBB">
+  <meta name="description" content="ENLARGEBB.m enlarges the size of a bounding box">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsOcclusions -->
+<h1>enlargeBB
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ENLARGEBB.m enlarges the size of a bounding box</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function bb = enlargeBB(smallBB,a,size) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ENLARGEBB.m enlarges the size of a bounding box
+
+   ENLARGEBB is a function to enlarge the size of a bounding box. Please
+   note that  this function was part of the RGBD tracker code presented in
+   [1] and available under under Open Source MIT License at
+    http://tracking.cs.princeton.edu/code.html
+
+   INPUT:
+   - smallBB   input bounding box in the format [topLeftX, topLeftY,
+   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,
+   columnIndexBottomRight, rowIndexBottomRight]
+   -size size of the image
+   -a increasing factor (i.e 0.1 for an increase of 10 percent)
+   OUTPUT
+   - bb    output bounding box in the format [topLeftX, topLeftY,
+   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,
+   columnIndexBottomRight, rowIndexBottomRight]
+
+  See also <a href="checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">CHECKOCCLUSIONSDSKCF_NOISEMODEL</a>,
+  <a href="checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">CHECKOCCLUSIONSDSKCF_SECONDPLANE</a>,<a href="targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">TARGETSEARCHDSKCF</a>, SINGLEFRAMEDSKCF
+
+  [1] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="checkOcclusionsDSKCF_noiseModel.html" class="code" title="function [p, depthCurr,stdNew,depthEstimated,stEstimated,minIndexReduced,LabelReg,Centers,regionIndex,LUTCC,regionIndexOBJ]= checkOcclusionsDSKCF_noiseModel(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_noiseModel</a>	CHECKOCCLUSIONSDSKCF_NOISEMODEL function for detecting occlusions</li><li><a href="checkOcclusionsDSKCF_secondPlane.html" class="code" title="function [p, depthCurr,stdNew,LabelReg,Centers,regionIndex,LUTCCsecondPlaneDepth,secondPlaneDepthStd] = checkOcclusionsDSKCF_secondPlane(depthMapCurr,noDataCurrent,trackerDSKCF_struct, bb)">checkOcclusionsDSKCF_secondPlane</a>	CHECKOCCLUSIONSDSKCF_SECONDPLANE function to detect target candidate in</li><li><a href="occludingObjectSegDSKCF.html" class="code" title="function [occBB] = occludingObjectSegDSKCF(depthIm,trackerDSKCF_struct)">occludingObjectSegDSKCF</a>	OCCLUDINGOBJECTSEGDSKCF function for segmenting the occluding object</li><li><a href="targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">targetSearchDSKCF</a>	TARGETSEARCHDSKCF function for segmenting the occluding object</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsShape/regionModificationCheck.html" class="code" title="function [estimatedShapeBB,shapeDSKCF_struct,changeOfShapeFlag,newOutput]=regionModificationCheck(sizeOfSegmenter,sizeOfTarget,accumulatedSEGBool,noDataPercent,minSizeOK,estimatedShapeBB,shapeDSKCF_struct,imageSize,trackerDSKCF_struct)">regionModificationCheck</a>	REGIONMODIFICATIONCHECK.m function to identify change of shape as</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function bb = enlargeBB(smallBB,a,size)</a>
+0002 <span class="comment">% ENLARGEBB.m enlarges the size of a bounding box</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   ENLARGEBB is a function to enlarge the size of a bounding box. Please</span>
+0005 <span class="comment">%   note that  this function was part of the RGBD tracker code presented in</span>
+0006 <span class="comment">%   [1] and available under under Open Source MIT License at</span>
+0007 <span class="comment">%    http://tracking.cs.princeton.edu/code.html</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   INPUT:</span>
+0010 <span class="comment">%   - smallBB   input bounding box in the format [topLeftX, topLeftY,</span>
+0011 <span class="comment">%   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,</span>
+0012 <span class="comment">%   columnIndexBottomRight, rowIndexBottomRight]</span>
+0013 <span class="comment">%   -size size of the image</span>
+0014 <span class="comment">%   -a increasing factor (i.e 0.1 for an increase of 10 percent)</span>
+0015 <span class="comment">%   OUTPUT</span>
+0016 <span class="comment">%   - bb    output bounding box in the format [topLeftX, topLeftY,</span>
+0017 <span class="comment">%   bottomRightX, bottomRightY] read as [columnIndexTopLeft, rowIndexTopLeft,</span>
+0018 <span class="comment">%   columnIndexBottomRight, rowIndexBottomRight]</span>
+0019 <span class="comment">%</span>
+0020 <span class="comment">%  See also CHECKOCCLUSIONSDSKCF_NOISEMODEL,</span>
+0021 <span class="comment">%  CHECKOCCLUSIONSDSKCF_SECONDPLANE,TARGETSEARCHDSKCF, SINGLEFRAMEDSKCF</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%  [1] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD</span>
+0024 <span class="comment">%  Camera: Baseline and Benchmark. 2013.</span>
+0025 <span class="comment">%</span>
+0026 
+0027 x = a * (smallBB(3)-smallBB(1));
+0028 y = a * (smallBB(4)-smallBB(2));
+0029 bb(1)=max(1,smallBB(1)-x);
+0030 bb(2)=max(1,smallBB(2)-y);
+0031 bb(3)=min(size(2),smallBB(3)+x);
+0032 bb(4)=min(size(1),smallBB(4)+y);
+0033 bb=round(bb(:));
+0034 <span class="keyword">end</span>
+0035</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

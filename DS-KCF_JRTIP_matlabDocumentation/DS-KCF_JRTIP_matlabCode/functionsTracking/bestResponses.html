@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of bestResponses</title>
+  <meta name="keywords" content="bestResponses">
+  <meta name="description" content="BESTRESPONSES.m select the maximum response of DSKCF tracker">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>bestResponses
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>BESTRESPONSES.m select the maximum response of DSKCF tracker</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [maxResponse, maxPositionImagePlane]=bestResponses(depth16Bit,response,poolSize,cell_size,previousPos,meanDepthObj,stdDepthObj) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> BESTRESPONSES.m select the maximum response of DSKCF tracker 
+ 
+ 
+   BESTRESPONSES is is a function used for selecting the maximum DSKCF
+   response. The response of a pool of candidate positions is weighted
+   considering the depth information of the target. For more information
+   about the DSKCF response see [1]. 
+   Please note that  this function was partially built extending the KCF
+   tracker code presented by Joao F. Henriques, in
+   http://www.isr.uc.pt/~henriques/.
+
+   INPUT:
+  - depth16Bit   depth image
+  - response of the DSKCF tracker
+  -cell_size HOG parameter
+  -meanDepthObj mean depth value of the target object
+  -stdDepthObj depth standard deviation of the target object
+  -previousPos is the position of the tracked target in the previous frame
+  It is in the format [y, x] (read also as [rowIndex, columIndex])
+
+   OUTPUT
+   -maxResponse maximum value of the DSKCF response
+   -maxPositionImagePlane vector containing the position in the image
+   plane of the target's centroid. It is in the format [y, x] (read also
+   as [rowIndex, columIndex])
+  
+  See also <a href="maxResponseDepthWeightDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDepthWeightDSKCF( patch,patch_depth,depth16Bit, features,kernel,pos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,meanDepthObj,stdDepthObj)">MAXRESPONSEDEPTHWEIGHTDSKCF</a>, wrapperDSKCF, initDSKCFparam,
+  INITDSKCFPARAM, <a href="initDSKCFtracker.html" class="code" title="function trackerDSKCF_struct=initDSKCFtracker()">INITDSKCFTRACKER</a>, <a href="modelUpdateDSKCF.html" class="code" title="function [model_alphaf, model_alphaDf, model_xf, model_xDf]=modelUpdateDSKCF(firstFrame,patch,patch_depth,features,cell_size,cos_window,kernel,yf,lambda,model_alphaf, model_alphaDf, model_xf, model_xDf,scaleUpdate,interp_factor)">MODELUPDATEDSKCF</a>
+
+[1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T. Burghardt,
+ A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D data, Journal
+ of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="maxResponseDepthWeightDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDepthWeightDSKCF( patch,patch_depth,depth16Bit, features,kernel,pos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,meanDepthObj,stdDepthObj)">maxResponseDepthWeightDSKCF</a>	MAXRESPONSEDEPTHWEIGHTDSKCF function for calculating the DSKCF response %</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)</a></li><li><a href="#_sub2" class="code">function res=sigmFunction(x,A,K,Q,ni,B,M)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [maxResponse, maxPositionImagePlane]=bestResponses(depth16Bit,</a><span class="keyword">...</span>
+0002     response,poolSize,cell_size,previousPos,meanDepthObj,stdDepthObj)
+0003 <span class="comment">% BESTRESPONSES.m select the maximum response of DSKCF tracker</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   BESTRESPONSES is is a function used for selecting the maximum DSKCF</span>
+0007 <span class="comment">%   response. The response of a pool of candidate positions is weighted</span>
+0008 <span class="comment">%   considering the depth information of the target. For more information</span>
+0009 <span class="comment">%   about the DSKCF response see [1].</span>
+0010 <span class="comment">%   Please note that  this function was partially built extending the KCF</span>
+0011 <span class="comment">%   tracker code presented by Joao F. Henriques, in</span>
+0012 <span class="comment">%   http://www.isr.uc.pt/~henriques/.</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%   INPUT:</span>
+0015 <span class="comment">%  - depth16Bit   depth image</span>
+0016 <span class="comment">%  - response of the DSKCF tracker</span>
+0017 <span class="comment">%  -cell_size HOG parameter</span>
+0018 <span class="comment">%  -meanDepthObj mean depth value of the target object</span>
+0019 <span class="comment">%  -stdDepthObj depth standard deviation of the target object</span>
+0020 <span class="comment">%  -previousPos is the position of the tracked target in the previous frame</span>
+0021 <span class="comment">%  It is in the format [y, x] (read also as [rowIndex, columIndex])</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%   OUTPUT</span>
+0024 <span class="comment">%   -maxResponse maximum value of the DSKCF response</span>
+0025 <span class="comment">%   -maxPositionImagePlane vector containing the position in the image</span>
+0026 <span class="comment">%   plane of the target's centroid. It is in the format [y, x] (read also</span>
+0027 <span class="comment">%   as [rowIndex, columIndex])</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%  See also MAXRESPONSEDEPTHWEIGHTDSKCF, wrapperDSKCF, initDSKCFparam,</span>
+0030 <span class="comment">%  INITDSKCFPARAM, INITDSKCFTRACKER, MODELUPDATEDSKCF</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%[1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T. Burghardt,</span>
+0033 <span class="comment">% A.Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D data, Journal</span>
+0034 <span class="comment">% of Real-Time Image Processing</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%  University of Bristol</span>
+0038 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0039 <span class="comment">%</span>
+0040 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0041 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0042 
+0043 vert_deltaVect=[];
+0044 horiz_deltaVect=[];
+0045 maxPositionImagePlane=[];
+0046 <span class="comment">%imagePlaneYVect=[];</span>
+0047 responseVect=[];
+0048 depthVect=[];
+0049 smoothFactorD=[];
+0050 
+0051 nRows=size(depth16Bit,1);
+0052 nCols=size(depth16Bit,2);
+0053 
+0054 <span class="comment">%analyze the firs #poolsize candidates</span>
+0055 <span class="keyword">for</span> i=1:poolSize
+0056 
+0057     [responseVect(i),tmpIndex]=max(response(:));
+0058     
+0059     [vert_deltaVect(i), horiz_deltaVect(i)] = find(response == responseVect(i), 1);
+0060     <span class="comment">%%clean for the next response....</span>
+0061     response(tmpIndex)=nan;
+0062     
+0063     <span class="comment">%maxPosition=[vert_delta, horiz_delta];</span>
+0064     
+0065     <span class="keyword">if</span> vert_deltaVect(i) &gt; size(response,1) / 2,  <span class="comment">%wrap around to negative half-space of vertical axis</span>
+0066         vert_deltaVect(i) = vert_deltaVect(i) - size(response,1);
+0067     <span class="keyword">end</span>
+0068     <span class="keyword">if</span> horiz_deltaVect(i) &gt; size(response,2) / 2,  <span class="comment">%same for horizontal axis</span>
+0069         horiz_deltaVect(i) = horiz_deltaVect(i) - size(response,2);
+0070     <span class="keyword">end</span>
+0071 
+0072     maxPositionImagePlaneVector(i,:) = previousPos + cell_size * [vert_deltaVect(i) - 1, horiz_deltaVect(i) - 1];
+0073     maxPositionImagePlaneVector(i,maxPositionImagePlaneVector(i,:)&lt;1)=1;
+0074     <span class="comment">%maxPositionImagePlaneVector(i,maxPositionImagePlaneVector(i,1)&gt;nRows)=nRows;</span>
+0075     <span class="keyword">if</span>(maxPositionImagePlaneVector(i,1)&gt;nRows)
+0076         maxPositionImagePlaneVector(i,1)=nRows;
+0077     <span class="keyword">end</span>
+0078     <span class="comment">%maxPositionImagePlaneVector(i,maxPositionImagePlaneVector(i,2)&gt;nCols)=nCols;</span>
+0079     <span class="keyword">if</span>(maxPositionImagePlaneVector(i,2)&gt;nCols)
+0080         maxPositionImagePlaneVector(i,2)=nCols;
+0081     <span class="keyword">end</span>
+0082     depthVect(i)=depth16Bit(maxPositionImagePlaneVector(i,1),maxPositionImagePlaneVector(i,2));
+0083     
+0084     <span class="comment">% Now you have the position take the depth vector and calculate the weight</span>
+0085     smoothFactorD(i)=<a href="#_sub1" class="code" title="subfunction smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)">weightDistanceLogisticOnDepth</a>(meanDepthObj,double(depthVect(i)),stdDepthObj);
+0086 <span class="keyword">end</span>
+0087 
+0088 responseVect=responseVect.*smoothFactorD;
+0089 [maxResponse, maxIndex]=max(responseVect);
+0090 maxPositionImagePlane=maxPositionImagePlaneVector(maxIndex,:);
+0091 
+0092 <span class="keyword">end</span>
+0093 
+0094 <span class="comment">%%FUNCTION FOR ADD THE DEPTH WEIGHT...</span>
+0095 <a name="_sub1" href="#_subfunctions" class="code">function smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)</a>
+0096 
+0097 <span class="comment">%smoothFactor=1;</span>
+0098 dist=abs((targetDepth-candidateDepth))/(3*targetSTD);
+0099 
+0100 Q=1;
+0101 ni=0.5;
+0102 B=3.2;
+0103 M=1.94;
+0104 <span class="comment">%              sigmFunction(x,A,K,Q,ni,B,M)</span>
+0105 smoothFactor=(1-<a href="#_sub2" class="code" title="subfunction res=sigmFunction(x,A,K,Q,ni,B,M)">sigmFunction</a>(dist,0,1,Q,ni,B,M));
+0106 
+0107 <span class="keyword">end</span>
+0108 
+0109 <span class="comment">%SIGMOIDAL FUNCTION</span>
+0110 <a name="_sub2" href="#_subfunctions" class="code">function res=sigmFunction(x,A,K,Q,ni,B,M)</a>
+0111 
+0112 res=A+(K-A)./((1+Q*exp(-B*(x-M))).^(1/ni));
+0113 
+0114 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

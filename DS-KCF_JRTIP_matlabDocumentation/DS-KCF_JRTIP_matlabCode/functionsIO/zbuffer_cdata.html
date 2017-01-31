@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of zbuffer_cdata</title>
+  <meta name="keywords" content="zbuffer_cdata">
+  <meta name="description" content="ZBUFFER_DATA.m CDATA from hardcopy using zbuffer">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsIO -->
+<h1>zbuffer_cdata
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ZBUFFER_DATA.m CDATA from hardcopy using zbuffer</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function cdata = zbuffer_cdata(hfig) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ZBUFFER_DATA.m CDATA from hardcopy using zbuffer
+ Get CDATA from hardcopy using zbuffer
+
+ Need to have PaperPositionMode be auto</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="manualBBdraw_MULTIPLE.html" class="code" title="function modifiedImage=manualBBdraw_MULTIPLE(img,bbVector,myColor,lWidth,myText1,myTextColor)">manualBBdraw_MULTIPLE</a>	MANUALBBDRAW_MULTIPLE.m function that produces graphical output for DSKCF tracker</li><li><a href="manualBBdraw_OCC.html" class="code" title="function modifiedImage=manualBBdraw_OCC(img,bb,bbOCC,myColor,myColorOCC,lWidth)">manualBBdraw_OCC</a>	MANUALBBDRAW_OCC.m produces graphical output for DSKCF tracker</li><li><a href="manualBBdraw_OCC_WithLabels.html" class="code" title="function modifiedImage=manualBBdraw_OCC_WithLabels(img,bb,bbOCC,myColor,myColorOCC,lWidth,myText1,myText2)">manualBBdraw_OCC_WithLabels</a>	MANUALBBDRAW_OCC_WITHLABELS.m function that produces graphical output for DSKCF tracker</li><li><a href="manualBBdraw_OCC_WithLabelsVisualize.html" class="code" title="function modifiedImage=manualBBdraw_OCC_WithLabelsVisualize(img,bb,bbOCC,myColor,myColorOCC,lWidth,myText1,myText2,myFigNumber)">manualBBdraw_OCC_WithLabelsVisualize</a>	MANUALBBDRAW_OCC_WITHLABELSVISUALIZE.m produces graphical output for DSKCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function cdata = zbuffer_cdata(hfig)</a>
+0002     <span class="comment">% ZBUFFER_DATA.m CDATA from hardcopy using zbuffer</span>
+0003     <span class="comment">% Get CDATA from hardcopy using zbuffer</span>
+0004     <span class="comment">%</span>
+0005     <span class="comment">% Need to have PaperPositionMode be auto</span>
+0006     orig_mode = get(hfig, <span class="string">'PaperPositionMode'</span>);
+0007     set(hfig, <span class="string">'PaperPositionMode'</span>, <span class="string">'auto'</span>);
+0008     cdata = hardcopy(hfig, <span class="string">'-Dzbuffer'</span>, <span class="string">'-r0'</span>);
+0009     <span class="comment">% Restore figure to original state</span>
+0010     set(hfig, <span class="string">'PaperPositionMode'</span>, orig_mode);</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

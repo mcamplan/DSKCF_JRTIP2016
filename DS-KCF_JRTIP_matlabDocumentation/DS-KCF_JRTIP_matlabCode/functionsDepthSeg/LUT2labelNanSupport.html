@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of LUT2labelNanSupport</title>
+  <meta name="keywords" content="LUT2labelNanSupport">
+  <meta name="description" content="LUT2LABELNANSUPPORT.m is a function for assigning clustering label to the segmented depth image">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsDepthSeg -->
+<h1>LUT2labelNanSupport
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>LUT2LABELNANSUPPORT.m is a function for assigning clustering label to the segmented depth image</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function L=LUT2labelNanSupport(im,LUT,nanMatrix,histStep) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> LUT2LABELNANSUPPORT.m is a function for assigning clustering label to the segmented depth image 
+ 
+   LUT2LABELNANSUPPORT function creates the clusters'label for all the
+   pixels of the segmented depth image. This function extends the &quot;Fast
+   segmentation of N-dimensional grayscale images&quot; presented by Anton
+   Semechko and shared in the Matlab Central at this link under BSD
+   licence
+   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images
+
+   INPUT: 
+   - im   depth image coded in 16bits, each pixel contains mm data. 
+   -LUT is the lookuptable containing cluster label and corresponding
+   depth value of the histogram
+   -nanMatrix  binary mask containing that marks missing depth pixels 
+   -histStep histogram bin used to compose depth histogram
+
+   OUTPUT
+   - L    label image of the same size as the input image. For example,
+           L==i represents the region associated with prototype C(i),
+           where i=[1,k] (k = number of clusters).
+  
+
+  University of Bristol 
+  Massimo Camplani and Sion Hannuna
+  
+  massimo.camplani@bristol.ac.uk 
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fastDepthSegmentationDSKCF_initFrame.html" class="code" title="function [L,C,LUT,H,I]=fastDepthSegmentationDSKCF_initFrame(im,c,nanMatrix,minimumError,histStep,Cinit, findPeak)">fastDepthSegmentationDSKCF_initFrame</a>	FASTDEPTHSEGMENTATIONDSKCF_INITFRAME.m segments depth data</li><li><a href="fastDepthSegmentationDSKCF_initFrameV2.html" class="code" title="function [L,C,LUT,H,I]=fastDepthSegmentationDSKCF_initFrameV2(im,c,nanMatrix,minimumError,histStep,Cinit, findPeak)">fastDepthSegmentationDSKCF_initFrameV2</a>	FASTDEPTHSEGMENTATIONDSKCF_INITFRAME.m segments depth data</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function L=LUT2labelNanSupport(im,LUT,nanMatrix,histStep)</a>
+0002 <span class="comment">% LUT2LABELNANSUPPORT.m is a function for assigning clustering label to the segmented depth image</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   LUT2LABELNANSUPPORT function creates the clusters'label for all the</span>
+0005 <span class="comment">%   pixels of the segmented depth image. This function extends the &quot;Fast</span>
+0006 <span class="comment">%   segmentation of N-dimensional grayscale images&quot; presented by Anton</span>
+0007 <span class="comment">%   Semechko and shared in the Matlab Central at this link under BSD</span>
+0008 <span class="comment">%   licence</span>
+0009 <span class="comment">%   http://www.mathworks.com/matlabcentral/fileexchange/41967-fast-segmentation-of-n-dimensional-grayscale-images</span>
+0010 <span class="comment">%</span>
+0011 <span class="comment">%   INPUT:</span>
+0012 <span class="comment">%   - im   depth image coded in 16bits, each pixel contains mm data.</span>
+0013 <span class="comment">%   -LUT is the lookuptable containing cluster label and corresponding</span>
+0014 <span class="comment">%   depth value of the histogram</span>
+0015 <span class="comment">%   -nanMatrix  binary mask containing that marks missing depth pixels</span>
+0016 <span class="comment">%   -histStep histogram bin used to compose depth histogram</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%   OUTPUT</span>
+0019 <span class="comment">%   - L    label image of the same size as the input image. For example,</span>
+0020 <span class="comment">%           L==i represents the region associated with prototype C(i),</span>
+0021 <span class="comment">%           where i=[1,k] (k = number of clusters).</span>
+0022 <span class="comment">%</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">%  University of Bristol</span>
+0025 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0028 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0029 
+0030 newPointSet=im(~nanMatrix);
+0031 Imin=double(min(newPointSet));
+0032 Imax=double(max(newPointSet));
+0033 I=(Imin:histStep:Imax)';
+0034 <span class="comment">%I(end)=Imax;</span>
+0035 <span class="keyword">if</span>(I(end)~=Imax)
+0036     I(end+1)=Imax+histStep;
+0037 <span class="keyword">end</span>
+0038 <span class="comment">% Create label image</span>
+0039 L=zeros(size(im),<span class="string">'uint8'</span>);
+0040 <span class="keyword">for</span> k=1:max(LUT)
+0041    
+0042     <span class="comment">% Intensity range for k-th class</span>
+0043     i=find(LUT==k);
+0044     <span class="keyword">if</span>(isempty(i)==false)
+0045         i1=i(1);
+0046         <span class="keyword">if</span> numel(i)&gt;1
+0047             i2=i(end);
+0048         <span class="keyword">else</span>
+0049             i2=i1;
+0050         <span class="keyword">end</span>
+0051         
+0052         <span class="comment">% Map the intensities in the range [I(i1),I(i2)] to class k</span>
+0053         bw=im&gt;=I(i1) &amp; im&lt;=I(i2);
+0054         L(bw)=k;
+0055     <span class="keyword">end</span>
+0056 <span class="keyword">end</span>
+0057</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

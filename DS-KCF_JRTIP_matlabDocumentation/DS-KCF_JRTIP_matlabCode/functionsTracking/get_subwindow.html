@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of get_subwindow</title>
+  <meta name="keywords" content="get_subwindow">
+  <meta name="description" content="GET_SUBWINDOW">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsTracking -->
+<h1>get_subwindow
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>GET_SUBWINDOW</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function out = get_subwindow(im, pos, sz) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">GET_SUBWINDOW  
+
+ GET_SUBWINDOWwith Obtain sub-window from image, replication-padding.
+   Returns sub-window of image IM centered at POS ([y, x] coordinates),
+   with size SZ ([height, width]). If any pixels are outside of the image,
+   they will replicate the values at the borders. 
+
+   See also: TARGETSEARCHDSKCF, <a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">SINGLEFRAMEDSKCF</a>,
+   <a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">SINGLEFRAMEDSKCF_OCCLUDER</a>
+
+   This function has been inserted in the DS-KCF matlab library from the
+   KCF library released by
+
+   Joao F. Henriques, 2014
+   http://www.isr.uc.pt/~henriques/</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsOcclusions/targetSearchDSKCF.html" class="code" title="function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue)">targetSearchDSKCF</a>	TARGETSEARCHDSKCF function for segmenting the occluding object</li><li><a href="singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li><li><a href="singleFrameDSKCF_occluder.html" class="code" title="function [trackerDSKCF_structOccluder,newPos]=singleFrameDSKCF_occluder(firstFrame,im,depth,trackerDSKCF_structOccluder,DSKCFparameters)">singleFrameDSKCF_occluder</a>	SINGLEFRAMEDSKCF_OCCLUDER.m functions for tracking occluding object</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function out = get_subwindow(im, pos, sz)</a>
+0002 <span class="comment">%GET_SUBWINDOW</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">% GET_SUBWINDOWwith Obtain sub-window from image, replication-padding.</span>
+0005 <span class="comment">%   Returns sub-window of image IM centered at POS ([y, x] coordinates),</span>
+0006 <span class="comment">%   with size SZ ([height, width]). If any pixels are outside of the image,</span>
+0007 <span class="comment">%   they will replicate the values at the borders.</span>
+0008 <span class="comment">%</span>
+0009 <span class="comment">%   See also: TARGETSEARCHDSKCF, SINGLEFRAMEDSKCF,</span>
+0010 <span class="comment">%   SINGLEFRAMEDSKCF_OCCLUDER</span>
+0011 <span class="comment">%</span>
+0012 <span class="comment">%   This function has been inserted in the DS-KCF matlab library from the</span>
+0013 <span class="comment">%   KCF library released by</span>
+0014 <span class="comment">%</span>
+0015 <span class="comment">%   Joao F. Henriques, 2014</span>
+0016 <span class="comment">%   http://www.isr.uc.pt/~henriques/</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%</span>
+0019 
+0020     <span class="keyword">if</span> isscalar(sz),  <span class="comment">%square sub-window</span>
+0021         sz = [sz, sz];
+0022     <span class="keyword">end</span>
+0023     
+0024     xs = floor(pos(2)) + (1:sz(2)) - floor(sz(2)/2);
+0025     ys = floor(pos(1)) + (1:sz(1)) - floor(sz(1)/2);
+0026     
+0027     <span class="comment">%check for out-of-bounds coordinates, and set them to the values at</span>
+0028     <span class="comment">%the borders</span>
+0029     xs(xs &lt; 1) = 1;
+0030     ys(ys &lt; 1) = 1;
+0031     xs(xs &gt; size(im,2)) = size(im,2);
+0032     ys(ys &gt; size(im,1)) = size(im,1);
+0033     
+0034     <span class="comment">%extract image</span>
+0035     out = im(ys, xs, :);
+0036 
+0037 <span class="keyword">end</span>
+0038</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

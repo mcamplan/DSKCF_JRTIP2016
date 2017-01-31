@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of targetSearchDSKCF</title>
+  <meta name="keywords" content="targetSearchDSKCF">
+  <meta name="description" content="TARGETSEARCHDSKCF function for segmenting the occluding object">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsOcclusions -->
+<h1>targetSearchDSKCF
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>TARGETSEARCHDSKCF function for segmenting the occluding object</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,scaleDSKCF_struct,confValue) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment">TARGETSEARCHDSKCF function for segmenting the occluding object
+
+TARGETSEARCHDSKCF.m this function segments the occluding area and find
+meaningful target candidates. For more information about how DSKCF handles
+occlusions see [1]. Please note that  this function was partially built
+extending the RGBD tracker code presented in [2] and available under under
+Open Source MIT License at
+ http://tracking.cs.princeton.edu/code.html
+
+
+  INPUT:
+  - depthIm   current depth image (16BIT)
+  - trackerDSKCF_struct  DS-KCF tracker data structure (see INITDSKCFTRACKER)
+
+
+  OUTPUT
+  - occBB Bounding box of the occluding object in the format [topLeftX,
+  topLeftY, bottomRightX, bottomRightY] read as [columnIndexTopLeft,
+   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]
+
+ See also <a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">ENLARGEBB</a>, <a href="regionSegmentsFast.html" class="code" title="function [ tarListFull, areaVector ] = regionSegmentsFast(labelMatrix, imageCoordinateOffset)">REGIONSEGMENTSFAST</a>, GET_SUBWINDOW, MAXRESPONSEDSKCF,
+ SINGLEFRAMEDSKCF
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD
+  Camera: Baseline and Benchmark. 2013.
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>	ENLARGEBB.m enlarges the size of a bounding box</li><li><a href="regionSegmentsFast.html" class="code" title="function [ tarListFull, areaVector ] = regionSegmentsFast(labelMatrix, imageCoordinateOffset)">regionSegmentsFast</a>	REGIONSEGMENTSFAST function for extracting target candidates from the occluded area</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>	GET_SUBWINDOW</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/maxResponseDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)">maxResponseDSKCF</a>	MAXRESPONSEDSKCF function for calculating the DSKCF response</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+<h2><a name="_subfunctions"></a>SUBFUNCTIONS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="#_sub1" class="code">function res=sigmFunction(x,A,K,Q,ni,B,M)</a></li><li><a href="#_sub2" class="code">function smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)</a></li></ul>
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [tarBB, occBB, tarlist, id,occmask] = targetSearchDSKCF(bb,</a><span class="keyword">...</span>
+0002     trackerDSKCF_struct, DSKCFparameters,im,depth,depth16Bit,<span class="keyword">...</span>
+0003     scaleDSKCF_struct,confValue)
+0004 <span class="comment">%TARGETSEARCHDSKCF function for segmenting the occluding object</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%TARGETSEARCHDSKCF.m this function segments the occluding area and find</span>
+0007 <span class="comment">%meaningful target candidates. For more information about how DSKCF handles</span>
+0008 <span class="comment">%occlusions see [1]. Please note that  this function was partially built</span>
+0009 <span class="comment">%extending the RGBD tracker code presented in [2] and available under under</span>
+0010 <span class="comment">%Open Source MIT License at</span>
+0011 <span class="comment">% http://tracking.cs.princeton.edu/code.html</span>
+0012 <span class="comment">%</span>
+0013 <span class="comment">%</span>
+0014 <span class="comment">%  INPUT:</span>
+0015 <span class="comment">%  - depthIm   current depth image (16BIT)</span>
+0016 <span class="comment">%  - trackerDSKCF_struct  DS-KCF tracker data structure (see INITDSKCFTRACKER)</span>
+0017 <span class="comment">%</span>
+0018 <span class="comment">%</span>
+0019 <span class="comment">%  OUTPUT</span>
+0020 <span class="comment">%  - occBB Bounding box of the occluding object in the format [topLeftX,</span>
+0021 <span class="comment">%  topLeftY, bottomRightX, bottomRightY] read as [columnIndexTopLeft,</span>
+0022 <span class="comment">%   rowIndexTopLeft, columnIndexBottomRight, rowIndexBottomRight]</span>
+0023 <span class="comment">%</span>
+0024 <span class="comment">% See also ENLARGEBB, REGIONSEGMENTSFAST, GET_SUBWINDOW, MAXRESPONSEDSKCF,</span>
+0025 <span class="comment">% SINGLEFRAMEDSKCF</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0029 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0030 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%  [2] Shuran Song and Jianxiong Xiao. Tracking Revisited using RGBD</span>
+0033 <span class="comment">%  Camera: Baseline and Benchmark. 2013.</span>
+0034 <span class="comment">%</span>
+0035 <span class="comment">%  University of Bristol</span>
+0036 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0037 <span class="comment">%</span>
+0038 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0039 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0040 tarBB = [];
+0041 occBB=[];
+0042 id=[];
+0043 
+0044 bbIn=bb;
+0045 bb=<a href="enlargeBB.html" class="code" title="function bb = enlargeBB(smallBB,a,size)">enlargeBB</a>(bb ,0.05,size(im));
+0046 
+0047 <span class="comment">%%take Bounding box and mask from the previous segmentation!!!!!</span>
+0048 occmask=trackerDSKCF_struct.currentTarget.LabelRegions==trackerDSKCF_struct.currentTarget.regionIndex;
+0049 centersEstimated=trackerDSKCF_struct.currentTarget.Centers;
+0050 tarBBProp=regionprops(occmask,<span class="string">'BoundingBox'</span>,<span class="string">'Area'</span>);
+0051 
+0052 <span class="comment">%one single big region....just take the bounding box</span>
+0053 <span class="keyword">if</span>(length(tarBBProp)==1)
+0054     occBB=tarBBProp.BoundingBox;
+0055     <span class="comment">%use extrema points.....</span>
+0056     occBB=ceil([occBB(1), occBB(2),occBB(1)+occBB(3),occBB(2)+occBB(4)]);
+0057     <span class="comment">%and recenter to the entire image coordinate</span>
+0058     occBB([1 3])=occBB([1 3])+bb(1);
+0059     occBB([2 4])=occBB([2 4])+bb(2);
+0060     <span class="comment">%else select the biggest one</span>
+0061 <span class="keyword">elseif</span>(length(tarBBProp)&gt;1)
+0062     areas= cat(1, tarBBProp.Area);
+0063     [maxV,maxIndex]=max(areas);
+0064     occBB=tarBBProp(maxIndex).BoundingBox;
+0065     occBB=ceil([occBB(1), occBB(2),occBB(1)+occBB(3),occBB(2)+occBB(4)]);
+0066     
+0067     occBB([1 3])=occBB([1 3])+bb(1);
+0068     occBB([2 4])=occBB([2 4])+bb(2);
+0069     
+0070 <span class="keyword">else</span>
+0071     <span class="comment">%EMPTY AREA....</span>
+0072     occBB=[];
+0073 <span class="keyword">end</span>
+0074 
+0075 occBB=occBB';
+0076 
+0077 <span class="comment">%retrieve the list of possible candidates according to the segmentation</span>
+0078 [tarBBList, areaList] = <a href="regionSegmentsFast.html" class="code" title="function [ tarListFull, areaVector ] = regionSegmentsFast(labelMatrix, imageCoordinateOffset)">regionSegmentsFast</a>( trackerDSKCF_struct.currentTarget.LabelRegions,bb);
+0079 
+0080 <span class="comment">%exclude the occluding index!!!!!!!!</span>
+0081 <span class="keyword">if</span>(trackerDSKCF_struct.currentTarget.regionIndex~=6666666)
+0082     tarBBList(:,trackerDSKCF_struct.currentTarget.regionIndex) = [];
+0083     areaList(trackerDSKCF_struct.currentTarget.regionIndex)= [];
+0084     centersEstimated(trackerDSKCF_struct.currentTarget.regionIndex) =[];
+0085 <span class="keyword">end</span>
+0086 
+0087 minArea=trackerDSKCF_struct.currentTarget.w*<span class="keyword">...</span>
+0088     trackerDSKCF_struct.currentTarget.h*0.05;
+0089 areaSmallIndex=areaList&lt;minArea;
+0090 <span class="comment">%exclude the small area index!!!!!!!!</span>
+0091 tarBBList(:,areaSmallIndex) = [];
+0092 areaList(areaSmallIndex)= [];
+0093 centersEstimated(areaSmallIndex)=[];
+0094 
+0095 <span class="comment">%for each target bb caculate confidience</span>
+0096 tarlist = struct(<span class="string">'bb'</span>,[],<span class="string">'Conf_color'</span>,[],<span class="string">'Conf_class'</span>,[]);
+0097 num_tar = size(tarBBList,2);
+0098 <span class="keyword">if</span> isempty(tarBBList),
+0099     <span class="comment">%disp('total occ');</span>
+0100 <span class="keyword">else</span>
+0101     tarlist.bb=nan(4,num_tar);
+0102     tarlist.Conf_class=nan(1,num_tar);
+0103     tarlist.Area=nan(1,num_tar);
+0104     
+0105     smoothFactorD_vector=[];
+0106     <span class="keyword">for</span> j=1:size(tarBBList,2),
+0107         <span class="comment">%conf  = hogGetConf(tarBBList(:,j), featurePym, svm);</span>
+0108         tmpBB=tarBBList(:,j);
+0109         tmpWidthTarget=tmpBB(3)-tmpBB(1)+1;
+0110         tmpHeightTarget=tmpBB(4)-tmpBB(2)+1;
+0111         tmpCenter=ceil([tmpBB(1)+tmpWidthTarget/2 tmpBB(2)+tmpHeightTarget/2]);
+0112         
+0113         <span class="comment">%take image patch....</span>
+0114         patch = <a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(im, tmpCenter(2:-1:1), scaleDSKCF_struct.windows_sizes(scaleDSKCF_struct.i).window_sz);
+0115         patch_depth = <a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/get_subwindow.html" class="code" title="function out = get_subwindow(im, pos, sz)">get_subwindow</a>(depth, tmpCenter(2:-1:1), scaleDSKCF_struct.windows_sizes(scaleDSKCF_struct.i).window_sz);
+0116         
+0117         [ response, maxResponse, maxPositionImagePlane] = <a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/maxResponseDSKCF.html" class="code" title="function [ response, maxResponse, maxPositionImagePlane] = maxResponseDSKCF( patch,patch_depth, features,kernel,prevPos,cell_size, cos_window,model_xf,model_alphaf,model_xDf,model_alphaDf,nRows,nCols)">maxResponseDSKCF</a><span class="keyword">...</span>
+0118             ( patch,patch_depth, DSKCFparameters.features,DSKCFparameters.kernel,<span class="keyword">...</span>
+0119             tmpCenter(2:-1:1),DSKCFparameters.cell_size, <span class="keyword">...</span>
+0120             scaleDSKCF_struct.cos_windows(scaleDSKCF_struct.i).cos_window,<span class="keyword">...</span>
+0121             trackerDSKCF_struct.model_xf,trackerDSKCF_struct.model_alphaf,<span class="keyword">...</span>
+0122             trackerDSKCF_struct.model_xDf,trackerDSKCF_struct.model_alphaDf,<span class="keyword">...</span>
+0123             size(im,1),size(im,2));
+0124         
+0125         <span class="comment">%now maxPositionImagePlane has row index and column index so.....</span>
+0126         smoothFactorD=<a href="#_sub2" class="code" title="subfunction smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)">weightDistanceLogisticOnDepth</a>(trackerDSKCF_struct.currentTarget.meanDepthObj,<span class="keyword">...</span>
+0127             double(depth16Bit(maxPositionImagePlane(1),maxPositionImagePlane(2))),<span class="keyword">...</span>
+0128             trackerDSKCF_struct.currentTarget.stdDepthObj);
+0129         smoothFactorD_vector=[smoothFactorD_vector,smoothFactorD];
+0130         
+0131         conf=maxResponse*smoothFactorD;
+0132         
+0133         reEstimatedBB(1:2)=maxPositionImagePlane(2:-1:1) - [tmpWidthTarget,tmpHeightTarget]/2;
+0134         reEstimatedBB(3:4)=maxPositionImagePlane(2:-1:1) + [tmpWidthTarget,tmpHeightTarget]/2;
+0135         
+0136         tarlist.bb(:,j)=reEstimatedBB;
+0137         tarlist.Conf_class(j)= conf;
+0138         
+0139     <span class="keyword">end</span>
+0140     <span class="comment">%output the most possible target BB</span>
+0141     idx =  tarlist.Conf_class&gt;-999;
+0142     tarlist.bb=tarlist.bb(:,idx);
+0143     tarlist.Conf_class=tarlist.Conf_class(idx);
+0144     
+0145     <span class="keyword">if</span> sum(idx(:))&gt;0,
+0146         [conf,id]=max(tarlist.Conf_class);
+0147         <span class="keyword">if</span>(smoothFactorD_vector(id)~=0)
+0148             conf=conf/smoothFactorD_vector(id);
+0149         <span class="keyword">end</span>
+0150         tarlist.Conf_class=tarlist.Conf_class./smoothFactorD_vector;
+0151         tarlist.Conf_class(isnan(tarlist.Conf_class))=0;
+0152         <span class="comment">%if ~isempty(id)&amp;&amp;conf&gt;0.3*svm.thr, tarBB=tarlist.bb(:,id);end</span>
+0153         <span class="keyword">if</span> ~isempty(id)&amp;&amp;conf&gt;confValue, tarBB=tarlist.bb(:,id);<span class="keyword">end</span>
+0154     <span class="keyword">end</span>
+0155 <span class="keyword">end</span>
+0156 
+0157 <span class="keyword">end</span>
+0158 
+0159 <a name="_sub1" href="#_subfunctions" class="code">function res=sigmFunction(x,A,K,Q,ni,B,M)</a>
+0160 
+0161 res=A+(K-A)./((1+Q*exp(-B*(x-M))).^(1/ni));
+0162 
+0163 <span class="keyword">end</span>
+0164 
+0165 <a name="_sub2" href="#_subfunctions" class="code">function smoothFactor=weightDistanceLogisticOnDepth(targetDepth,candidateDepth,targetSTD)</a>
+0166 
+0167 <span class="comment">%smoothFactor=1;</span>
+0168 dist=abs((targetDepth-candidateDepth))/(3*targetSTD);
+0169 
+0170 Q=1;
+0171 ni=0.5;
+0172 B=3.2;
+0173 M=1.94;
+0174 <span class="comment">%              sigmFunction(x,A,K,Q,ni,B,M)</span>
+0175 smoothFactor=(1-<a href="#_sub1" class="code" title="subfunction res=sigmFunction(x,A,K,Q,ni,B,M)">sigmFunction</a>(dist,0,1,Q,ni,B,M));
+0176 
+0177 <span class="keyword">end</span></pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of addSegmentationResults</title>
+  <meta name="keywords" content="addSegmentationResults">
+  <meta name="description" content="ADDSEGMENTATIONRESULTS.m function manage the alignment of segmented">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsShape -->
+<h1>addSegmentationResults
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>ADDSEGMENTATIONRESULTS.m function manage the alignment of segmented</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [ dskcfShapeStruct ] = addSegmentationResults( dskcfShapeStruct,lastMask,tmpBB,trackOffset,imSize) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> ADDSEGMENTATIONRESULTS.m function manage the alignment of segmented
+ patches to accumulate object binary masks as in [1]
+
+
+   ADDSEGMENTATIONRESULTS is used to accumulate the segmented target
+   masks and align them correctly in case of target close to the borders
+   for example or change in scale while those silhouette are accumulated
+
+   INPUT:
+   - lastMask   segmented binary mask of the current frame processed by
+   EXTRACTSEGMENTEDPATCHV3 to be accumulated with the other masks as in
+   [1] without any errors due to change of shape or false segmentation,
+   masks are centered and then accumulated
+   - tmpBB  bounding box containing the segmented patch in the format
+   [topLeftX, topLeftY, bottomRightX, bottomRightY] read as
+   [columnIndexTopLeft, rowIndexTopLeft, columnIndexBottomRight,
+   rowIndexBottomRight]  
+   - trackOffset boundinbox of patch in case of offset
+   -dskcfShapeStruct data structure containing shape information (see INITDSKCFSHAPE) 
+   - imSize image size
+   OUTPUT
+   -dskcfShapeStruct modified data structure containing shape information (see INITDSKCFSHAPE) 
+
+  See also <a href="initDSKCFshape.html" class="code" title="function [ dskcfShapeStruct ] = initDSKCFshape( slidingWinSize, scaleFactor,dskcfShapeStructOLD )">INITDSKCFSHAPE</a>, <a href="extractSegmentedPatchV3.html" class="code" title="function [ reshapedSegmentedMask, insidePatchIndexes, finalSegmentedMask] =extractSegmentedPatchV3( segmentedMask,outOfBoundSize,centralPoint, shapeDSKCF_struct,maxSize )">EXTRACTSEGMENTEDPATCHV3</a>
+
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+</ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/singleFrameDSKCF.html" class="code" title="function [pos,trackerDSKCF_struct,trackerDSKCF_structOccluder,scaleDSKCF_struct,DSKCFparameters_Occluder,segmentedMASK,shapeDSKCF_struct,timeMatrixRow]=singleFrameDSKCF(firstFrame,pos,frameCurr,trackerDSKCF_struct,DSKCFparameters,scaleDSKCF_struct,trackerDSKCF_structOccluder,DSKCFparameters_Occluder,shapeDSKCF_struct)">singleFrameDSKCF</a>	SINGLEFRAMEDSKCF.m is the core function of DS-KCF tracker</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [ dskcfShapeStruct ] = addSegmentationResults( dskcfShapeStruct,lastMask,tmpBB,trackOffset,imSize)</a>
+0002 <span class="comment">% ADDSEGMENTATIONRESULTS.m function manage the alignment of segmented</span>
+0003 <span class="comment">% patches to accumulate object binary masks as in [1]</span>
+0004 <span class="comment">%</span>
+0005 <span class="comment">%</span>
+0006 <span class="comment">%   ADDSEGMENTATIONRESULTS is used to accumulate the segmented target</span>
+0007 <span class="comment">%   masks and align them correctly in case of target close to the borders</span>
+0008 <span class="comment">%   for example or change in scale while those silhouette are accumulated</span>
+0009 <span class="comment">%</span>
+0010 <span class="comment">%   INPUT:</span>
+0011 <span class="comment">%   - lastMask   segmented binary mask of the current frame processed by</span>
+0012 <span class="comment">%   EXTRACTSEGMENTEDPATCHV3 to be accumulated with the other masks as in</span>
+0013 <span class="comment">%   [1] without any errors due to change of shape or false segmentation,</span>
+0014 <span class="comment">%   masks are centered and then accumulated</span>
+0015 <span class="comment">%   - tmpBB  bounding box containing the segmented patch in the format</span>
+0016 <span class="comment">%   [topLeftX, topLeftY, bottomRightX, bottomRightY] read as</span>
+0017 <span class="comment">%   [columnIndexTopLeft, rowIndexTopLeft, columnIndexBottomRight,</span>
+0018 <span class="comment">%   rowIndexBottomRight]</span>
+0019 <span class="comment">%   - trackOffset boundinbox of patch in case of offset</span>
+0020 <span class="comment">%   -dskcfShapeStruct data structure containing shape information (see INITDSKCFSHAPE)</span>
+0021 <span class="comment">%   - imSize image size</span>
+0022 <span class="comment">%   OUTPUT</span>
+0023 <span class="comment">%   -dskcfShapeStruct modified data structure containing shape information (see INITDSKCFSHAPE)</span>
+0024 <span class="comment">%</span>
+0025 <span class="comment">%  See also INITDSKCFSHAPE, EXTRACTSEGMENTEDPATCHV3</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%</span>
+0028 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0029 <span class="comment">%  Burghardt, A. Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0030 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0031 <span class="comment">%</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%  University of Bristol</span>
+0034 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0035 <span class="comment">%</span>
+0036 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0037 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0038 
+0039 dskcfShapeStruct.lastSegmentedBB=tmpBB;
+0040 
+0041 <span class="keyword">if</span>(isempty(dskcfShapeStruct.cumulativeBB))
+0042     
+0043     dskcfShapeStruct.cumulativeBB=dskcfShapeStruct.lastSegmentedBB;
+0044     dskcfShapeStruct.maskArray=cat(3,dskcfShapeStruct.maskArray,lastMask);
+0045     dskcfShapeStruct.cumulativeMask=lastMask;
+0046 <span class="keyword">else</span>
+0047     <span class="comment">%%subtract</span>
+0048     <span class="keyword">if</span>(size(dskcfShapeStruct.maskArray,3)&lt;(dskcfShapeStruct.slidingWindowSize))
+0049         dskcfShapeStruct.maskArray=cat(3,dskcfShapeStruct.maskArray,lastMask);
+0050         dskcfShapeStruct.cumulativeMask=dskcfShapeStruct.cumulativeMask | lastMask;
+0051     <span class="keyword">else</span>
+0052         dskcfShapeStruct.maskArray=cat(3,dskcfShapeStruct.maskArray(:,:,2:dskcfShapeStruct.slidingWindowSize),lastMask);
+0053         dskcfShapeStruct.cumulativeMask=dskcfShapeStruct.maskArray(:,:,1);
+0054         <span class="keyword">for</span> i=2:size(dskcfShapeStruct.maskArray,3)
+0055             dskcfShapeStruct.cumulativeMask=dskcfShapeStruct.cumulativeMask | dskcfShapeStruct.maskArray(:,:,i);
+0056         <span class="keyword">end</span>
+0057     <span class="keyword">end</span>
+0058     tmpProp=regionprops(dskcfShapeStruct.cumulativeMask,<span class="string">'BoundingBox'</span>,<span class="string">'area'</span>);
+0059     areaList= cat(1, tmpProp.Area);
+0060     [maxV,maxI]=max(areaList);
+0061     <span class="keyword">if</span>(isempty(areaList))
+0062         tmpBB=dskcfShapeStruct.cumulativeBB;
+0063     <span class="keyword">else</span>
+0064         tmpBB=tmpProp(maxI).BoundingBox;
+0065         tmpBB=ceil([tmpBB(1),tmpBB(2),tmpBB(1)+tmpBB(3),tmpBB(2)+tmpBB(4)]);
+0066 
+0067         tmpBB(1)=max(1,tmpBB(1)+trackOffset(1));
+0068         tmpBB(3)=min(imSize(2),tmpBB(3)+trackOffset(1));
+0069 
+0070         tmpBB(2)=max(1,tmpBB(2)+trackOffset(2));
+0071         tmpBB(4)=min(imSize(1),tmpBB(4)+trackOffset(2));
+0072 
+0073     <span class="keyword">end</span>
+0074     dskcfShapeStruct.cumulativeBB=tmpBB;
+0075 
+0076 <span class="keyword">end</span>
+0077 
+0078 
+0079 <span class="keyword">end</span>
+0080</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>

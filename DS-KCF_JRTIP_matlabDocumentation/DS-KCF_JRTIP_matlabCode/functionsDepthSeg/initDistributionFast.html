@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+  <title>Description of initDistributionFast</title>
+  <meta name="keywords" content="initDistributionFast">
+  <meta name="description" content="INITDISTRIBUTIONFAST.m initializes the depth distribution of the DS-KCF tracker">
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name="generator" content="m2html &copy; 2005 Guillaume Flandin">
+  <meta name="robots" content="index, follow">
+  <link type="text/css" rel="stylesheet" href="../../m2html.css">
+  <script type="text/javascript">
+    if (top.frames.length == 0) { top.location = "../../index.html"; };
+  </script>
+</head>
+<body>
+<a name="_top"></a>
+<!-- ../menu.html DS-KCF_JRTIP_matlabCode --><!-- menu.html functionsDepthSeg -->
+<h1>initDistributionFast
+</h1>
+
+<h2><a name="_name"></a>PURPOSE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>INITDISTRIBUTIONFAST.m initializes the depth distribution of the DS-KCF tracker</strong></div>
+
+<h2><a name="_synopsis"></a>SYNOPSIS <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="box"><strong>function [targetDepth,targetStd,LabelReg,regionIndex,Centers,LUT] = initDistributionFast(bbIn, depth16Bit,noData) </strong></div>
+
+<h2><a name="_description"></a>DESCRIPTION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre class="comment"> INITDISTRIBUTIONFAST.m initializes the depth distribution of the DS-KCF tracker
+
+   INITDISTRIBUTIONFAST function initializes the depth distribution of the
+   tracked object at the beginning of the sequence. In particular, the
+   fast depth segmentation algorithm described in [1] is used
+
+   INPUT:
+  -bbIn bounding box containing the tracked object. Format of the bounding
+  box is [topLeftX, topLeftY, bottomRightX, bottomRightY] read as
+  [rowIndexTopLeft, columnIndexTopLeft,rowIndexBottomRight,
+  columnIndexBottomRight]
+  -depth16Bit depth data in mm
+  -noData binary mask containing information about missing depth pixels
+
+   OUTPUT
+  -targetDepth mean depth value of the cluster containing the target
+  -targetStd standard deviation of the cluster containing the target
+  -LabelReg connected component with cluster labels
+  -regionIndex label of the target's cluster (or the closest object to the
+  camera)
+  -Centers depth value corresponding to the identified connected
+  components
+  -LUT look-up-table containing the connected component labels and the
+  corresponding mean depth value
+
+  See also ROIFROMBB, <a href="fastDepthSegmentationDSKCF_initFrame.html" class="code" title="function [L,C,LUT,H,I]=fastDepthSegmentationDSKCF_initFrame(im,c,nanMatrix,minimumError,histStep,Cinit, findPeak)">FASTDEPTHSEGMENTATIONDSKCF_INITFRAME</a>, WRAPPERDSKCF
+
+  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.
+  Burghardt, A.Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D
+  data, Journal of Real-Time Image Processing
+
+
+  University of Bristol
+  Massimo Camplani and Sion Hannuna
+
+  massimo.camplani@bristol.ac.uk
+  hannuna@compsci.bristol.ac.uk</pre></div>
+
+<!-- crossreference -->
+<h2><a name="_cross"></a>CROSS-REFERENCE INFORMATION <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+This function calls:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="fastDepthSegmentationDSKCF_initFrameV2.html" class="code" title="function [L,C,LUT,H,I]=fastDepthSegmentationDSKCF_initFrameV2(im,c,nanMatrix,minimumError,histStep,Cinit, findPeak)">fastDepthSegmentationDSKCF_initFrameV2</a>	FASTDEPTHSEGMENTATIONDSKCF_INITFRAME.m segments depth data</li><li><a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>	ROIFROMBB.m is a function for extracting roi from images given a bounding box</li></ul>
+This function is called by:
+<ul style="list-style-image:url(../../matlabicon.gif)">
+<li><a href="../../DS-KCF_JRTIP_matlabCode/wrapperDSKCF.html" class="code" title="function [dsKCFoutputSr,dsKCFoutputSq,dsKCFsegmentationOut, avTime,totalTime,timeMatrix] =wrapperDSKCF(video_path, depth_path, img_files, depth_files, pos, target_sz,DSKCFparameters, show_visualization,save_Images,dest_path,noBitShift)">wrapperDSKCF</a>	WRAPPERDSKCF.m is the wrapper function for the DS-KCF tracker [1]</li></ul>
+<!-- crossreference -->
+
+
+
+<h2><a name="_source"></a>SOURCE CODE <a href="#_top"><img alt="^" border="0" src="../../up.png"></a></h2>
+<div class="fragment"><pre>0001 <a name="_sub0" href="#_subfunctions" class="code">function [targetDepth,targetStd,LabelReg,regionIndex,Centers,LUT] = initDistributionFast(bbIn, depth16Bit,noData)</a>
+0002 <span class="comment">% INITDISTRIBUTIONFAST.m initializes the depth distribution of the DS-KCF tracker</span>
+0003 <span class="comment">%</span>
+0004 <span class="comment">%   INITDISTRIBUTIONFAST function initializes the depth distribution of the</span>
+0005 <span class="comment">%   tracked object at the beginning of the sequence. In particular, the</span>
+0006 <span class="comment">%   fast depth segmentation algorithm described in [1] is used</span>
+0007 <span class="comment">%</span>
+0008 <span class="comment">%   INPUT:</span>
+0009 <span class="comment">%  -bbIn bounding box containing the tracked object. Format of the bounding</span>
+0010 <span class="comment">%  box is [topLeftX, topLeftY, bottomRightX, bottomRightY] read as</span>
+0011 <span class="comment">%  [rowIndexTopLeft, columnIndexTopLeft,rowIndexBottomRight,</span>
+0012 <span class="comment">%  columnIndexBottomRight]</span>
+0013 <span class="comment">%  -depth16Bit depth data in mm</span>
+0014 <span class="comment">%  -noData binary mask containing information about missing depth pixels</span>
+0015 <span class="comment">%</span>
+0016 <span class="comment">%   OUTPUT</span>
+0017 <span class="comment">%  -targetDepth mean depth value of the cluster containing the target</span>
+0018 <span class="comment">%  -targetStd standard deviation of the cluster containing the target</span>
+0019 <span class="comment">%  -LabelReg connected component with cluster labels</span>
+0020 <span class="comment">%  -regionIndex label of the target's cluster (or the closest object to the</span>
+0021 <span class="comment">%  camera)</span>
+0022 <span class="comment">%  -Centers depth value corresponding to the identified connected</span>
+0023 <span class="comment">%  components</span>
+0024 <span class="comment">%  -LUT look-up-table containing the connected component labels and the</span>
+0025 <span class="comment">%  corresponding mean depth value</span>
+0026 <span class="comment">%</span>
+0027 <span class="comment">%  See also ROIFROMBB, FASTDEPTHSEGMENTATIONDSKCF_INITFRAME, WRAPPERDSKCF</span>
+0028 <span class="comment">%</span>
+0029 <span class="comment">%  [1] S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T.</span>
+0030 <span class="comment">%  Burghardt, A.Paiement, L. Tao, DS-KCF: A real-time tracker for RGB-D</span>
+0031 <span class="comment">%  data, Journal of Real-Time Image Processing</span>
+0032 <span class="comment">%</span>
+0033 <span class="comment">%</span>
+0034 <span class="comment">%  University of Bristol</span>
+0035 <span class="comment">%  Massimo Camplani and Sion Hannuna</span>
+0036 <span class="comment">%</span>
+0037 <span class="comment">%  massimo.camplani@bristol.ac.uk</span>
+0038 <span class="comment">%  hannuna@compsci.bristol.ac.uk</span>
+0039 
+0040 <span class="comment">%extract the target roi, from the depth and the nodata mask</span>
+0041 front_depth=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(depth16Bit,bbIn);
+0042 depthNoData=<a href="../../DS-KCF_JRTIP_matlabCode/functionsTracking/roiFromBB.html" class="code" title="function imgOUT=roiFromBB(imgIN,bbIn)">roiFromBB</a>(noData,bbIn);
+0043 
+0044 [LabelReg,Centers,LUT]=<a href="fastDepthSegmentationDSKCF_initFrameV2.html" class="code" title="function [L,C,LUT,H,I]=fastDepthSegmentationDSKCF_initFrameV2(im,c,nanMatrix,minimumError,histStep,Cinit, findPeak)">fastDepthSegmentationDSKCF_initFrameV2</a>(front_depth,3,depthNoData,1,50,[-1 -1 -1],1);
+0045 
+0046 <span class="comment">%for the initialization the object belong to the cluster with the smaller</span>
+0047 <span class="comment">%depth (see [1] for more details)</span>
+0048 [targetDepth,regionIndex]=min(Centers);
+0049 <span class="comment">%extract all the depth value belonging to that cluster</span>
+0050 depthVector=double(front_depth(LabelReg==regionIndex));
+0051 <span class="comment">%then calculate the standard deviation</span>
+0052 targetStd=std(depthVector);
+0053 
+0054 <span class="keyword">end</span>
+0055</pre></div>
+<hr><address>Generated on Thu 24-Nov-2016 18:03:21 by <strong><a href="http://www.artefact.tk/software/matlab/m2html/" target="_parent">m2html</a></strong> &copy; 2005</address>
+</body>
+</html>
