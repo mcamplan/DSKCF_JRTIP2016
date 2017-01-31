@@ -5,6 +5,8 @@ S. Hannuna, M. Camplani, J. Hall, M. Mirmehdi, D. Damen, T. Burghardt, A.
 Paiement, L. Tao, DS-KCF: A ~real-time tracker for RGB-D data, Journal of
 Real-Time Image Processing
 
+doi:10.1007/s11554-016-0654-3
+
 ________________
 This MATLAB code implements the DS-KCF tracker. 
 This code is licensed under the BSD license
